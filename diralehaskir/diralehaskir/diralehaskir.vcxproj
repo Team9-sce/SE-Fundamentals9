@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{46246554-DFDC-4E12-B6FB-7CD733074E4B}</ProjectGuid>
+    <ProjectGuid>{FB0244F1-AF52-4468-B3D3-AA3A3EFF5CA6}</ProjectGuid>
     <RootNamespace>diralehaskir</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
