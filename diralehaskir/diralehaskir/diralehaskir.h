@@ -1,0 +1,4 @@
+#ifndef DIRALEHASKIR_H
+#define DIRALEHASKIR_H
+
+#endif // !DIRALEHASKIR_H
