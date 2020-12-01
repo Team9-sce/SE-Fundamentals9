@@ -22,7 +22,7 @@ int numOfPeople; int numOfRooms; int numOfBeds; amenities ameNities; string attr
 typedef struct landlord { string fullName; int id; string email; string password; int phoneNumber; int sumOfDeals; int adSize; ad* properties; };
 using namespace std;
 
-//-------------write to file
+//-------------print to file
 void printToFile(int arrSize, landlord* landlordArr) {
 	ofstream outFile;
 	try {
