@@ -1,11 +1,14 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <stdlib.h>
+//#include <stdlib.h>
+#include <cstdlib>
 #include <cstring>
 #include <string>
-#include <string.h>
+//#include <cstringt.h>
+//#include <string.h>
 #include <fstream>
-#include <datetimeapi.h>// or another maybe??? 
+#include <ctime>
+//#include <datetimeapi.h>// or another maybe??? 
 #define MAX_EMAIL 8 //רק לקידומת
 #define MAX_ID 9
 #define MAX_PHONE 10
@@ -13,17 +16,60 @@
 #define MAX_PASSWORD 10 //less???
 #define BUFFER 20
 #define AMENITIES 9
-typedef struct amenities { bool disabledAccess, wifi, kitchen, tv, balcony, washingMachine, 
-airConditioning, swimmingPool, parkingLot;};
+typedef struct amenities { 
+	bool disabledAccess, 
+		wifi, 
+		kitchen, 
+		tv, 
+		balcony, 
+		washingMachine, 
+		airConditioning, 
+		swimmingPool, 
+		parkingLot;
+};
 
-typedef struct ad { bool available; string description; int price; int discount; string location;
-int numOfPeople; int numOfRooms; int numOfBeds; amenities ameNities; string attraction; int rating;};
-//also- landlord name, phone number,		and it's own calender??
-
-typedef struct landlord { string fullName; string phoneNumber; string password; int id; 
-string email;  int sumOfDeals; int adSize; ad* properties; };
-
-typedef struct traveler { string fullName; string phoneNumber; string password; };
+//also- landlord name, phone number,	and it's own calender??
+typedef struct landlord { 
+	string fullName; 
+	string phoneNumber; 
+	string password; 
+	int id; 
+	string email;  
+	int sumOfDeals; 
+	int adSize; 
+	ad* properties = NULL;
+};
+typedef struct ad { 
+	bool available; 
+	string description; 
+	int price; 
+	int discount = 0;
+	string location;
+	int numOfPeople; 
+	int numOfRooms; 
+	int numOfBeds; 
+	amenities ameNities; 
+	string attraction; 
+	int rating;
+	int dateSize = 0;
+	date* occupied = NULL;//contains occupied dates
+};
+typedef struct date{
+	//start rent:
+	int fromDay,
+		fromMonth,
+		fromYear,
+	//end rent:
+		toDay,
+		toMonth,
+		toYear;
+};
+typedef struct traveler { 
+	string fullName; 
+	string phoneNumber; 
+	string password;
+	date order = { 0,0,0,0,0,0 };
+};
 using namespace std;
 
 //-------------print to file
@@ -53,11 +99,12 @@ void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, trav
 			<< landlordArr[i].email << endl
 			<< landlordArr[i].sumOfDeals << endl
 			<< landlordArr[i].adSize << endl;
-		printAdsToFile(landlordArr[i].adSize, landlordArr[i].properties);
-		printTravelerToFile(travelerSize, travelerArr);
-	}
+		printAdsToFile(landlordArr[i].adSize, landlordArr[i].properties);//print ads for landlord
+	}		
+	printTravelerToFile(travelerSize, travelerArr);//print all travelers
 	outFile.close();//close file
 }
+
 //-------------printAdsToFile
 void printAdsToFile(int size, ad* adsArr) {
 	ofstream outFile;
@@ -98,7 +145,17 @@ void printAdsToFile(int size, ad* adsArr) {
 			<< adsArr[i].ameNities.parkingLot << endl;
 		//print rest
 		outFile << adsArr[i].attraction << endl
-			<< adsArr[i].rating << endl;
+			<< adsArr[i].rating << endl
+			<< adsArr[i].dateSize << endl;
+		//print occupied dates
+		for (int j = 0; j < adsArr[i].dateSize; ++i) {
+			outFile << adsArr[i].occupied[j].fromDay << endl
+				<< adsArr[i].occupied[j].fromMonth << endl
+				<< adsArr[i].occupied[j].fromYear << endl
+				<< adsArr[i].occupied[j].toDay << endl
+				<< adsArr[i].occupied[j].toMonth << endl
+				<< adsArr[i].occupied[j].toYear << endl;
+		}
 	}
 	outFile.close();//close file
 }
@@ -128,11 +185,226 @@ void printTravelerToFile(int size, traveler* travelerArr) {
 	}
 	outFile.close();//close file
 }
-//-------------read from file
 
+//-------------read from file
+void readFromFile(landlord* landlordArr, traveler* travelerArr) {
+	ifstream inFile;
+	try {
+		inFile.open("landlord.data");//open in default mode
+		if (!inFile)
+			throw("can't open file");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if succeeded
+	int arrSize = 0;
+	inFile >> arrSize;
+	char tempBuff = '0';
+	inFile >> tempBuff;//intake of \n
+	try {
+		landlordArr = new landlord[arrSize];
+		if (!landlordArr)
+			throw("allocation failed in readFromFile-landlord");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		inFile.close();
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if succeeded
+	int i = 0;
+	while (i < arrSize)
+	{
+		inFile >> landlordArr[i].fullName;
+		inFile >> tempBuff;//intake of \n
+		inFile >> landlordArr[i].phoneNumber;
+		inFile >> tempBuff;//intake of \n
+		inFile >> landlordArr[i].password;
+		inFile >> tempBuff;//intake of \n
+		inFile >> landlordArr[i].id;
+		inFile >> tempBuff;//intake of \n
+		inFile >> landlordArr[i].email;
+		inFile >> tempBuff;//intake of \n
+		inFile >> landlordArr[i].sumOfDeals;
+		inFile >> tempBuff;//intake of \n
+		inFile >> landlordArr[i].adSize;
+		inFile >> tempBuff;//intake of \n
+		try {
+			landlordArr[i].properties = new ad[landlordArr[i].adSize];
+			if (!landlordArr)
+				throw("allocation failed in readFromFile-ads");
+		}
+		catch (const char* const x) {
+			cout << x << endl;
+			inFile.close();
+			throw;
+		}
+		catch (...) {
+			cout << "ERROR!" << endl;
+			throw;
+		}
+		//call read ads
+		readAdsFromFile(landlordArr[i].adSize, landlordArr[i].properties);//read ads for landlord
+		++i;
+	}
+	//read all travelers
+	readTravelerFromFile(travelerArr);
+	inFile.close();//close file
+}//return value???
+
+ //-------------readAdsFromFile
+void readAdsFromFile(int size, ad* adsArr) {//read ads for landlord
+	ifstream inFile;
+	try {
+		inFile.open("properties.data");//open file in ios::out default mode
+		if (!inFile)
+			throw("couldn't open file");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	char tempBuff = '0';
+	//if opening file succeeded
+	int i = 0;
+	for (; i < size; ++i) {
+		inFile >> adsArr[i].available;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].description;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].price;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].discount;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].location;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].numOfPeople;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].numOfRooms;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].numOfBeds;
+		inFile >> tempBuff;//intake of \n
+		//print amenities
+		inFile >> adsArr[i].ameNities.disabledAccess;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.wifi;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.kitchen;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.tv;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.balcony;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.washingMachine;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.airConditioning;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.swimmingPool;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].ameNities.parkingLot;
+		inFile >> tempBuff;//intake of \n
+		//read rest
+		inFile >> adsArr[i].attraction;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].rating;
+		inFile >> tempBuff;//intake of \n
+		inFile >> adsArr[i].dateSize;
+		inFile >> tempBuff;//intake of \n
+		try {
+			adsArr[i].occupied = new date[adsArr[i].dateSize];
+			if (!adsArr[i].occupied)
+				throw("allocation failed in readFromFile-dates");
+		}
+		catch (const char* const x) {
+			cout << x << endl;
+			inFile.close();
+			throw;
+		}
+		catch (...) {
+			cout << "ERROR!" << endl;
+			throw;
+		}
+		//print occupied dates
+		for (int j = 0; j < adsArr[i].dateSize; ++i) {
+			inFile >> adsArr[i].occupied[j].fromDay;
+			inFile >> tempBuff;//intake of \n
+			inFile >> adsArr[i].occupied[j].fromMonth;
+			inFile >> tempBuff;//intake of \n
+			inFile >> adsArr[i].occupied[j].fromYear;
+			inFile >> tempBuff;//intake of \n
+			inFile >> adsArr[i].occupied[j].toDay;
+			inFile >> tempBuff;//intake of \n
+			inFile >> adsArr[i].occupied[j].toMonth;
+			inFile >> tempBuff;//intake of \n
+			inFile >> adsArr[i].occupied[j].toYear;
+			inFile >> tempBuff;//intake of \n
+		}
+	}
+	inFile.close();//close file
+}
+//-------------readTravelerFromFile
+void readTravelerFromFile(traveler* travelerArr) {
+	ifstream inFile;
+	try {
+		inFile.open("traveler.data");//open file in ios::out default mode
+		if (!inFile)
+			throw("couldn't open file");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if opening file succeeded
+	try {
+		travelerArr = new traveler[];
+		if (!travelerArr)
+			throw("allocation failed in readFromFile-traveler");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		inFile.close();
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if allocation succeeded
+	int size = 0;
+	inFile >> size;//reads size of traveler array
+	char tempBuff = '0';
+	inFile >> tempBuff;//intake of \n
+	int i = 0;
+	for (; i < size; ++i) {
+		inFile >> travelerArr[i].fullName;
+		inFile >> tempBuff;//intake of \n
+		inFile >> travelerArr[i].phoneNumber;
+		inFile >> tempBuff;//intake of \n
+		inFile >> travelerArr[i].password;
+	}
+	inFile.close();//close file
+}//return value???
 //-------------sign in
 
-//-------------sign up(after successful signup redirect to signin)
+//-------------sign up(after successful signup redirect to signin)-add new user to db
 
 //-------------sort(display options in loop)
 
