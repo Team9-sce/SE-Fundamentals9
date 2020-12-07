@@ -2,6 +2,7 @@
 #include <iostream>
 //#include <stdlib.h>
 #include <cstdlib>
+//#include <stdio.h>
 #include <cstring>
 #include <string>
 //#include <cstringt.h>
@@ -16,6 +17,8 @@
 #define MAX_PASSWORD 10 //less???
 #define BUFFER 20
 #define AMENITIES 9
+using namespace std;
+
 typedef struct amenities { 
 	bool disabledAccess, 
 		wifi, 
@@ -70,7 +73,6 @@ typedef struct traveler {
 	string password;
 	date order = { 0,0,0,0,0,0 };
 };
-using namespace std;
 
 //-------------print to file
 void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, traveler* travelerArr) {
