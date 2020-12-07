@@ -1,24 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <stdlib.h>
-//#include <cstdlib>
-#include <stdio.h>
-//#include <cstring>
-#include <string>
-//#include <cstringt.h>
-#include <string.h>
-#include <fstream>
-#include <ctime>
 #include "structs.h"
 #include "diralehaskir.h"
 //#include <datetimeapi.h>// or another maybe??? 
-#define MAX_EMAIL 8 //רק לקידומת
-#define MAX_ID 9
-#define MAX_PHONE 10
-#define MAX_NAME 15 //enough???
-#define MAX_PASSWORD 10 //less???
-#define BUFFER 20
-#define AMENITIES 9
 using namespace std;
 
 
@@ -353,9 +336,54 @@ void readTravelerFromFile(traveler* travelerArr) {
 	inFile.close();//close file
 }//return value???
 //-------------sign in
+void landlordSignIn(int size, landlord* landlordArr) {
+	string tempId;
+	cout << "***LOG IN***" << endl << "Please enter details according to instrctions" << endl;
+	//get id input
+	do {
+		cout << "ID must be exactly "<<MAX_ID<<" digits, numbers only." << endl;
+		cout << "Please enter your ID:" << endl;
+		cin >> tempId;
+		//check length and input correctness
+	} while (tempId.length() < MAX_ID || tempId.length() > MAX_ID || !isStringAllDig(tempId));
+	//find index for landlord in array by id
+	int index = findLandlordById(size, landlordArr, tempId);
+	if (index == -1)
+		cout << "No such ID..." << endl;
+	//get password
+	string tempPass;
+	do
+	{
+		cout << "Password must be exactly " << MAX_PASSWORD << " characters," << endl
+			<< "Can contain any characters you wish except 'enter'." << endl;
+		cout << "Please enter your password:" << endl;
+		cin >> tempPass;
+	} while (tempPass.length()>=MAX_PASSWORD);//will repeat if length bigger than defined max
 
+}
+
+bool isStringAllDig(string str) {//check id the string is all digits
+	for (int i = 0; i < str.length(); ++i) {
+		if (!isdigit(str[i]))//if false
+			return false;
+	}
+	return true;
+}
+//-------------find landlord by id
+int findLandlordById(int size,const landlord* const landlordArr, string id) {
+	int i = 0;
+	for (; i < size; ++i) {
+		if (!landlordArr[i].id.compare(id))
+			return i;
+	}
+	return -1;
+}
+
+void travelerSignIn(int size, traveler* travelerArr) {
+
+}
 //-------------sign up(after successful signup redirect to signin)-add new user to db
-void signUp(traveler* travelerArr, int size)
+void travelerSignUp(traveler* travelerArr, int size)
 {
 	string name, phonumber, password;
 	cout << "Enter user name, phone-number and password" << endl;
@@ -365,6 +393,10 @@ void signUp(traveler* travelerArr, int size)
 		if (phonumber == travelerArr[i].phoneNumber)
 			cout << "Existing user in the system" << endl;
 	}
+
+}
+
+void landlordSignUp(int size, landlord* landlordArr) {
 
 }
 //-------------sort(display options in loop)

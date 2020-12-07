@@ -48,7 +48,7 @@ typedef struct {
 	string fullName;
 	string phoneNumber;
 	string password;
-	int id;
+	string id;
 	string email;
 	int sumOfDeals;
 	int adSize;
