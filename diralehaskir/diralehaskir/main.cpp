@@ -405,7 +405,18 @@ void readTravelerFromFile(traveler* travelerArr) {
 //-------------sign in
 
 //-------------sign up(after successful signup redirect to signin)-add new user to db
+void signUp(traveler* travelerArr, int size)
+{
+	string name, phonumber, password;
+	cout << "Enter user name, phone-number and password" << endl;
+	cin >> name >> phonumber >> password;
+	for (int i = 0; i < size; i++)
+	{
+		if (phonumber == travelerArr[i].phoneNumber)
+			cout << "Existing user in the system" << endl;
+	}
 
+}
 //-------------sort(display options in loop)
 
 //-------------filter(display options in loop)
