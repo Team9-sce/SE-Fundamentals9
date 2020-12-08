@@ -16,21 +16,27 @@
 #define MAX_PHONE 10
 #define MAX_NAME 15 //enough???
 #define MAX_PASSWORD 10 //less???
+#define MIN_PASSWORD 4
 #define BUFFER 20
 #define AMENITIES 9
 
 using namespace std;
 
 void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, traveler* travelerArr);
+void printLandlordToFile(int size, landlord* landlordArr);
 void printAdsToFile(int size, ad* adsArr);
 void printTravelerToFile(int size, traveler* travelerArr);
 void readFromFile(landlord* landlordArr, traveler* travelerArr);
+void readLandlordFromFile(landlord* landlordArr);//read all landlord
 void readAdsFromFile(int size, ad* adsArr);	//read ads for landlord
 void readTravelerFromFile(traveler* travelerArr);
-void landlordSignIn(int size, landlord* landlordArr);
-void travelerSignIn(int size, traveler* travelerArr);
+bool landlordSignIn(int size, landlord* landlordArr);
+bool travelerSignIn(int size, traveler* travelerArr);
 void travelerSignUp(traveler* travelerArr, int size);
 void landlordSignUp(int size, landlord* landlordArr);
+bool isStringAllDig(string str);//check id the string is all digits
+int findLandlordById(int size, const landlord* const landlordArr, string id);
+int findTravelerByName(int size, const traveler* const travelerArr, string name);
 
 
 #endif // !DIRALEHASKIR_H

@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 using namespace std;
-typedef struct {
+
+struct amenities{
 	bool disabledAccess,
 		wifi,
 		kitchen,
@@ -15,9 +16,9 @@ typedef struct {
 		airConditioning,
 		swimmingPool,
 		parkingLot;
-}amenities;
+};
 
-typedef struct {
+typedef struct date{
 	//start rent:
 	int fromDay,
 		fromMonth,
@@ -44,7 +45,7 @@ typedef struct {
 	date* occupied = NULL;//contains occupied dates
 }ad;
 
-typedef struct {
+typedef struct landlord{
 	string fullName;
 	string phoneNumber;
 	string password;
