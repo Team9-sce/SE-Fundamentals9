@@ -378,9 +378,41 @@ int findLandlordById(int size,const landlord* const landlordArr, string id) {
 	}
 	return -1;
 }
+//-------------find traveler by phoneNumber
+int findtravelerByphoneNumber(int size, const traveler* const travelerArr, string phoneNumber)
+{
+	int i = 0;
+	for (; i < size; ++i) {
+		if (!travelerArr[i].phoneNumber.compare(phoneNumber))
+			return i;
+	}
+	return -1;
+}
 
-void travelerSignIn(int size, traveler* travelerArr) {
-
+void travelerSignIn(int size, traveler* travelerArr)
+{
+	string tempphoneNumber;
+	cout << "***LOG IN***" << endl << "Please enter details according to instrctions" << endl;
+	//get phoneNumber input
+	do {
+		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, numbers only." << endl;
+		cout << "Please enter your phoneNumber:" << endl;
+		cin >> tempphoneNumber;
+		//check length and input correctness
+	} while (tempphoneNumber.length() < MAX_PHONE || tempphoneNumber.length() > MAX_PHONE || !isStringAllDig(tempphoneNumber));
+	//find index for landlord in array by id
+	int index = findtravelerByphoneNumber(size, travelerArr, tempphoneNumber);
+	if (index == -1)
+		cout << "No such PhoneNumber..." << endl;
+	//get password
+	string tempPass;
+	do
+	{
+		cout << "Password must be exactly " << MAX_PASSWORD << " characters," << endl
+			<< "Can contain any characters you wish except 'enter'." << endl;
+		cout << "Please enter your password:" << endl;
+		cin >> tempPass;
+	} while (tempPass.length() >= MAX_PASSWORD);//will repeat if length bigger than defined max
 }
 //-------------sign up(after successful signup redirect to signin)-add new user to db
 void travelerSignUp(traveler* travelerArr, int size)
