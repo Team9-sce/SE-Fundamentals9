@@ -400,7 +400,7 @@ void travelerSignIn(int size, traveler* travelerArr)
 		cin >> tempphoneNumber;
 		//check length and input correctness
 	} while (tempphoneNumber.length() < MAX_PHONE || tempphoneNumber.length() > MAX_PHONE || !isStringAllDig(tempphoneNumber));
-	//find index for landlord in array by id
+	//find index for traveler in array by phoneNumber
 	int index = findtravelerByphoneNumber(size, travelerArr, tempphoneNumber);
 	if (index == -1)
 		cout << "No such PhoneNumber..." << endl;
@@ -418,14 +418,21 @@ void travelerSignIn(int size, traveler* travelerArr)
 void travelerSignUp(traveler* travelerArr, int size)
 {
 	string name, phonumber, password;
-	cout << "Enter user name, phone-number and password" << endl;
-	cin >> name >> phonumber >> password;
-	for (int i = 0; i < size; i++)
-	{
-		if (phonumber == travelerArr[i].phoneNumber)
-			cout << "Existing user in the system" << endl;
-	}
-
+	cout << "***SIGN UP***" << endl << "Please enter details according to instrctions" << endl;
+	//get name & phoneNumber input
+	cout << "Please enter your full name, letters only." << endl;
+	cin >> name;
+	do {
+		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, numbers only." << endl;
+		cout << "Please enter your phoneNumber:" << endl;
+		cin >> phonumber;
+		//check length and input correctness
+	} while (phonumber.length() < MAX_PHONE || phonumber.length() > MAX_PHONE || !isStringAllDig(phonumber));
+	//get password
+	cout << "Password must be exactly " << MAX_PASSWORD << " characters," << endl
+		<< "Can contain any characters you wish except 'enter'." << endl;
+	cout << "Please enter your password:" << endl;
+	cin >> password;
 }
 
 void landlordSignUp(int size, landlord* landlordArr) {
