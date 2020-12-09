@@ -590,26 +590,17 @@ void travelerSignUp(traveler* travelerArr, int size)
 
 string ValidLocation()
 {
-	//Location format <House no> / <appartment> <street> , <city>, <country> 
+	//Location format <city>, <street> st.
 	string location = "";
 	string tmp;
-	int num;
-	cout << "Please enter house number:";
-	cin >> num;
-	location += to_string(num) + " / ";
-	cout << "Please enter appartment number:";
-	cin >> num;
-	location += to_string(num) + " ";
-	cout << "Please enter street name: ";
+	cout << "Please enter city: ";
 	cin.ignore();
 	getline(cin, tmp);
 	location += tmp + ", ";
-	cout << "Please enter city: ";
-	cin >> tmp;
-	location += tmp + ", ";
-	cout << "Please enter country: ";
-	cin >> tmp;
-	location += tmp + ".";
+	cout << "Please enter street name: ";
+	cin.ignore();
+	getline(cin, tmp);
+	location += tmp + " st.";
 	return location;
 }
 int ValidInput(int min, int max)
@@ -665,8 +656,8 @@ ad NewAd()
 	getline(cin, newAd.description);
 	cout << "Price: ";
 	newAd.price = ValidInput(ZERO, INT_MAX);
-	cout << "Discount(0 ~ 100): ";
-	newAd.discount = ValidInput(ZERO, 100);
+	cout << "Discount(0 ~ Price): ";
+	newAd.discount = ValidInput(ZERO, newAd.price);
 	newAd.location = ValidLocation();
 	cout << "Number of people(up to 30): ";
 	newAd.numOfPeople = ValidInput(1, 30);
@@ -703,7 +694,7 @@ void PrintAd(ad obj)
 	cout << "Location: " << obj.location << endl;
 	cout << "Ad discription: " << obj.description << endl;
 	cout << "Price before discount: " << obj.price << endl;
-	cout << "Price after discount:  " << AdDiscountedPrice(obj) << endl;
+	cout << "Price after discount:  " << obj.price - obj.discount << endl;
 	cout << "Discount: " << obj.discount << "%" << endl;
 	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
 	cout << "Atractions: " << obj.attraction << endl;
