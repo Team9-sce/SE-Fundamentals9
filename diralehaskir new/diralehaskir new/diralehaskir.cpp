@@ -459,9 +459,23 @@ void travelerSignUp(traveler* travelerArr, int size)
 //-------------total rent sum
 
 //-------------support(print only)
+void printSupport()
+{
+	cout<< "Your request has been sent!"<<endl
+		<<"Case number :"<<'1234'<<endl
+		<<"had been opened with your request for support"<<endl;
+}
 
 //-------------faq(print only)
-
+void printFaq()
+{
+	cout << "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
+		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl
+		<< "IS THE SITE SECURE ?" << endl
+		<< "Yes, the payment is secured by the payment platform you will use." << endl
+		<< "HOW DO I RATE MY STAY ?" << endl
+		<< "At the end of rent time a rating screen will be displayed in which you can rate your stay." << endl;
+}
 //-------------travelers homepage
 
 //-------------landlord menu
