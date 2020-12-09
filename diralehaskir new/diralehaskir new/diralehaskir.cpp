@@ -640,7 +640,7 @@ ad** filterAds(int size, landlord* arr) {
 			//check if amenities equal
 			if (compareAmenities(filters, arr[i].properties[j].ameNities))
 
-		}
+		}//not finished
 	}
 
 }
@@ -941,6 +941,22 @@ void PrintAmenities(amenities obj)
 
 ////***************also looped menus and instructions in each screen***************
 
+//-------------delete all allocated data
+void deleteAllocatedData(int sizeL, landlord* landlordArr, int sizeT, traveler* travelerArr) {
+	deleteLandlordArr(sizeL, landlordArr);
+	deleteTravelerArr(sizeT, travelerArr);
+}
+
+void deleteLandlordArr(int size, landlord* arr) {
+	for (int i = 0; i < size; i++)
+		delete[] arr[i].properties;//free each landlord's ad array
+	delete[] arr;//free landlord array
+}
+
+void deleteTravelerArr(int size, traveler* arr) {
+	delete[] arr;//free traveler array
+}
+
 //check_leap_year
 int check_leap_year(int year)
 {
@@ -1136,20 +1152,4 @@ int difference_of_days(int day1, int month1, int year1, int day2, int month2, in
 			}
 		}
 	}
-}
-
-//-------------delete all allocated data
-void deleteAllocatedData(int sizeL, landlord* landlordArr, int sizeT, traveler* travelerArr) {
-	deleteLandlordArr(sizeL, landlordArr);
-	deleteTravelerArr(sizeT, travelerArr);
-}
-
-void deleteLandlordArr(int size, landlord* arr) {
-	for (int i = 0; i < size; i++)
-		delete[] arr[i].properties;//free each landlord's ad array
-	delete[] arr;//free landlord array
-}
-
-void deleteTravelerArr(int size, traveler* arr) {
-	delete[] arr;//free traveler array
 }

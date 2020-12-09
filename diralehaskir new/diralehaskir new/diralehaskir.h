@@ -55,5 +55,11 @@ void PrintAmenities(amenities obj);
 int check_leap_year(int year);
 int no_of_days_in_month(int month, int year);
 int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2);
+void deleteAllocatedData(int sizeL, landlord* landlordArr, int sizeT, traveler* travelerArr);
+void deleteLandlordArr(int size, landlord* arr);
+void deleteLandlordArr(int size, landlord* arr);
+void deleteTravelerArr(int size, traveler* arr);
+bool compareAmenities(amenities& filters, amenities obj);//true if equal
+
 
 #endif // !DIRALEHASKIR_H
