@@ -581,10 +581,97 @@ void travelerSignUp(traveler* travelerArr, int size)
 //-------------sort(display options in loop)
 
 //-------------filter(display options in loop)
+//ad** collectAllAds(int size, landlord* arr) {
+//	ad**adsArr = NULL;
+//	for (int i = 0; i < size; ++i) {
+//		if (arr[i].adSize != 0)
+//			++numOfAdArr;
+//	}
+//	try {
+//		adsArr = new ad*[numOfAdArr];
+//		if (!adsArr)
+//			throw("allocation failed in readFromFile-traveler");
+//	}
+//	catch (const char* const x) {
+//		cout << x << endl;
+//		throw;
+//	}
+//	catch (...) {
+//		cout << "ERROR!" << endl;
+//		throw;
+//	}
+//	//if allocation succeeded
+//	for (int i = 0; i < size; ++i) {
+//		if (arr[i].adSize != 0)
+//			++numOfAdArr;
+//	}
+//
+//	return adsArr;
+//}
+ad** filterAds(int size, landlord* arr) {
+	//runs over landlors arr returns all ads that has the requested filters
+	ad** adArr = NULL;
+	cout << "please choose the filters you wish to apply" << endl;
+	amenities filters = amenitiesCtor();//gets amenities from user
+	int numOfGoodAds = 0;
+	for (int i = 0; i < size; ++i) {
+		for (int j = 0; j < arr[i].adSize; ++j) {
+		//check if amenities equal
+			if (compareAmenities(filters, arr[i].properties[j].ameNities))
+				++numOfGoodAds;//counts how many ads qualify
+		}
+	}
+	try {
+		adArr = new ad*[numOfGoodAds];
+		if (!adArr)
+			throw("allocation failed in readFromFile-dates");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if allocation successfull
+	for (int i = 0; i < size; ++i) {
+		for (int j = 0; j < arr[i].adSize; ++j) {
+			//check if amenities equal
+			if (compareAmenities(filters, arr[i].properties[j].ameNities))
 
+		}
+	}
+
+}
+
+bool compareAmenities(amenities& filters, amenities obj) {//true if equal
+	if (filters.airConditioning != obj.airConditioning)
+		return false;
+	if (filters.balcony != obj.balcony)
+		return false;
+	if (filters.disabledAccess != obj.disabledAccess)
+		return false;
+	if (filters.kitchen != obj.kitchen)
+		return false;
+	if (filters.parkingLot != obj.parkingLot)
+		return false;
+	if (filters.swimmingPool != obj.swimmingPool)
+		return false;
+	if (filters.tv != obj.tv)
+		return false;
+	if (filters.washingMachine != obj.washingMachine)
+		return false;
+	if (filters.wifi != obj.wifi)
+		return false;
+	return true;
+}
 //-------------search
 
 //-------------dates availability
+bool isDateAvailable() {
+
+}
 
 //-------------occupy dates
 
@@ -854,8 +941,6 @@ void PrintAmenities(amenities obj)
 
 ////***************also looped menus and instructions in each screen***************
 
-//-------------delete all allocated data
-
 //check_leap_year
 int check_leap_year(int year)
 {
@@ -1053,8 +1138,18 @@ int difference_of_days(int day1, int month1, int year1, int day2, int month2, in
 	}
 }
 
-int main() {
-	landlord* arr = NULL;
-	readLandlordFromFile(arr);
-	return 0;
+//-------------delete all allocated data
+void deleteAllocatedData(int sizeL, landlord* landlordArr, int sizeT, traveler* travelerArr) {
+	deleteLandlordArr(sizeL, landlordArr);
+	deleteTravelerArr(sizeT, travelerArr);
+}
+
+void deleteLandlordArr(int size, landlord* arr) {
+	for (int i = 0; i < size; i++)
+		delete[] arr[i].properties;//free each landlord's ad array
+	delete[] arr;//free landlord array
+}
+
+void deleteTravelerArr(int size, traveler* arr) {
+	delete[] arr;//free traveler array
 }
