@@ -6,7 +6,7 @@
 #include <string.h>
 using namespace std;
 
-struct amenities{
+typedef struct amenities{
 	bool disabledAccess,
 		wifi,
 		kitchen,
@@ -16,7 +16,7 @@ struct amenities{
 		airConditioning,
 		swimmingPool,
 		parkingLot;
-};
+}amenities;
 
 typedef struct date{
 	//start rent:
@@ -29,7 +29,7 @@ typedef struct date{
 		toYear;
 }date;
 
-typedef struct {
+typedef struct ad{
 	bool available;
 	string description;
 	int price;
@@ -51,14 +51,14 @@ typedef struct landlord{
 	string password;
 	string id;
 	string email;
-	int sumOfDeals;
-	int adSize;
+	int sumOfDeals = 0;
+	int adSize = 0;
 	ad* properties = NULL;
 }landlord;
 
 
 
-typedef struct {
+typedef struct traveler{
 	string fullName;
 	string phoneNumber;
 	string password;

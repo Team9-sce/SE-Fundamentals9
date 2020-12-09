@@ -134,7 +134,6 @@ void readFromFile(landlord* landlordArr, traveler* travelerArr) {
 
  //-------------readlandlordFromFile
 void readLandlordFromFile(landlord* landlordArr) {//read all landlord
-
 	ifstream inFile;
 	try {
 		inFile.open("landlord.data");//open in default mode
@@ -173,8 +172,10 @@ void readLandlordFromFile(landlord* landlordArr) {//read all landlord
 	string a, b;
 	while (i < arrSize)
 	{
-		inFile >> a >> b;
-		landlordArr[i].fullName = a + ' ' + b;
+		inFile.ignore();
+		getline(inFile, landlordArr[i].fullName);
+		//inFile >> a >> b;
+		//landlordArr[i].fullName = a + ' ' + b;
 		inFile >> landlordArr[i].phoneNumber;
 		inFile >> landlordArr[i].password;
 		inFile >> landlordArr[i].id;
@@ -222,10 +223,12 @@ void readAdsFromFile(int size, ad* adsArr) {//read ads for landlord
 	int i = 0;
 	for (; i < size; ++i) {
 		inFile >> adsArr[i].available;
-		inFile >> adsArr[i].description;
+		inFile.ignore();
+		getline(inFile, adsArr[i].description);
 		inFile >> adsArr[i].price;
 		inFile >> adsArr[i].discount;
-		inFile >> adsArr[i].location;
+		inFile.ignore();
+		getline(inFile, adsArr[i].location);
 		inFile >> adsArr[i].numOfPeople;
 		inFile >> adsArr[i].numOfRooms;
 		inFile >> adsArr[i].numOfBeds;
@@ -240,7 +243,8 @@ void readAdsFromFile(int size, ad* adsArr) {//read ads for landlord
 		inFile >> adsArr[i].ameNities.swimmingPool;
 		inFile >> adsArr[i].ameNities.parkingLot;
 		//read rest
-		inFile >> adsArr[i].attraction;
+		inFile.ignore();
+		getline(inFile, adsArr[i].attraction);
 		inFile >> adsArr[i].rating;
 		inFile >> adsArr[i].dateSize;
 		try {
@@ -288,8 +292,6 @@ void readTravelerFromFile(traveler* travelerArr) {
 	//if opening file succeeded
 	int size = 0;
 	inFile >> size;//reads size of traveler array
-	char tempBuff = '0';
-	inFile >> tempBuff;//intake of \n
 	try {
 		travelerArr = new traveler[size];
 		if (!travelerArr)
@@ -307,10 +309,9 @@ void readTravelerFromFile(traveler* travelerArr) {
 	//if allocation succeeded
 	int i = 0;
 	for (; i < size; ++i) {
-		inFile >> travelerArr[i].fullName;
-		inFile >> tempBuff;//intake of \n
+		inFile.ignore();
+		getline(inFile, travelerArr[i].fullName);
 		inFile >> travelerArr[i].phoneNumber;
-		inFile >> tempBuff;//intake of \n
 		inFile >> travelerArr[i].password;
 	}
 	inFile.close();//close file
@@ -331,7 +332,7 @@ bool landlordSignIn(int size, landlord* landlordArr) {//returns true if login su
 	}
 	//find index for landlord in array by id- assuming no two identical id's
 	int index = findLandlordById(size, landlordArr, tempId);
-	if (index == -1) {//landlord not found
+	if (index == NOT_FOUND) {//landlord not found
 		cout << "No such ID..." << endl;
 		return false;
 	}
@@ -368,16 +369,18 @@ int findLandlordById(int size,const landlord* const landlordArr, string id) {
 		if (landlordArr[i].id == id)//if equal
 			return i;
 	}
-	return -1;
+	return NOT_FOUND;
 }
 
 bool travelerSignIn(int size, traveler* travelerArr){
 	string tempName, tempPass;
 	cout << "***TRAVELER - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get name input
-	cout << "name must be up to: " << MAX_NAME << " letters." << endl;
+	cout << "Name must be up to: " << MAX_NAME << " letters only." << endl;
 	cout << "Please enter your full name:" << endl;
-	cin >> tempName;
+	//cin >> tempName;
+	cin.ignore();
+	getline(cin, tempName);
 	//check length and input correctness
 	if (tempName.length() > MAX_NAME) {
 		cout << "No such user..." << endl;
@@ -385,7 +388,7 @@ bool travelerSignIn(int size, traveler* travelerArr){
 	}
 	//find index for traveler in array by name- assuming no two identical names
 	int index = findTravelerByName(size, travelerArr, tempName);
-	if (index == -1) {//traveler not found
+	if (index == NOT_FOUND) {//traveler not found
 		cout << "No such user..." << endl;
 		return false;
 	}
@@ -416,32 +419,172 @@ int findTravelerByName(int size, const traveler* const travelerArr, string name)
 		if (travelerArr[i].fullName == name)//traveler found
 			return i;
 	}
-	return -1;
+	return NOT_FOUND;
 }
 
 //-------------sign up(after successful signup redirect to signin)-add new user to db
 void landlordSignUp(int size, landlord* landlordArr) {
+	//string fullName;
+	//string phoneNumber;
+	//string password;
+	//string id;
+	//string email;
+	
+	bool flag = true;
+	landlord tempL;
+	string buffer;
+	cout << "***LANDLORD - SIGN UP***" << endl << "Please enter details according to instrctions" << endl;
+	//get name input
+	do {
+		cout << "Name must be up to: " << MAX_NAME << " letters only." << endl;
+		cout << "Please enter your full name:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		if (buffer.length() <= MAX_NAME && buffer.length() > 0) {
+			if (isStringAllLetters(buffer))
+				break;
+			cout << "Incorrect input, try again." << endl;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempL.fullName = buffer;
+	
+	//get phone number
+	do {
+		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
+		cout << "Please enter your phoneNumber:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() == MAX_PHONE) {
+			if (isStringAllDig(buffer))
+				break;
+			cout << "Incorrect input, try again." << endl;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempL.phoneNumber = buffer;
+
+	//get password
+	do {
+		cout << "Password can be minimum: " << MIN_PASSWORD
+			<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
+			<< "Can contain any characters you wish except 'enter'." << endl;
+		cout << "Please enter your password:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() <= MAX_PASSWORD && buffer.length() >= MIN_PASSWORD) {
+			break;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempL.password = buffer;
+
+	//get id
+	do {
+		cout << "PhoneNumber must be exactly " << MAX_ID << " digits, no spaces, numbers only." << endl;
+		cout << "Please enter your phoneNumber:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() == MAX_ID) {
+			if (isStringAllDig(buffer))
+				break;
+			cout << "Incorrect input, try again." << endl;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempL.id = buffer;
+
+	//get mail
+	int choice = 0;
+	do {
+		cout << "Choose your mail type:" << endl
+			<< "1. " << GMAIL << endl
+			<< "2. " << WALLA << endl;
+		cin >> choice;
+		cout << "Your mail prefix can be maximum: " << MAX_EMAIL << " characters," << endl
+			<< "Can contain any characters you wish except 'enter'." << endl;
+		cout << "Please enter your email:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() <= MAX_EMAIL && buffer.length() > 0) {
+			break;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	if (choice == 1)
+		tempL.email = buffer + GMAIL;
+	else
+		tempL.email = buffer + WALLA;
 
 }//return value???
 
+bool isStringAllLetters(string str) {
+	for (int i = 0; i < str.length(); ++i) {
+		if (!isalpha(str[i]))//if false
+			return false;
+	}
+	return true;
+}
 void travelerSignUp(traveler* travelerArr, int size)
 {
-	//string name, phonumber, password;
-	//cout << "***SIGN UP***" << endl << "Please enter details according to instrctions" << endl;
-	////get name & phoneNumber input
-	//cout << "Please enter your full name, letters only." << endl;
-	//cin >> name;
-	//do {
-	//	cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, numbers only." << endl;
-	//	cout << "Please enter your phoneNumber:" << endl;
-	//	cin >> phonumber;
-	//	//check length and input correctness
-	//} while (phonumber.length() < MAX_PHONE || phonumber.length() > MAX_PHONE || !isStringAllDig(phonumber));
-	////get password
-	//cout << "Password must be exactly " << MAX_PASSWORD << " characters," << endl
-	//	<< "Can contain any characters you wish except 'enter'." << endl;
-	//cout << "Please enter your password:" << endl;
-	//cin >> password;
+	//string fullName;
+	//string phoneNumber;
+	//string password;
+
+	bool flag = true;
+	traveler tempT;
+	string buffer;
+	cout << "***TRAVELER - SIGN UP***" << endl << "Please enter details according to instrctions" << endl;
+	//get name input
+	do {
+		cout << "Name must be up to: " << MAX_NAME << " letters only." << endl;
+		cout << "Please enter your full name:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		if (buffer.length() <= MAX_NAME && buffer.length() > 0) {
+			if (isStringAllLetters(buffer))
+				break;
+			cout << "Incorrect input, try again." << endl;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempT.fullName = buffer;
+
+	//get phone number
+	do {
+		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
+		cout << "Please enter your phoneNumber:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() == MAX_PHONE) {
+			if (isStringAllDig(buffer))
+				break;
+			cout << "Incorrect input, try again." << endl;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempT.phoneNumber = buffer;
+
+	//get password
+	do {
+		cout << "Password can be minimum: " << MIN_PASSWORD
+			<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
+			<< "Can contain any characters you wish except 'enter'." << endl;
+		cout << "Please enter your password:" << endl;
+		cin.ignore();
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() <= MAX_PASSWORD && buffer.length() >= MIN_PASSWORD) {
+			break;
+		}
+		cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	tempT.password = buffer;
 }
 
 //-------------sort(display options in loop)
@@ -503,3 +646,9 @@ void printFaq()
 ////***************also looped menus and instructions in each screen***************
 
 //-------------delete all allocated data
+
+int main() {
+	landlord* arr = NULL;
+	readLandlordFromFile(arr);
+	return 0;
+}

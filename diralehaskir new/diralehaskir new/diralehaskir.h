@@ -12,6 +12,8 @@
 #include <ctype.h>
 
 #define MAX_EMAIL 8 //רק לקידומת
+#define GMAIL "@gmail.com"
+#define WALLA "@walla.co.il"
 #define MAX_ID 9
 #define MAX_PHONE 10
 #define MAX_NAME 15 //enough???
@@ -19,6 +21,7 @@
 #define MIN_PASSWORD 4
 #define BUFFER 20
 #define AMENITIES 9
+#define NOT_FOUND -1
 
 using namespace std;
 
@@ -37,6 +40,7 @@ void landlordSignUp(int size, landlord* landlordArr);
 bool isStringAllDig(string str);//check id the string is all digits
 int findLandlordById(int size, const landlord* const landlordArr, string id);
 int findTravelerByName(int size, const traveler* const travelerArr, string name);
+bool isStringAllLetters(string str);
 
 
 #endif // !DIRALEHASKIR_H
