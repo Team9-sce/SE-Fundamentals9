@@ -666,7 +666,7 @@ ad NewAd()
 	cout << "Number of beds(up to 30): ";
 	newAd.numOfBeds = ValidInput(1, 30);
 	cout << "Atractions: ";
-	getchar();
+	cin.ignore();
 	getline(cin, newAd.attraction);
 	cout << "Select amenities: ";
 	newAd.ameNities = amenitiesCtor();
@@ -695,7 +695,7 @@ void PrintAd(ad obj)
 	cout << "Ad discription: " << obj.description << endl;
 	cout << "Price before discount: " << obj.price << endl;
 	cout << "Price after discount:  " << obj.price - obj.discount << endl;
-	cout << "Discount: " << obj.discount << "%" << endl;
+	cout << "Discount: " << "-" << obj.discount << "$" << endl;
 	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
 	cout << "Atractions: " << obj.attraction << endl;
 	PrintAmenities(obj.ameNities);
