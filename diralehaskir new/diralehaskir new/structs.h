@@ -40,10 +40,17 @@ typedef struct ad{
 	int numOfBeds;
 	amenities ameNities;
 	string attraction;
-	int rating;
+	int rating = 5;
 	int dateSize = 0;
 	date* occupied = NULL;//contains occupied dates
 }ad;
+
+typedef struct traveler {
+	string fullName;
+	string phoneNumber;
+	string password;
+	date order = { 0,0,0,0,0,0 };
+}traveler;
 
 typedef struct landlord{
 	string fullName;
@@ -54,17 +61,8 @@ typedef struct landlord{
 	int sumOfDeals = 0;
 	int adSize = 0;
 	ad* properties = NULL;
-	traveler t;
+	traveler trav;
 }landlord;
-
-
-
-typedef struct traveler{
-	string fullName;
-	string phoneNumber;
-	string password;
-	date order = { 0,0,0,0,0,0 };
-}traveler;
 
 
 #endif // !STRUCTS_H

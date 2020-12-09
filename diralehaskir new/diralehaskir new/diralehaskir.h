@@ -45,6 +45,13 @@ bool isStringAllDig(string str);//check id the string is all digits
 int findLandlordById(int size, const landlord* const landlordArr, string id);
 int findTravelerByName(int size, const traveler* const travelerArr, string name);
 bool isStringAllLetters(string str);
+int ValidInput(int min, int max);
+bool ValidInput(char truevaluechar);
+string ValidLocation();
+amenities amenitiesCtor();
+void EditAdMenu(ad* ad);
+void PrintAd(ad obj);
+void PrintAmenities(amenities obj);
 
 
 #endif // !DIRALEHASKIR_H

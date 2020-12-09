@@ -424,11 +424,6 @@ int findTravelerByName(int size, const traveler* const travelerArr, string name)
 
 //-------------sign up(after successful signup redirect to signin)-add new user to db
 void landlordSignUp(int size, landlord* landlordArr) {
-	//string fullName;
-	//string phoneNumber;
-	//string password;
-	//string id;
-	//string email;
 	
 	bool flag = true;
 	landlord tempL;
@@ -531,10 +526,6 @@ bool isStringAllLetters(string str) {
 }
 void travelerSignUp(traveler* travelerArr, int size)
 {
-	//string fullName;
-	//string phoneNumber;
-	//string password;
-
 	bool flag = true;
 	traveler tempT;
 	string buffer;
@@ -587,7 +578,73 @@ void travelerSignUp(traveler* travelerArr, int size)
 	tempT.password = buffer;
 }
 
+//-------------sort(display options in loop)
 
+//-------------filter(display options in loop)
+
+//-------------search
+
+//-------------dates availability
+
+//-------------occupy dates
+
+//-------------confirm credit card info
+
+//-------------total rent sum
+
+//-------------support(print only)
+void printSupport()
+{
+	cout<< "Your request has been sent!"<<endl
+		<<"Case number :"<<'1234'<<endl
+		<<"had been opened with your request for support"<<endl;
+}
+
+//-------------faq(print only)
+void printFaq()
+{
+	cout << "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
+		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl
+		<< "IS THE SITE SECURE ?" << endl
+		<< "Yes, the payment is secured by the payment platform you will use." << endl
+		<< "HOW DO I RATE MY STAY ?" << endl
+		<< "At the end of rent time a rating screen will be displayed in which you can rate your stay." << endl;
+}
+//-------------travelers homepage
+
+//-------------landlord menu
+
+//-------------landlord homescreen
+
+//-------------new ad
+ad NewAd()
+{//User input for new ad.
+	ad newAd;
+	newAd.available = true;
+	cout << "New ad: " << endl;
+	cout << "Ad discription: ";
+	getline(cin, newAd.description);
+	cout << "Price: ";
+	newAd.price = ValidInput(ZERO, INT_MAX);
+	cout << "Discount(0 ~ Price): ";
+	newAd.discount = ValidInput(ZERO, newAd.price);
+	newAd.location = ValidLocation();
+	cout << "Number of people(up to 30): ";
+	newAd.numOfPeople = ValidInput(1, 30);
+	cout << "Number of rooms(up to 15): ";
+	newAd.numOfRooms = ValidInput(1, 15);
+	cout << "Number of beds(up to 30): ";
+	newAd.numOfBeds = ValidInput(1, 30);
+	cout << "Atractions: ";
+	cin.ignore();
+	getline(cin, newAd.attraction);
+	cout << "Select amenities: ";
+	newAd.ameNities = amenitiesCtor();
+	newAd.rating = 5;
+	return newAd;
+}
+
+//-------------check correctness of location input
 string ValidLocation()
 {
 	//Location format <city>, <street> st.
@@ -603,6 +660,8 @@ string ValidLocation()
 	location += tmp + " st.";
 	return location;
 }
+
+//-------------check correctnes of input for new/edit ad
 int ValidInput(int min, int max)
 {
 	//gets int as input from user: (min <= USER_INPUT <= max)
@@ -616,6 +675,7 @@ int ValidInput(int min, int max)
 	}
 	return num;
 }
+
 bool ValidInput(char truevaluechar)
 {//returns true for 'truevaluechar' else return false.
 	char tmp;
@@ -623,6 +683,8 @@ bool ValidInput(char truevaluechar)
 	if (tmp == truevaluechar) return true;
 	else return false;
 }
+
+//-------------get amenities
 amenities amenitiesCtor()
 {//User input for each amenity.
 	amenities obj;
@@ -647,59 +709,8 @@ amenities amenitiesCtor()
 	obj.parkingLot = ValidInput('y');
 	return obj;
 }
-ad NewAd()
-{//User input for new ad.
-	ad newAd;
-	newAd.available = true;
-	cout << "New ad: " << endl;
-	cout << "Ad discription: ";
-	getline(cin, newAd.description);
-	cout << "Price: ";
-	newAd.price = ValidInput(ZERO, INT_MAX);
-	cout << "Discount(0 ~ Price): ";
-	newAd.discount = ValidInput(ZERO, newAd.price);
-	newAd.location = ValidLocation();
-	cout << "Number of people(up to 30): ";
-	newAd.numOfPeople = ValidInput(1, 30);
-	cout << "Number of rooms(up to 15): ";
-	newAd.numOfRooms = ValidInput(1, 15);
-	cout << "Number of beds(up to 30): ";
-	newAd.numOfBeds = ValidInput(1, 30);
-	cout << "Atractions: ";
-	cin.ignore();
-	getline(cin, newAd.attraction);
-	cout << "Select amenities: ";
-	newAd.ameNities = amenitiesCtor();
-	newAd.rating = 0;
-	return newAd;
-}
-void PrintAmenities(amenities obj)
-{
-	string str = "Amenities:";
-	if (obj.disabledAccess) str += AMENITIES_NAMES[0] + ", ";
-	if (obj.wifi) str += AMENITIES_NAMES[1] + ", ";
-	if (obj.kitchen) str += AMENITIES_NAMES[2] + ", ";
-	if (obj.tv) str += AMENITIES_NAMES[3] + ", ";
-	if (obj.balcony) str += AMENITIES_NAMES[4] + ", ";
-	if (obj.washingMachine) str += AMENITIES_NAMES[5] + ", ";
-	if (obj.airConditioning) str += AMENITIES_NAMES[6] + ", ";
-	if (obj.swimmingPool) str += AMENITIES_NAMES[7] + ", ";
-	if (obj.parkingLot) str += AMENITIES_NAMES[8] + ", ";
-	str[str.length() - 2] = '.';
-	cout << str << endl;
-}
-void PrintAd(ad obj)
-{
-	cout << ADSBREAK << endl;
-	cout << "Location: " << obj.location << endl;
-	cout << "Ad discription: " << obj.description << endl;
-	cout << "Price before discount: " << obj.price << endl;
-	cout << "Price after discount:  " << obj.price - obj.discount << endl;
-	cout << "Discount: " << "-" << obj.discount << "$" << endl;
-	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
-	cout << "Atractions: " << obj.attraction << endl;
-	PrintAmenities(obj.ameNities);
-}
+
+//-------------edit ad
 void EditAdMenu(ad* ad)
 {
 	int choose = 1;
@@ -772,50 +783,6 @@ void EditAdMenu(ad* ad)
 	}
 }
 
-
-
-//-------------sort(display options in loop)
-
-//-------------filter(display options in loop)
-
-//-------------search
-
-//-------------dates availability
-
-//-------------occupy dates
-
-//-------------confirm credit card info
-
-//-------------total rent sum
-
-//-------------support(print only)
-void printSupport()
-{
-	cout<< "Your request has been sent!"<<endl
-		<<"Case number :"<<'1234'<<endl
-		<<"had been opened with your request for support"<<endl;
-}
-
-//-------------faq(print only)
-void printFaq()
-{
-	cout << "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
-		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl
-		<< "IS THE SITE SECURE ?" << endl
-		<< "Yes, the payment is secured by the payment platform you will use." << endl
-		<< "HOW DO I RATE MY STAY ?" << endl
-		<< "At the end of rent time a rating screen will be displayed in which you can rate your stay." << endl;
-}
-//-------------travelers homepage
-
-//-------------landlord menu
-
-//-------------landlord homescreen
-
-//-------------new ad
-
-//-------------edit ad
-
 //-------------delete ad
 
 //-------------total gainings for landlord
@@ -826,7 +793,38 @@ void printFaq()
 
 //-------------prints ad for traveler(to screen)
 
-//-------------prints list of ads for landlord(to screen)- also print ad for landlord???
+//-------------print ad for landlord
+void PrintAd(ad obj)
+{
+	cout << ADSBREAK << endl;
+	cout << "Location: " << obj.location << endl;
+	cout << "Ad discription: " << obj.description << endl;
+	cout << "Price before discount: " << obj.price << endl;
+	cout << "Price after discount:  " << obj.price - obj.discount << endl;
+	cout << "Discount: " << "-" << obj.discount << "$" << endl;
+	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
+	cout << "Atractions: " << obj.attraction << endl;
+	PrintAmenities(obj.ameNities);
+}
+
+//-------------print amenities
+void PrintAmenities(amenities obj)
+{
+	string str = "Amenities:";
+	if (obj.disabledAccess) str += AMENITIES_NAMES[0] + ", ";
+	if (obj.wifi) str += AMENITIES_NAMES[1] + ", ";
+	if (obj.kitchen) str += AMENITIES_NAMES[2] + ", ";
+	if (obj.tv) str += AMENITIES_NAMES[3] + ", ";
+	if (obj.balcony) str += AMENITIES_NAMES[4] + ", ";
+	if (obj.washingMachine) str += AMENITIES_NAMES[5] + ", ";
+	if (obj.airConditioning) str += AMENITIES_NAMES[6] + ", ";
+	if (obj.swimmingPool) str += AMENITIES_NAMES[7] + ", ";
+	if (obj.parkingLot) str += AMENITIES_NAMES[8] + ", ";
+	str[str.length() - 2] = '.';
+	cout << str << endl;
+}
+
+//-------------prints list of ads for landlord(to screen)
 
 //-------------print deal confirmation(to screen)
 
