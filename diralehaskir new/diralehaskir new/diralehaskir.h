@@ -11,6 +11,8 @@
 #include <ctime>
 #include <ctype.h>
 
+#define ADSBREAK "============================================================================="
+#define ZERO 0
 #define MAX_EMAIL 8 //רק לקידומת
 #define GMAIL "@gmail.com"
 #define WALLA "@walla.co.il"
@@ -22,6 +24,8 @@
 #define BUFFER 20
 #define AMENITIES 9
 #define NOT_FOUND -1
+const string AMENITIES_NAMES[AMENITIES] = { "disabledAccess", "wifi", "kitchen", "tv", "balcony", "washingMachine", "airConditioning", "swimmingPool", "parkingLot" };
+
 
 using namespace std;
 

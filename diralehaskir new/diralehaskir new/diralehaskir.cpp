@@ -667,9 +667,7 @@ ad NewAd()
 	newAd.price = ValidInput(ZERO, INT_MAX);
 	cout << "Discount(0 ~ 100): ";
 	newAd.discount = ValidInput(ZERO, 100);
-
 	newAd.location = ValidLocation();
-
 	cout << "Number of people(up to 30): ";
 	newAd.numOfPeople = ValidInput(1, 30);
 	cout << "Number of rooms(up to 15): ";
