@@ -11,7 +11,7 @@
 #include <ctime>
 #include <ctype.h>
 
-#define ADSBREAK "============================================================================="
+#define ADSBREAK "============================================================"
 #define ZERO 0
 #define MAX_EMAIL 8 //רק לקידומת
 #define GMAIL "@gmail.com"
@@ -24,6 +24,12 @@
 #define BUFFER 20
 #define AMENITIES 9
 #define NOT_FOUND -1
+#define MINinput 1
+#define MAX_DAY 31
+#define MAX_MONTH 12
+#define CURRENT_YEAR 2020
+#define MAX_YEAR 2030
+
 const string AMENITIES_NAMES[AMENITIES] = { "disabledAccess", "wifi", "kitchen", "tv", "balcony", "washingMachine", "airConditioning", "swimmingPool", "parkingLot" };
 
 
@@ -62,6 +68,12 @@ void deleteTravelerArr(int size, traveler* arr);
 bool compareAmenities(amenities& filters, amenities obj);//true if equal
 ad** filterAds(int size, landlord* arr);
 bool iequals(const string& a, const string& b);//compare strings, insenstive to lower/upper case
+bool ValidInput(int num, int min, int max);
+bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy);
+bool isDateAvailable(date d, const date& adDate);
+bool legalInput(int day, int month, int year, int mode = 0);
+date validDateInput();
+void printDate(const date& t);
 
 
 #endif // !DIRALEHASKIR_H

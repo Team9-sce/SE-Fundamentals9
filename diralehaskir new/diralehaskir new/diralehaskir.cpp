@@ -714,15 +714,133 @@ bool iequals(const string& a, const string& b)//compare strings, insenstive to l
 			return false;
 	return true;
 }
-//-------------dates availability 
-bool isDateAvailable(date d, date& const adDate) {//doesn't check validity of dates, needs to happen prior
-	//years bigger
-	
-	//months bigger
+//-------------dates availability------------------------------------------------------ 
+bool isDateAvailable(date d, const date& adDate) 
+{//doesn't check validity of dates, needs to happen prior
 
-	//days bigger
+	//checkin= d.fromDate, checkout= d.toDate, beginning= adDate.fromDate, ending= adDate.toDate
+	//(beginning >= checkin && checkout >= beginning)||(checkin >= beginning && ending >= checkin)
+	if ((isDateBiggerE(adDate.fromDay, adDate.fromMonth, adDate.fromYear, d.fromDay, d.fromMonth, d.fromYear)
+		&& isDateBiggerE(d.toDay, d.toMonth, d.toYear, adDate.fromDay, adDate.fromMonth, adDate.fromYear))
+		|| (isDateBiggerE(d.fromDay, d.fromMonth, d.fromYear, adDate.fromDay, adDate.fromMonth, adDate.fromYear)
+			&& isDateBiggerE(adDate.toDay, adDate.toMonth, adDate.toYear, d.fromDay, d.fromMonth, d.fromYear)))
+		return false;
 	return true;
-}///not finished
+}//checks if dated are overlapping, false if UNavailable
+
+bool legalInput(int day, int month, int year, int mode = 0) {//-------------------------------------------
+	time_t t = time(ZERO);
+	tm* now = localtime(&t);
+
+	switch (month) {
+	case 1:
+	case 3:
+	case 5:
+	case 7:
+	case 8:
+	case 10:
+	case 12:
+		if (!mode) {
+			return (ValidInput(day, MINinput, 31) &&
+				isDateBiggerE(day, month, year, now->tm_mday, now->tm_mon + 1, now->tm_year + 1900)
+				&& ValidInput(year, CURRENT_YEAR, MAX_YEAR));
+		}
+		return (ValidInput(day, MINinput, 31) && ValidInput(year, CURRENT_YEAR, MAX_YEAR));
+		break;
+	case 2:
+		if (!mode) {
+			return (ValidInput(day, MINinput, isLeap(year) ? 29 : 28) &&
+				isDateBiggerE(day, month, year, now->tm_mday, now->tm_mon + 1, now->tm_year + 1900)
+				&& ValidInput(year, CURRENT_YEAR, MAX_YEAR));
+		}
+		return (ValidInput(day, MINinput, isLeap(year) ? 29 : 28) && ValidInput(year, CURRENT_YEAR, MAX_YEAR));
+		break;
+	case 4:
+	case 6:
+	case 9:
+	case 11:
+		if (!mode) {
+			return (ValidInput(day, MINinput, 30) &&
+				isDateBiggerE(day, month, year, now->tm_mday, now->tm_mon + 1, now->tm_year + 1900)
+				&& ValidInput(year, CURRENT_YEAR, MAX_YEAR));
+		}
+		return (ValidInput(day, MINinput, 30) && ValidInput(year, CURRENT_YEAR, MAX_YEAR));
+		break;
+	default:
+		return false;
+	}
+	return false;
+}
+date validDateInput() {//----------------------------------------------------------------
+	bool flag = true;
+	bool valid = true;
+	int d, m, y, dd, mm, yy;
+	int confirm = 1;
+	date dt;
+	system("CLS");
+	do {
+		cout << "Enter values according to instructions." << endl;
+		do {
+			cout << "please enter date: " << endl;
+			cout << "*************CHECK IN**************" << endl;
+
+			//test if legal d/m/y
+			cout << "Day (from " << MINinput << " to " << MAX_DAY << "): ";
+			cin >> d;
+			cout << endl << "Month (from " << MINinput << " to " << MAX_MONTH << "): ";
+			cin >> m;
+			cout << endl << "Year (from " << CURRENT_YEAR << " to " << MAX_YEAR << "): ";
+			cin >> y;
+			//bigger or equal to today
+			valid = legalInput(d, m, y);
+			if (valid)
+				flag = false;
+			else {
+				cout << "invalid date, please try again." << endl;
+			}
+			cout << "***********************************" << endl;
+		} while (flag);
+		flag = true;
+		dt.fromDay = d;
+		dt.fromMonth = m;
+		dt.fromYear = y;
+		//same for check out
+		do {
+			cout << "please enter date: " << endl;
+			cout << "************CHECK OUT**************" << endl;
+			//test if legal d/m/y
+			cout << "Day (from " << d << " to " << MAX_DAY << "): ";
+			cin >> dd;
+			cout << endl << "Month (from " << MINinput << " to " << MAX_MONTH << "): ";
+			cin >> mm;
+			cout << endl << "Year (from " << y << " to " << MAX_YEAR << "): ";
+			cin >> yy;
+			//bigger or equal to today
+			valid = (legalInput(d, m, y, 1) && isDateBiggerE(dd, mm, yy, d, m, y));
+			if (valid)
+				flag = false;
+			else {
+				cout << "invalid date, please try again." << endl;
+			}
+			cout << "***********************************" << endl;
+		} while (flag);
+		flag = true;
+		dt.toDay = dd;
+		dt.toMonth = mm;
+		dt.toYear = yy;
+		printDate(dt);
+		cout << "enter 0 to confirm dates, else to try again." << endl;
+		cin >> confirm;
+	} while (confirm);
+	return dt;
+}//returns date with valid input from user
+
+void printDate(const date& t) {//---------------------------------------------------
+	cout << "CHECK IN: ";
+	cout << t.fromDay << "/" << t.fromMonth << "/" << t.fromYear << endl;
+	cout << "CHECK OUT: ";
+	cout << t.toDay << "/" << t.toMonth << "/" << t.toYear << endl;
+}
 
 //-------------occupy dates
 
@@ -731,9 +849,12 @@ bool isDateAvailable(date d, date& const adDate) {//doesn't check validity of da
 //-------------print deal confirmation(to screen)
 void orderConfirmation(landlord* l, date* d)
 {
+	//generate random order number
+	srand(time(NULL));
+	int num = rand() % 100 + 1234;     // num in the range 1000 to 10000
 	cout << "Your order is complete" << endl;
 	cout << "Payment proccess has been successful" << endl;
-	cout << "Order Number: 1123" << endl;
+	cout << "Order Number: " << num << endl;
 	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear;
 	cout << "Total price: " << difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear)*l->properties->price <<"NIS" <<endl;
 	cout << "Landlord Details:" << endl;
@@ -746,9 +867,12 @@ void orderConfirmation(landlord* l, date* d)
 //-------------support(print only)
 void printSupport()
 {
-	cout<< "Your request has been sent!"<<endl
-		<<"Case number :"<<'1234'<<endl
-		<<"had been opened with your request for support"<<endl;
+	//generate random case number
+	srand(time(NULL));
+	int num = rand() % 100 + 2567;     // num in the range 1000 to 10000
+	cout << "Your request has been sent!" << endl
+		<< "Case number :" << num << endl
+		<< "had been opened with your request for support" << endl;
 }
 
 //-------------faq(print only)
@@ -833,6 +957,16 @@ bool ValidInput(char truevaluechar)
 	cin >> tmp;
 	if (tmp == truevaluechar) return true;
 	else return false;
+}
+
+bool ValidInput(int num, int min, int max)//--------------------------------------------
+{
+	//gets int as input from user: (min <= USER_INPUT <= max)
+	if (num < min || num >max) {
+		cout << "Wrong input!\n Must be: " << min << " <= YOUR_INPUT <= " << max << ". " << endl;
+		return false;
+	}
+	return true;
 }
 
 //-------------get amenities
@@ -1349,4 +1483,20 @@ int difference_of_days(int day1, int month1, int year1, int day2, int month2, in
 			}
 		}
 	}
+}
+bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy) {//--------------------------
+	//gets two dates checks if the 1st is bigger or equal
+	if (y == yy && m == mm && d == dd)
+		return true;
+	if (y > yy)
+		return true;
+	else if (y == yy) {
+		if (m > mm)
+			return true;
+		else if (m == mm) {
+			if (d > dd)
+				return true;
+		}
+	}
+	return false;//first date is not bigger or equal
 }
