@@ -963,14 +963,9 @@ bool isLeap(int Y)
 int DaysCountFrom1900(int year, int month, int day)
 {
 	int ans = 0;
-	for (int i = 1900; i < year; ++i) {
-		if (isLeap(i)) {
-			ans += 366;
-		}
-		else {
-			ans += 365;
-		}
-	}
+	for (int i = 1900; i < year; ++i)
+		if (isLeap(i))ans += 366;
+		else ans += 365;
 	for (int i = 1; i < month; ++i) {
 		switch (i) {
 		case 1: ans += 31; break;
