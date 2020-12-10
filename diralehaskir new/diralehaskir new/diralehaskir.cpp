@@ -882,7 +882,24 @@ void EditAdMenu(ad* ad)
 }
 
 //-------------delete ad
+void DeleteAd(ad* adsArr, int& adsize, int index)
+{
+	//delete the ad at [index] location.
+	if (!adsize) cout << "No ads to delete!!!" << endl;
+	else
+	{
+		ad* tmp = new ad[adsize - 1];
+		for (int i = 0, j = 0; i < adsize - 1; j++, i++)
+		{
+			if (i == index) j++;
+			tmp[i] = adsArr[j];
+		}
+		delete[] adsArr;
+		adsArr = tmp;
+		adsize--;
+	}
 
+}
 //-------------total gainings for landlord
 
 //-------------rate property(on last rent day)
@@ -903,7 +920,6 @@ void rateProperty(ad* a)
 }
 
 //-------------prints ad for traveler(to screen)
-
 //-------------print ad for landlord
 void PrintAd(ad obj)
 {
@@ -998,25 +1014,7 @@ void LandlordSumOfDealsUpdate(landlord ll)
 			sum += AdProfit(ll.properties[i]);
 	ll.sumOfDeals = sum;
 }
-//-------------Landlords menu : sub fuction- delete the ad at [index] and reaalocate the array.
-void DeleteAd(ad* adsArr, int& adsize, int index)
-{
-	//delete the ad at [index] location.
-	if (!adsize) cout << "No ads to delete!!!" << endl;
-	else
-	{
-		ad* tmp = new ad[adsize - 1];
-		for (int i = 0, j = 0; i < adsize - 1; j++, i++)
-		{
-			if (i == index) j++;
-			tmp[i] = adsArr[j];
-		}
-		delete[] adsArr;
-		adsArr = tmp;
-		adsize--;
-	}
 
-}
 //-------------Landlords menu : sub fuction- realloc the the ads array and adds 1 more ad.
 void RealocateAdsPointer(ad* adsArr, int& adsize)
 {
