@@ -60,6 +60,8 @@ void deleteLandlordArr(int size, landlord* arr);
 void deleteLandlordArr(int size, landlord* arr);
 void deleteTravelerArr(int size, traveler* arr);
 bool compareAmenities(amenities& filters, amenities obj);//true if equal
+ad** filterAds(int size, landlord* arr);
+bool iequals(const string& a, const string& b);//compare strings, insenstive to lower/upper case
 
 
 #endif // !DIRALEHASKIR_H

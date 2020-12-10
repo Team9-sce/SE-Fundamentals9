@@ -624,7 +624,7 @@ ad** filterAds(int size, landlord* arr) {
 	try {
 		adArr = new ad*[numOfGoodAds];
 		if (!adArr)
-			throw("allocation failed in readFromFile-dates");
+			throw("allocation failed in filter ads");
 	}
 	catch (const char* const x) {
 		cout << x << endl;
@@ -639,10 +639,10 @@ ad** filterAds(int size, landlord* arr) {
 		for (int j = 0; j < arr[i].adSize; ++j) {
 			//check if amenities equal
 			if (compareAmenities(filters, arr[i].properties[j].ameNities))
-
-		}//not finished
+				adArr[i] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
+		}
 	}
-
+	return adArr;//double pointer array of ads
 }
 
 bool compareAmenities(amenities& filters, amenities obj) {//true if equal
@@ -667,15 +667,68 @@ bool compareAmenities(amenities& filters, amenities obj) {//true if equal
 	return true;
 }
 //-------------search
-
-//-------------dates availability
-bool isDateAvailable() {
-
+ad** searchAds(int size, landlord* arr) {
+	//runs over landlors arr returns all ads that has the requested filters
+	ad** adArr = NULL;
+	cout << "please enter the required location:" << endl;
+	string location = ValidLocation();//gets location from user
+	int numOfGoodAds = 0;
+	for (int i = 0; i < size; ++i) {
+		for (int j = 0; j < arr[i].adSize; ++j) {
+			//check if amenities equal
+			if (iequals(location, arr[i].properties[j].location))
+				++numOfGoodAds;//counts how many ads qualify
+		}
+	}
+	try {
+		adArr = new ad*[numOfGoodAds];
+		if (!adArr)
+			throw("allocation failed in filter ads");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if allocation successfull
+	for (int i = 0; i < size; ++i) {
+		for (int j = 0; j < arr[i].adSize; ++j) {
+			//check if amenities equal
+			if (iequals(location, arr[i].properties[j].location))
+				adArr[i] = &(arr[i].properties[j]);//add ad to adArr if locations are matching
+		}
+	}
+	return adArr;//double pointer array of ads
 }
+
+bool iequals(const string& a, const string& b)//compare strings, insenstive to lower/upper case
+{
+	unsigned int sz = a.size();
+	if (b.size() != sz)
+		return false;
+	for (unsigned int i = 0; i < sz; ++i)
+		if (tolower(a[i]) != tolower(b[i]))
+			return false;
+	return true;
+}
+//-------------dates availability 
+bool isDateAvailable(date d, date& const adDate) {//doesn't check validity of dates, needs to happen prior
+	//years bigger
+	
+	//months bigger
+
+	//days bigger
+	return true;
+}///not finished
 
 //-------------occupy dates
 
 //-------------confirm credit card info
+
+//-------------print deal confirmation(to screen)
 void orderConfirmation(landlord* l, date* d)
 {
 	cout << "Your order is complete" << endl;
@@ -688,7 +741,7 @@ void orderConfirmation(landlord* l, date* d)
 	cout << "PHONE NUMBER: " << l->phoneNumber << endl;
 }
 
-///-------total rent sum
+//-------total rent sum
 
 //-------------support(print only)
 void printSupport()
@@ -1082,8 +1135,6 @@ void LandlordsMenu(landlord ll)
 
 }
 
-//-------------print deal confirmation(to screen)
-
 ////***************also looped menus and instructions in each screen***************
 
 //-------------delete all allocated data
@@ -1128,6 +1179,7 @@ int no_of_days_in_month(int month, int year)
 			return 28;
 	}
 }
+
 //difference_of_days
 int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2)
 {
