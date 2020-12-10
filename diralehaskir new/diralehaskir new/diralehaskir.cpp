@@ -935,7 +935,154 @@ void PrintAmenities(amenities obj)
 	cout << str << endl;
 }
 
-//-------------prints list of ads for landlord(to screen)
+
+//-------------3 funcs: isLeap, DaysCountFrom1900, DateDaysCount calculates the days from start date to end date.
+bool isLeap(int Y)
+{
+	if (Y % 400 == 0) return true;
+	else if (Y % 100 == 0) return false;
+	else if (Y % 4 == 0) return true;
+	else return false;
+}
+int DaysCountFrom1900(int year, int month, int day)
+{
+	int ans = 0;
+	for (int i = 1900; i < year; ++i) {
+		if (isLeap(i)) {
+			ans += 366;
+		}
+		else {
+			ans += 365;
+		}
+	}
+	for (int i = 1; i < month; ++i) {
+		switch (i) {
+		case 1: ans += 31; break;
+		case 2: ans += isLeap(year) ? 29 : 28; break;
+		case 3: ans += 31; break;
+		case 4: ans += 30; break;
+		case 5: ans += 31; break;
+		case 6: ans += 30; break;
+		case 7: ans += 31; break;
+		case 8: ans += 31; break;
+		case 9: ans += 30; break;
+		case 10: ans += 31; break;
+		case 11: ans += 30; break;
+		case 12: ans += 31; break;
+		}
+	}
+	return ans += day - 1;
+}
+int DateDaysCount(date date)
+{
+	return DaysCountFrom1900(date.toYear, date.toMonth, date.toDay) -
+		DaysCountFrom1900(date.fromYear, date.fromMonth, date.fromDay);
+}
+//-------------calculate the profit from an ad.
+int AdProfit(ad ad)
+{
+	//sum of all the ordered dates * price
+	int profit = 0;
+	if (!ad.dateSize) return ZERO;
+	for (int i = 0; i < ad.dateSize; i++)
+		profit += DateDaysCount(ad.occupied[i]) * (ad.price - ad.discount);
+	return profit;
+}
+//-------------calculates landlords profit from all his ads.
+void LandlordSumOfDealsUpdate(landlord ll)
+{
+	//calculate landlords profit and update the field.
+	int sum = 0;
+	if (ll.adSize)
+		for (int i = 0; i < ll.adSize; i++)
+			sum += AdProfit(ll.properties[i]);
+	ll.sumOfDeals = sum;
+}
+//-------------Landlords menu : sub fuction- delete the ad at [index] and reaalocate the array.
+void DeleteAd(ad* adsArr, int& adsize, int index)
+{
+	//delete the ad at [index] location.
+	if (!adsize) cout << "No ads to delete!!!" << endl;
+	else
+	{
+		ad* tmp = new ad[adsize - 1];
+		for (int i = 0, j = 0; i < adsize - 1; j++, i++)
+		{
+			if (i == index) j++;
+			tmp[i] = adsArr[j];
+		}
+		delete[] adsArr;
+		adsArr = tmp;
+		adsize--;
+	}
+
+}
+//-------------Landlords menu : sub fuction- realloc the the ads array and adds 1 more ad.
+void RealocateAdsPointer(ad* adsArr, int& adsize)
+{
+	//reallocates the pointer and changes the size:
+	ad* tmp;
+	tmp = new ad[adsize + 1];
+	for (int i = 0; i < adsize; i++)
+		tmp[i] = adsArr[i];
+	adsize++;
+	delete[] adsArr;
+	adsArr = tmp;
+}
+
+//-------------Landlords menu : prints list of ads for landlord(to screen)
+void LandlordsMenu(landlord ll)
+{
+	int choise = 1;
+	LandlordSumOfDealsUpdate(ll);
+	cout << "Landlords Menu:" << endl;
+	cout << "Total profit: " << ll.sumOfDeals << endl;
+	if (ll.adSize)
+		for (int i = 0; i < ll.adSize; i++)
+		{
+			cout << ADSBREAK << endl << "\tAd no: " << i + 1 << endl;
+			PrintAd(ll.properties[i]);
+		}
+	cout << ADSBREAK << endl;
+	int input;
+	while (choise != 4)
+	{
+		cout << "Please selet an option:" << endl
+			<< "1)edit an ad." << endl
+			<< "2)add new ad." << endl
+			<< "3)delete an ad." << endl
+			<< "4)Exit." << endl
+			<< "enter your choise: ";
+		cin >> choise;
+		switch (choise)
+		{
+		case 1:
+			cout << "Please insert ads number: ";
+			input = ValidInput(1, ll.adSize) - 1;
+			EditAdMenu(&ll.properties[input]);
+			break;
+		case 2:
+			RealocateAdsPointer(ll.properties, ll.adSize);
+			ll.properties[ll.adSize - 1] = NewAd();
+			break;
+		case 3:
+			cout << "Please insert ads number: ";
+			input = ValidInput(1, ll.adSize) - 1;
+			DeleteAd(ll.properties, ll.adSize, input);
+			break;
+		case 4:
+			//exit
+			system("CLS");
+			cout << "Good bye!!" << endl;
+			break;
+		default:
+			cout << "Wrong choise!!\nTry again!\n ";
+			break;
+		}
+	}
+
+
+}
 
 //-------------print deal confirmation(to screen)
 
