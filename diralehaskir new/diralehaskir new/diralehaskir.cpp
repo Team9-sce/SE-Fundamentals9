@@ -926,14 +926,21 @@ string ValidLocation()
 	//Location format <city>, <street> st.
 	string location = "";
 	string tmp;
+	char answer;
 	cout << "Please enter city: ";
 	cin.ignore();
 	getline(cin, tmp);
-	location += tmp + ", ";
-	cout << "Please enter street name: ";
-	cin.ignore();
-	getline(cin, tmp);
-	location += tmp + " st.";
+	location += tmp;
+	cout << "Do you want to enter address?" << endl << "'y' for yes, else for no: ";
+	cin >> answer;
+	if (answer == 'y')
+	{
+		cout << "Please enter street name: ";
+		cin.ignore();
+		getline(cin, tmp);
+		location += ", " + tmp + " st.";
+	}
+	else location += ".";
 	return location;
 }
 
