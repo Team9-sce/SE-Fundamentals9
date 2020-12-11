@@ -74,6 +74,17 @@ bool isDateAvailable(date d, const date& adDate);
 bool legalInput(int day, int month, int year, int mode = 0);
 date validDateInput();
 void printDate(const date& t);
+string strToLower(string a);
+bool iequalsContain(const string& a, const string& b);
+void swap(ad* ad1, ad* ad2);
+bool sortByLTH(ad* ad1, ad* ad2);
+bool sortByHTL(ad* ad1, ad* ad2);
+bool sortByPopularity(ad* ad1, ad* ad2);
+void bubbleSort(int size, ad** adArr, int mode = 0);
+ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr);
+ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr);
+int printAndChooseFromAdArr(int newSize, ad** adArr);
+void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr);
 
 
 #endif // !DIRALEHASKIR_H
