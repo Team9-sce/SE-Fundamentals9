@@ -197,14 +197,14 @@ void readLandlordFromFile(landlord* landlordArr) {//read all landlord
 			throw;
 		}
 		//call read ads
-		readAdsFromFile(landlordArr[i].adSize, landlordArr[i].properties);//read ads for landlord
+		readAdsFromFile(landlordArr[i].adSize, landlordArr[i].properties, &(landlordArr[i].email));//read ads for landlord
 		++i;
 	}
 	inFile.close();//close file
 }//return value???
 
  //-------------readAdsFromFile
-void readAdsFromFile(int size, ad* adsArr) {//read ads for landlord
+void readAdsFromFile(int size, ad* adsArr, const string* const email) {//read ads for landlord
 	ifstream inFile;
 	try {
 		inFile.open("properties.data");//open file in ios::out default mode
@@ -261,7 +261,7 @@ void readAdsFromFile(int size, ad* adsArr) {//read ads for landlord
 			cout << "ERROR!" << endl;
 			throw;
 		}
-		//print occupied dates
+		//read occupied dates
 		for (int j = 0; j < adsArr[i].dateSize; ++i) {
 			inFile >> adsArr[i].occupied[j].fromDay;
 			inFile >> adsArr[i].occupied[j].fromMonth;
@@ -270,6 +270,7 @@ void readAdsFromFile(int size, ad* adsArr) {//read ads for landlord
 			inFile >> adsArr[i].occupied[j].toMonth;
 			inFile >> adsArr[i].occupied[j].toYear;
 		}
+		adsArr[i].email = email;
 	}
 	inFile.close();//close file
 }
