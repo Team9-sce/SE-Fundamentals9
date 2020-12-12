@@ -11,7 +11,7 @@
 #include <ctime>
 #include <ctype.h>
 
-#define ADSBREAK "============================================================"
+#define ADSBREAK "========================================="
 #define ZERO 0
 #define MAX_EMAIL 8 //רק לקידומת
 #define GMAIL "@gmail.com"
@@ -43,8 +43,8 @@ void readFromFile(landlord* landlordArr, traveler* travelerArr);
 void readLandlordFromFile(landlord* landlordArr);//read all landlord
 void readAdsFromFile(int size, ad* adsArr);	//read ads for landlord
 void readTravelerFromFile(traveler* travelerArr);
-bool landlordSignIn(int size, landlord* landlordArr);
-bool travelerSignIn(int size, traveler* travelerArr);
+int landlordSignIn(int size, landlord* landlordArr);
+int travelerSignIn(int size, traveler* travelerArr);
 void travelerSignUp(traveler* travelerArr, int size);
 void landlordSignUp(int size, landlord* landlordArr);
 bool isStringAllDig(string str);//check id the string is all digits

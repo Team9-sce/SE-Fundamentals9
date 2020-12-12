@@ -319,7 +319,7 @@ void readTravelerFromFile(traveler* travelerArr) {
 }//return value???
 
  //-------------sign in
-bool landlordSignIn(int size, landlord* landlordArr) {//returns true if login successful
+int landlordSignIn(int size, landlord* landlordArr) {//returns true if login successful
 	string tempId, tempPass;
 	cout << "***LANDLORD - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get id input
@@ -329,13 +329,13 @@ bool landlordSignIn(int size, landlord* landlordArr) {//returns true if login su
 	//check length and input correctness
 	if (tempId.length() != MAX_ID) {
 		cout << "No such ID..." << endl;
-		return false;
+		return NOT_FOUND;
 	}
 	//find index for landlord in array by id- assuming no two identical id's
 	int index = findLandlordById(size, landlordArr, tempId);
 	if (index == NOT_FOUND) {//landlord not found
 		cout << "No such ID..." << endl;
-		return false;
+		return NOT_FOUND;
 	}
 
 	//get password
@@ -347,13 +347,13 @@ bool landlordSignIn(int size, landlord* landlordArr) {//returns true if login su
 	//check length and input correctness
 	if (tempPass.length() > MAX_PASSWORD || tempPass.length() < MIN_PASSWORD) {
 		cout << "Incorrect password...try again." << endl;
-		return false;
+		return NOT_FOUND;
 	}
 	if (tempPass != landlordArr[index].password) {//password equal
 		cout << "Incorrect password...try again." << endl;
-		return false;
+		return NOT_FOUND;
 	}
-	return true;
+	return index;
 }
 
 bool isStringAllDig(string str) {//check id the string is all digits
@@ -373,7 +373,7 @@ int findLandlordById(int size,const landlord* const landlordArr, string id) {
 	return NOT_FOUND;
 }
 
-bool travelerSignIn(int size, traveler* travelerArr){
+int travelerSignIn(int size, traveler* travelerArr){
 	string tempName, tempPass;
 	cout << "***TRAVELER - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get name input
@@ -385,13 +385,13 @@ bool travelerSignIn(int size, traveler* travelerArr){
 	//check length and input correctness
 	if (tempName.length() > MAX_NAME) {
 		cout << "No such user..." << endl;
-		return false;
+		return NOT_FOUND;
 	}
 	//find index for traveler in array by name- assuming no two identical names
 	int index = findTravelerByName(size, travelerArr, tempName);
 	if (index == NOT_FOUND) {//traveler not found
 		cout << "No such user..." << endl;
-		return false;
+		return NOT_FOUND;
 	}
 
 	//get password
@@ -403,13 +403,13 @@ bool travelerSignIn(int size, traveler* travelerArr){
 	//check length and input correctness
 	if (tempPass.length() > MAX_PASSWORD || tempPass.length() < MIN_PASSWORD) {
 		cout << "Incorrect password...try again." << endl;
-		return false;
+		return NOT_FOUND;
 	}
 	if (tempPass != travelerArr[index].password) {//password equal
 		cout << "Incorrect password...try again." << endl;
-		return false;
+		return not NOT_FOUND;
 	}
-	return true;
+	return index;
 }
 
 //-------------find traveler by full name
@@ -548,8 +548,8 @@ void travelerSignUp(traveler* travelerArr, int size)
 
 	//get phone number
 	do {
-		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
-		cout << "Please enter your phoneNumber:" << endl;
+		cout << "Phone number must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
+		cout << "Please enter your phone number:" << endl;
 		cin.ignore();
 		getline(cin, buffer);
 		//check length and input correctness
@@ -1025,8 +1025,8 @@ void orderConfirmation(landlord* l, date* d)
 {
 	//generate random order number
 	srand(time(NULL));
-	int num = rand() % 100 + 1234;     // num in the range 1000 to 10000
-	cout << "Your order is complete" << endl;
+	int num = rand() % 100 + 1234;     // num in the range 1234 to 1334
+	cout << "Your order is complete!" << endl;
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
 	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear;
@@ -1043,7 +1043,7 @@ void printSupport()
 {
 	//generate random case number
 	srand(time(NULL));
-	int num = rand() % 100 + 2567;     // num in the range 1000 to 10000
+	int num = rand() % 100 + 2567;     // num in the range 2567 to 2667
 	cout << "Your request has been sent!" << endl
 		<< "Case number :" << num << endl
 		<< "had been opened with your request for support" << endl;
@@ -1053,11 +1053,11 @@ void printSupport()
 void printFaq()
 {
 	cout << "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
-		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl
+		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl << endl
 		<< "IS THE SITE SECURE ?" << endl
-		<< "Yes, the payment is secured by the payment platform you will use." << endl
+		<< "Yes, the company uses a security company in order to secure all your personal information." << endl << endl
 		<< "HOW DO I RATE MY STAY ?" << endl
-		<< "At the end of rent time a rating screen will be displayed in which you can rate your stay." << endl;
+		<< "At the end of rent time a rating screen will be available in which you can rate your stay." << endl;
 }
 //-------------travelers homepage
 void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr) {//NOT FINISHED*******
@@ -1091,6 +1091,7 @@ void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr) {//NOT F
 
 		cin >> choice;
 		if (choice == 1) {
+			deleteAdArr(adArr);
 			adArr = NULL;
 			newSize = -1;
 			adArr = travelerExplore(newSize, adArr, lSize, lArr);
@@ -1145,15 +1146,13 @@ void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr) {//NOT F
 
 //-------------landlord menu
 
-//-------------landlord homescreen
-
 //-------------new ad
 ad NewAd()
 {//User input for new ad.
 	ad newAd;
 	newAd.available = true;
 	cout << "New ad: " << endl;
-	cout << "Ad discription: ";
+	cout << "Ad description: ";
 	getline(cin, newAd.description);
 	cout << "Price: ";
 	newAd.price = ValidInput(ZERO, INT_MAX);
@@ -1166,7 +1165,7 @@ ad NewAd()
 	newAd.numOfRooms = ValidInput(1, 15);
 	cout << "Number of beds(up to 30): ";
 	newAd.numOfBeds = ValidInput(1, 30);
-	cout << "Atractions: ";
+	cout << "Atraction: ";
 	cin.ignore();
 	getline(cin, newAd.attraction);
 	cout << "Select amenities: ";
@@ -1265,21 +1264,21 @@ void EditAdMenu(ad* ad)
 	while (choose)
 	{
 		system("CLS");
-		cout << "Edit ad menu.\nYour ad:" << endl;
+		cout << "EDIT AD MENU \nYour ad:" << endl;
 		PrintAd(*ad);
 		cout << ADSBREAK << endl;
-		cout << "What you want to edit?" << endl;
-		cout << "1)Change avilability (now: " << ad->available << ")." << endl
-			<< "2)Change Discription." << endl
-			<< "3)Change Price." << endl
-			<< "4)Change Discount." << endl
-			<< "5)Change num of people." << endl
-			<< "6)Change num of rooms." << endl
-			<< "7)Change num of beds." << endl
-			<< "8)Edit amenities." << endl
-			<< "9)Change attractions." << endl
-			<< "0)Back to previous menu." << endl
-			<< "Please enter your choise: ";
+		cout << "What do you want to edit?" << endl;
+		cout << "1) Change avilability (now: " << ad->available << ")." << endl
+			<< "2) Change Description." << endl
+			<< "3) Change Price." << endl
+			<< "4) Change Discount." << endl
+			<< "5) Change num of people." << endl
+			<< "6) Change num of rooms." << endl
+			<< "7) Change num of beds." << endl
+			<< "8) Edit amenities." << endl
+			<< "9) Change attractions." << endl
+			<< "0) Back to previous menu." << endl
+			<< "Please enter your choice: ";
 		cin >> choose;
 		switch (choose)
 		{
@@ -1287,7 +1286,7 @@ void EditAdMenu(ad* ad)
 			ad->available = !ad->available;
 			break;
 		case 2:
-			cout << "Enter new discription:";
+			cout << "Enter new description:";
 			cin.ignore();
 			getline(cin, ad->description);
 			break;
@@ -1300,11 +1299,11 @@ void EditAdMenu(ad* ad)
 			ad->discount = ValidInput(ZERO, 100);
 			break;
 		case 5:
-			cout << "People amount(up to 30): ";
+			cout << "Number of people(up to 30): ";
 			ad->numOfPeople = ValidInput(1, 30);
 			break;
 		case 6:
-			cout << "Amount of rooms(up to 15): ";
+			cout << "Number of rooms(up to 15): ";
 			ad->numOfRooms = ValidInput(1, 15);
 			break;
 		case 7:
@@ -1316,7 +1315,7 @@ void EditAdMenu(ad* ad)
 			ad->ameNities = amenitiesCtor();
 			break;
 		case 9:
-			cout << "Enter new attractions:";
+			cout << "Enter a new attraction:";
 			cin.ignore();
 			getline(cin, ad->attraction);
 			break;
@@ -1324,7 +1323,7 @@ void EditAdMenu(ad* ad)
 			return;
 			break;
 		default:
-			cout << "You entered wrong choise!!\n Try again: ";
+			cout << "You entered a wrong choice!!\n Try again: ";
 			cin >> choose;
 			break;
 		}
@@ -1350,8 +1349,6 @@ void DeleteAd(ad* adsArr, int& adsize, int index)
 	}
 
 }
-//-------------total gainings for landlord
-
 //-------------rate property(on last rent day)
 
 //-------------calculate and update rates
@@ -1361,7 +1358,7 @@ void rateProperty(ad* a)
 	cout << "Welcome to the rating system!" << endl;
 	do
 	{
-		cout << "Please rate the experience on a property by enter 1-5 " << endl
+		cout << "Please rate the experience on a property by entering 1-5 " << endl
 			<< "1 being the lowest and 5 the highest" << endl;
 		cin >> temp;
 	} while (temp < 1 || temp>5);
@@ -1405,12 +1402,14 @@ void PrintAd(ad obj)
 {
 	cout << ADSBREAK << endl;
 	cout << "Location: " << obj.location << endl;
-	cout << "Ad discription: " << obj.description << endl;
+	cout << "Ad description: " << obj.description << endl;
 	cout << "Price before discount: " << obj.price << endl;
 	cout << "Price after discount:  " << obj.price - obj.discount << endl;
-	cout << "Discount: " << "-" << obj.discount << "$" << endl;
-	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
-	cout << "Atractions: " << obj.attraction << endl;
+	cout << "Discount: " << "-" << obj.discount << "NIS" << endl;
+	cout << "Number of people: " << obj.numOfPeople << endl;
+	cout << "Number of rooms: " << obj.numOfRooms << endl;
+	cout << "Number of beds: " << obj.numOfBeds << endl;
+	cout << "Atraction: " << obj.attraction << endl;
 	PrintAmenities(obj.ameNities);
 }
 
@@ -1469,6 +1468,7 @@ int DateDaysCount(date date)
 	return DaysCountFrom1900(date.toYear, date.toMonth, date.toDay) -
 		DaysCountFrom1900(date.fromYear, date.fromMonth, date.fromDay);
 }
+//-------------total gainings for landlord
 //-------------calculate the profit from an ad.
 int AdProfit(ad ad)
 {
@@ -1502,13 +1502,13 @@ void RealocateAdsPointer(ad* adsArr, int& adsize)
 	delete[] adsArr;
 	adsArr = tmp;
 }
-
+//-------------landlord homescreen
 //-------------Landlords menu : prints list of ads for landlord(to screen)
 void LandlordsMenu(landlord ll)
 {
 	int choise = 1;
 	LandlordSumOfDealsUpdate(ll);
-	cout << "Landlords Menu:" << endl;
+	cout << "LANDLORD MENU:" << endl;
 	cout << "Total profit: " << ll.sumOfDeals << endl;
 	if (ll.adSize)
 		for (int i = 0; i < ll.adSize; i++)
@@ -1520,17 +1520,17 @@ void LandlordsMenu(landlord ll)
 	int input;
 	while (choise != 4)
 	{
-		cout << "Please selet an option:" << endl
-			<< "1)edit an ad." << endl
-			<< "2)add new ad." << endl
-			<< "3)delete an ad." << endl
-			<< "4)Exit." << endl
-			<< "enter your choise: ";
+		cout << "Please select an option:" << endl
+			<< "1) edit an ad." << endl
+			<< "2) add new ad." << endl
+			<< "3) delete an ad." << endl
+			<< "4) Exit." << endl
+			<< "enter your choice: ";
 		cin >> choise;
 		switch (choise)
 		{
 		case 1:
-			cout << "Please insert ads number: ";
+			cout << "Please enter ad number: ";
 			input = ValidInput(1, ll.adSize) - 1;
 			EditAdMenu(&ll.properties[input]);
 			break;
@@ -1539,7 +1539,7 @@ void LandlordsMenu(landlord ll)
 			ll.properties[ll.adSize - 1] = NewAd();
 			break;
 		case 3:
-			cout << "Please insert ads number: ";
+			cout << "Please enter ad number: ";
 			input = ValidInput(1, ll.adSize) - 1;
 			DeleteAd(ll.properties, ll.adSize, input);
 			break;
@@ -1549,7 +1549,7 @@ void LandlordsMenu(landlord ll)
 			cout << "Good bye!!" << endl;
 			break;
 		default:
-			cout << "Wrong choise!!\nTry again!\n ";
+			cout << "Wrong choice!!\nTry again!\n ";
 			break;
 		}
 	}
@@ -1573,6 +1573,10 @@ void deleteLandlordArr(int size, landlord* arr) {
 
 void deleteTravelerArr(int size, traveler* arr) {
 	delete[] arr;//free traveler array
+}
+
+void deleteAdArr(ad** arr) {
+	delete[] arr;
 }
 
 //check_leap_year
