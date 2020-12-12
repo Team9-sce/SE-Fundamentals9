@@ -1019,6 +1019,20 @@ void printDate(const date& t) {//-----------------------------------------------
 //-------------occupy dates
 
 //-------------confirm credit card info
+bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID)
+{
+    time_t t = time(0);
+    tm* now = localtime(&t);
+    
+    if(!isStringAllDig(cardNumber) || cardNumber.length() != 16) return false;//check card number
+    if(!isStringAllDig(expirationYear) || stoi(expirationYear) < (now->tm_year + 1900) || (stoi(expirationYear) + 1900) > 9999) return false;//check expiration year
+    if((stoi(expirationYear) == now->tm_year + 1900) && (!isStringAllDig(expirationMonth) || stoi(expirationMonth) < (now->tm_mon + 1) || stoi(expirationMonth) > 12)) return false;//check expiration month if expiration year is current year
+    if(!isStringAllDig(expirationMonth) || stoi(expirationMonth) < 0 || stoi(expirationMonth) > 12) return false;//check expiration month otherwise
+    if(!isStringAllDig(cvv) || cvv.length() != 3) return false;//check cvv
+    if(!isStringAllDig(ownerID) || ownerID.length() != 9) return false;//check ID
+    
+    return true;//if nothing wrong was found
+}
 
 //-------------print deal confirmation(to screen)
 void orderConfirmation(landlord* l, date* d)

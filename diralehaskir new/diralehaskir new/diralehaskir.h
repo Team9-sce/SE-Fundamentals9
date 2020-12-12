@@ -85,6 +85,7 @@ ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr);
 ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr);
 int printAndChooseFromAdArr(int newSize, ad** adArr);
 void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr);
+bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID);//confirm credit card details
 
 
 #endif // !DIRALEHASKIR_H
