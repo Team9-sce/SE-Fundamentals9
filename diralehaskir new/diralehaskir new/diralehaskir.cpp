@@ -1017,7 +1017,20 @@ void printDate(const date& t) {//-----------------------------------------------
 }
 
 //-------------occupy dates
+void occupyDates(date d, ad* a)
+{
+	ReallococcupyDatesArr(a);
+	a->occupied[a->dateSize - 1] = d;
+}
 
+void ReallococcupyDatesArr(ad* a)
+{
+	date* temp = new date[a->dateSize + 1];
+	for (int i = 0; i < a->dateSize; i++) temp[i] = a->occupied[i];
+	a->dateSize++;
+	delete[] a->occupied;
+	a->occupied = temp;
+}
 //-------------confirm credit card info
 bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID)
 {
