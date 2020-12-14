@@ -1494,15 +1494,6 @@ int AdProfit(ad ad)
 	return profit;
 }
 //-------------calculates landlords profit from all his ads.
-void LandlordSumOfDealsUpdate(landlord ll)
-{
-	//calculate landlords profit and update the field.
-	int sum = 0;
-	if (ll.adSize)
-		for (int i = 0; i < ll.adSize; i++)
-			sum += AdProfit(ll.properties[i]);
-	ll.sumOfDeals = sum;
-}
 
 //-------------Landlords menu : sub fuction- realloc the the ads array and adds 1 more ad.
 void RealocateAdsPointer(ad* adsArr, int& adsize)
@@ -1521,7 +1512,6 @@ void RealocateAdsPointer(ad* adsArr, int& adsize)
 void LandlordsMenu(landlord ll)
 {
 	int choise = 1;
-	LandlordSumOfDealsUpdate(ll);
 	cout << "LANDLORD MENU:" << endl;
 	cout << "Total profit: " << ll.sumOfDeals << endl;
 	if (ll.adSize)
