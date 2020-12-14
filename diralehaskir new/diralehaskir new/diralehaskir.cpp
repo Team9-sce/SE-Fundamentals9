@@ -1837,3 +1837,51 @@ void swap(ad* ad1, ad* ad2)//***************************************************
 	ad2 = temp;
 }
 
+
+void RealloctravelersArr(traveler* arr, int size)
+{
+	traveler* tmp = new traveler[size + 1];
+	for (int i = 0; i < size; i++) tmp[i] = arr[i];
+	size++;
+	delete[] arr;
+	arr = tmp;
+}
+void ReallocLandlordsArr(landlord* arr, int size)
+{
+	landlord* tmp = new landlord[size + 1];
+	for (int i = 0; i < size; i++) tmp[i] = arr[i];
+	size++;
+	delete[] arr;
+	arr = tmp;
+}
+
+void Register(landlord* landlordsArr, int& landlordSize, traveler* travelersArr, int& travelersSize)
+{
+	system("CLS");
+	int choise = 1;
+	while (choise != 3)
+	{
+		cout << "Register:" << endl
+			<< "1)Landlord." << endl
+			<< "2)Traveler." << endl
+			<< "Please enter your choise: " << endl;
+		cin >> choise;
+		switch (choise)
+		{
+		case 1:
+			//RegisterLandlord
+			system("CLS");
+			break;
+		case 2:
+			//RegisterTraveler
+			system("CLS");
+			break;
+		case 3:
+			system("CLS");
+			break;
+		default:
+			cout << "Wrong choise!!\nTry again: ";
+			break;
+		}
+	}
+}
