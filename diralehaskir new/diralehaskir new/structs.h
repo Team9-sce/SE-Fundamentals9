@@ -42,8 +42,8 @@ typedef struct ad{
 	string attraction;
 	int rating = 5;
 	int dateSize = 0;
-	date* occupied = NULL;//contains occupied dates
-	const string* email = NULL;//pointer to landlord's email
+	date* occupied = NULL;//contains occupied dates.
+	const string* email = NULL;//pointer to landlord's email.
 }ad;
 
 typedef struct traveler {
