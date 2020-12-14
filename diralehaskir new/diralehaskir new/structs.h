@@ -42,9 +42,14 @@ typedef struct ad
 	amenities ameNities;
 	string attraction;
 	int rating = 5;
+	string email = NULL;//pointer to landlord's email.
 	int dateSize = 0;
+<<<<<<< Updated upstream
 	date* occupied = NULL; //contains occupied dates.
 	const string* email = NULL; //pointer to landlord's email.
+=======
+	date* occupied = NULL;//contains occupied dates.
+>>>>>>> Stashed changes
 }ad;
 
 typedef struct traveler {
@@ -63,7 +68,6 @@ typedef struct landlord{
 	int sumOfDeals = 0;
 	int adSize = 0;
 	ad* properties = NULL;
-	traveler trav;
 }landlord;
 
 

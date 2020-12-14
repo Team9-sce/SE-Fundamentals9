@@ -6,8 +6,9 @@ using namespace std;
 
 /*
 //-------------print to file
-void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, traveler* travelerArr) {
+void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, traveler* travelerArr, int adSize, ad* adArr) {
 	printLandlordToFile(landlordSize, landlordArr);//print all landlords
+	printAdsToFile(adSize, adArr);//print all ads
 	printTravelerToFile(travelerSize, travelerArr);//print all travelers
 }
 
@@ -37,13 +38,12 @@ void printLandlordToFile(int size, landlord* landlordArr) {
 			<< landlordArr[i].id << endl
 			<< landlordArr[i].email << endl
 			<< landlordArr[i].sumOfDeals << endl
-			<< landlordArr[i].adSize << endl;
-		printAdsToFile(landlordArr[i].adSize, landlordArr[i].properties);//print ads for landlord
+			<< landlordArr[i].adSize << endl;//num of ads for this landlord
 	}
 	outFile.close();//close file
 }
 //-------------printAdsToFile
-void printAdsToFile(int size, ad* adsArr) {
+void printAdsToFile(int size, landlord* arr) {
 	ofstream outFile;
 	try {
 		outFile.open("properties.data");//open file in ios::out default mode
@@ -59,42 +59,51 @@ void printAdsToFile(int size, ad* adsArr) {
 		throw;
 	}
 	//if opening file succeeded
-	outFile << size << endl;//prints size of landlord array
+	outFile << numOfAds(size, arr) << endl;//prints amount of all ads
 	int i = 0;
 	for (; i < size; ++i) {
-		outFile << adsArr[i].available << endl
-			<< adsArr[i].description << endl
-			<< adsArr[i].price << endl
-			<< adsArr[i].discount << endl
-			<< adsArr[i].location << endl
-			<< adsArr[i].numOfPeople << endl
-			<< adsArr[i].numOfRooms << endl
-			<< adsArr[i].numOfBeds << endl;
-		//print amenities
-		outFile << adsArr[i].ameNities.disabledAccess << endl
-			<< adsArr[i].ameNities.wifi << endl
-			<< adsArr[i].ameNities.kitchen << endl
-			<< adsArr[i].ameNities.tv << endl
-			<< adsArr[i].ameNities.balcony << endl
-			<< adsArr[i].ameNities.washingMachine << endl
-			<< adsArr[i].ameNities.airConditioning << endl
-			<< adsArr[i].ameNities.swimmingPool << endl
-			<< adsArr[i].ameNities.parkingLot << endl;
-		//print rest
-		outFile << adsArr[i].attraction << endl
-			<< adsArr[i].rating << endl
-			<< adsArr[i].dateSize << endl;
-		//print occupied dates
-		for (int j = 0; j < adsArr[i].dateSize; ++i) {
-			outFile << adsArr[i].occupied[j].fromDay << endl
-				<< adsArr[i].occupied[j].fromMonth << endl
-				<< adsArr[i].occupied[j].fromYear << endl
-				<< adsArr[i].occupied[j].toDay << endl
-				<< adsArr[i].occupied[j].toMonth << endl
-				<< adsArr[i].occupied[j].toYear << endl;
+		for (int j = 0; j < arr[i].adSize; ++j) {
+			outFile << arr[i].properties[j].available << endl
+				<< arr[i].properties[j].description << endl
+				<< arr[i].properties[j].price << endl
+				<< arr[i].properties[j].discount << endl
+				<< arr[i].properties[j].location << endl
+				<< arr[i].properties[j].numOfPeople << endl
+				<< arr[i].properties[j].numOfRooms << endl
+				<< arr[i].properties[j].numOfBeds << endl;
+			//print amenities
+			outFile << arr[i].properties[j].ameNities.disabledAccess << endl
+				<< arr[i].properties[j].ameNities.wifi << endl
+				<< arr[i].properties[j].ameNities.kitchen << endl
+				<< arr[i].properties[j].ameNities.tv << endl
+				<< arr[i].properties[j].ameNities.balcony << endl
+				<< arr[i].properties[j].ameNities.washingMachine << endl
+				<< arr[i].properties[j].ameNities.airConditioning << endl
+				<< arr[i].properties[j].ameNities.swimmingPool << endl
+				<< arr[i].properties[j].ameNities.parkingLot << endl;
+			//print rest
+			outFile << arr[i].properties[j].attraction << endl
+				<< arr[i].properties[j].rating << endl
+				<< arr[i].properties[j].dateSize << endl;
+			//print occupied dates
+			for (int k = 0; k < arr[i].properties[j].dateSize; ++k) {
+				outFile << arr[i].properties[j].occupied[k].fromDay << endl
+					<< arr[i].properties[j].occupied[k].fromMonth << endl
+					<< arr[i].properties[j].occupied[k].fromYear << endl
+					<< arr[i].properties[j].occupied[k].toDay << endl
+					<< arr[i].properties[j].occupied[k].toMonth << endl
+					<< arr[i].properties[j].occupied[k].toYear << endl;
+			}
 		}
 	}
 	outFile.close();//close file
+}
+
+int numOfAds(int size, landlord* arr) {
+	int sum = 0;
+	for (int i = 0; i < size; ++i)
+		sum += arr[i].adSize;
+	return sum;
 }
 
 //-------------printTravelerToFile
@@ -119,21 +128,31 @@ void printTravelerToFile(int size, traveler* travelerArr) {
 	for (; i < size; ++i) {
 		outFile << travelerArr[i].fullName << endl
 			<< travelerArr[i].phoneNumber << endl
-			<< travelerArr[i].password << endl;
+			<< travelerArr[i].password << endl
+			<< travelerArr[i].order.fromDay << endl
+			<< travelerArr[i].order.fromMonth << endl
+			<< travelerArr[i].order.fromYear << endl
+			<< travelerArr[i].order.toDay << endl
+			<< travelerArr[i].order.toMonth << endl
+			<< travelerArr[i].order.toYear << endl;
 	}
 	outFile.close();//close file
 }
 
 //-------------read from file
-void readFromFile(landlord* landlordArr, traveler* travelerArr) {
+void readFromFile(landlord* landlordArr, ad* adArr, traveler* travelerArr) {
 	//read all landlords
-	readLandlordFromFile(landlordArr);//read all landlords
+	int lSize = readLandlordFromFile(landlordArr);//read all landlords
+	//read all ads
+	int aSize = readAdsFromFile(adArr);//read all landlords
 	//read all travelers
-	readTravelerFromFile(travelerArr);
-}//return value???
+	int tSize = readTravelerFromFile(travelerArr);
+	//distribute ads to corresponding landlords
+	splitAds(lSize, landlordArr, aSize, adArr);
+}
 
  //-------------readlandlordFromFile
-void readLandlordFromFile(landlord* landlordArr) {//read all landlord
+int readLandlordFromFile(landlord* landlordArr) {//read all landlords
 	ifstream inFile;
 	try {
 		inFile.open("landlord.data");//open in default mode
@@ -169,42 +188,23 @@ void readLandlordFromFile(landlord* landlordArr) {//read all landlord
 	}
 	//if succeeded
 	int i = 0;
-	string a, b;
 	while (i < arrSize)
 	{
 		inFile.ignore();
 		getline(inFile, landlordArr[i].fullName);
-		//inFile >> a >> b;
-		//landlordArr[i].fullName = a + ' ' + b;
 		inFile >> landlordArr[i].phoneNumber;
 		inFile >> landlordArr[i].password;
 		inFile >> landlordArr[i].id;
 		inFile >> landlordArr[i].email;
 		inFile >> landlordArr[i].sumOfDeals;
 		inFile >> landlordArr[i].adSize;
-		try {
-			landlordArr[i].properties = new ad[landlordArr[i].adSize];
-			if (!landlordArr)
-				throw("allocation failed in readFromFile-ads");
-		}
-		catch (const char* const x) {
-			cout << x << endl;
-			inFile.close();
-			throw;
-		}
-		catch (...) {
-			cout << "ERROR!" << endl;
-			throw;
-		}
-		//call read ads
-		readAdsFromFile(landlordArr[i].adSize, landlordArr[i].properties, &(landlordArr[i].email));//read ads for landlord
-		++i;
 	}
 	inFile.close();//close file
-}//return value???
+	return arrSize;
+}
 
  //-------------readAdsFromFile
-void readAdsFromFile(int size, ad* adsArr, const string* const email) {//read ads for landlord
+int readAdsFromFile(ad* adsArr) {//read ads for landlord
 	ifstream inFile;
 	try {
 		inFile.open("properties.data");//open file in ios::out default mode
@@ -220,8 +220,28 @@ void readAdsFromFile(int size, ad* adsArr, const string* const email) {//read ad
 		throw;
 	}
 	//if opening file succeeded
+	int arrSize = 0;
+	inFile >> arrSize;
+	if (!arrSize)
+		return;
+	try {
+		adsArr = new ad[arrSize];
+		if (!adsArr)
+			throw("allocation failed in readFromFile-ads");
+	}
+	catch (const char* const x) {
+		cout << x << endl;
+		inFile.close();
+		throw;
+	}
+	catch (...) {
+		cout << "ERROR!" << endl;
+		throw;
+	}
+	//if succeeded
+
 	int i = 0;
-	for (; i < size; ++i) {
+	for (; i < arrSize; ++i) {
 		inFile >> adsArr[i].available;
 		inFile.ignore();
 		getline(inFile, adsArr[i].description);
@@ -246,6 +266,7 @@ void readAdsFromFile(int size, ad* adsArr, const string* const email) {//read ad
 		inFile.ignore();
 		getline(inFile, adsArr[i].attraction);
 		inFile >> adsArr[i].rating;
+		inFile >> adsArr[i].email;
 		inFile >> adsArr[i].dateSize;
 		try {
 			adsArr[i].occupied = new date[adsArr[i].dateSize];
@@ -270,12 +291,12 @@ void readAdsFromFile(int size, ad* adsArr, const string* const email) {//read ad
 			inFile >> adsArr[i].occupied[j].toMonth;
 			inFile >> adsArr[i].occupied[j].toYear;
 		}
-		adsArr[i].email = email;
 	}
 	inFile.close();//close file
+	return arrSize;
 }
 //-------------readTravelerFromFile
-void readTravelerFromFile(traveler* travelerArr) {
+int readTravelerFromFile(traveler* travelerArr) {
 	ifstream inFile;
 	try {
 		inFile.open("traveler.data");//open file in ios::out default mode
@@ -314,12 +335,56 @@ void readTravelerFromFile(traveler* travelerArr) {
 		getline(inFile, travelerArr[i].fullName);
 		inFile >> travelerArr[i].phoneNumber;
 		inFile >> travelerArr[i].password;
+		inFile >> travelerArr[i].order.fromDay;
+		inFile >> travelerArr[i].order.fromMonth;
+		inFile >> travelerArr[i].order.fromYear;
+		inFile >> travelerArr[i].order.toDay;
+		inFile >> travelerArr[i].order.toMonth;
+		inFile >> travelerArr[i].order.toYear;
 	}
 	inFile.close();//close file
 }//return value???
 */
 //-------------sign in
 int landlordSignIn(int size, landlord** landlordArr) {//returns true if login successful
+
+	return size;
+}
+
+void splitAds(int lSize, landlord* arr, int aSize, ad* adArr) {//assigns each landlord his ads
+	allocateAdArrays(lSize, arr);//allocates all landlords adArr and turns sizes to 0
+	for (int i, k = 0; i < aSize; ++i) {
+		for (int j = 0; j < lSize; ++j) {
+			k = arr[j].adSize;
+			if (adArr[i].email == arr[j].email) {
+				arr[j].properties[k] = adArr[i];
+				++k;
+			}
+		}
+	}
+	delete[] adArr;//delete ad arr after distributing all ads to their landlords
+}
+
+void allocateAdArrays(int size, landlord* arr){//allocates all landlords adArr and turns sizes to 0
+	for (int i = 0; i < size; ++i) {
+		try {
+			arr[i].properties = new ad[arr[i].adSize];
+			if (!arr[i].properties)
+				throw("allocation failed in readFromFile-allocate ads array");
+		}
+		catch (const char* const x) {
+			cout << x << endl;
+			throw;
+		}
+		catch (...) {
+			cout << "ERROR!" << endl;
+			throw;
+		}
+		arr[i].adSize = 0;
+	}
+}
+ //-------------sign in
+int landlordSignIn(int size, landlord* landlordArr) {//returns true if login successful
 	string tempId, tempPass;
 	cout << "***LANDLORD - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get id input
@@ -766,17 +831,15 @@ ad** filterAds(int& newSize, ad** adArr, int size, landlord* arr) {//***********
 	}
 	return adArr;//double pointer array of ads
 }
-ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//****NOT FINISHED****
+
+ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//**********************
 	newSize = 0;
 	//runs over landlors arr returns all ads that has the requested filters
-	for (int i = 0; i < size; ++i) {
-		//sum all adSizes
-		newSize += arr[i].adSize;
-	}
+	newSize = numOfAds(size, arr);
 	try {
-		adArr = new ad * [newSize];
+		adArr = new ad *[newSize];
 		if (!adArr)
-			throw("allocation failed in filter ads");
+			throw("allocation failed in traveler explore");
 	}
 	catch (const char* const x) {
 		cout << x << endl;
@@ -793,7 +856,12 @@ ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//****N
 			//if ()
 			adArr[i] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
 		}
+		for (int i, k = 0; i < size; ++i) {
+			for (int j = 0; j < arr[i].adSize&& k < newSize; ++j, ++k)
+				adArr[k] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
+		}
 	}
+	printAndChooseFromAdArr(newSize, adArr);//prints all ads
 	return adArr;//double pointer array of ads
 }
 
@@ -1059,14 +1127,18 @@ void orderConfirmation(landlord* l, date* d)
 	//generate random order number
 	srand(time(NULL));
 	int num = rand() % 100 + 1234;     // num in the range 1234 to 1334
+	int total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear)*l->properties->price;
 	cout << "Your order is complete!" << endl;
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
 	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear;
 	cout << "Total price: " << difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * l->properties->price << "NIS" << endl;
+	cout << "Total price: " << total <<"NIS" <<endl;
 	cout << "Landlord Details:" << endl;
 	cout << "NAME: " << l->fullName << endl;
 	cout << "PHONE NUMBER: " << l->phoneNumber << endl;
+	//call occupy dates
+	//call sum of deals
 }
 
 //-------total rent sum
@@ -1388,6 +1460,9 @@ void DeleteAd(ad* adsArr, int& adsize, int index)
 //-------------calculate and update rates
 void rateProperty(ad* a)
 {
+	time_t t = time(ZERO);
+	tm* now = localtime(&t);
+	if ()
 	int temp;
 	cout << "Welcome to the rating system!" << endl;
 	do

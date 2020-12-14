@@ -40,9 +40,9 @@ void printLandlordToFile(int size, landlord* landlordArr);
 void printAdsToFile(int size, ad* adsArr);
 void printTravelerToFile(int size, traveler* travelerArr);
 void readFromFile(landlord* landlordArr, traveler* travelerArr);
-void readLandlordFromFile(landlord* landlordArr);//read all landlord
-void readAdsFromFile(int size, ad* adsArr);	//read ads for landlord
-void readTravelerFromFile(traveler* travelerArr);
+int readLandlordFromFile(landlord* landlordArr);//read all landlord
+int readAdsFromFile(int size, ad* adsArr);	//read ads for landlord
+int readTravelerFromFile(traveler* travelerArr);
 int landlordSignIn(int size, landlord* landlordArr);
 int travelerSignIn(int size, traveler* travelerArr);
 void travelerSignUp(traveler* travelerArr, int size);
