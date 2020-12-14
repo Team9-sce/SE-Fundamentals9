@@ -1885,3 +1885,40 @@ void Register(landlord* landlordsArr, int& landlordSize, traveler* travelersArr,
 		}
 	}
 }
+
+void MainPage(landlord* landlordsArr, int& landlordSize, traveler* travelersArr, int& travelersSize)
+{
+	system("CLS");
+	int landlord_index = NOT_FOUND;
+
+	int choise = 0;
+	while (choise != 4)
+	{
+		cout << "main menu:"//need to be changed! add beutiful header.
+			<< "1) Log in as traveler." << endl
+			<< "2) Log in as landlord." << endl
+			<< "3) Register." << endl
+			<< "4) Exit." << endl
+			<< "Please enter your choise:" << endl;
+		cin >> choise;
+		switch (choise)
+		{
+		case 1:
+			//travelerSignIn
+			break;
+		case 2:
+			landlord_index = landlordSignIn(landlordSize, landlordsArr);
+			break;
+		case 3:
+			Register(landlordsArr, landlordSize, travelersArr, travelersSize);
+			break;
+		case 4:
+			cout << "Good bye!";
+			break;
+		default:
+			cout << "Wrong choise!!\nTry again: ";
+			break;
+		}
+
+	}
+}
