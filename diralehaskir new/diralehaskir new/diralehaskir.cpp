@@ -4,7 +4,7 @@
 //#include <datetimeapi.h>// or another maybe??? 
 using namespace std;
 
-
+/*
 //-------------print to file
 void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, traveler* travelerArr) {
 	printLandlordToFile(landlordSize, landlordArr);//print all landlords
@@ -317,9 +317,9 @@ void readTravelerFromFile(traveler* travelerArr) {
 	}
 	inFile.close();//close file
 }//return value???
-
- //-------------sign in
-int landlordSignIn(int size, landlord* landlordArr) {//returns true if login successful
+*/
+//-------------sign in
+int landlordSignIn(int size, landlord** landlordArr) {//returns true if login successful
 	string tempId, tempPass;
 	cout << "***LANDLORD - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get id input
@@ -332,7 +332,7 @@ int landlordSignIn(int size, landlord* landlordArr) {//returns true if login suc
 		return NOT_FOUND;
 	}
 	//find index for landlord in array by id- assuming no two identical id's
-	int index = findLandlordById(size, landlordArr, tempId);
+	int index = findLandlordById(size, *landlordArr, tempId);
 	if (index == NOT_FOUND) {//landlord not found
 		cout << "No such ID..." << endl;
 		return NOT_FOUND;
@@ -349,7 +349,7 @@ int landlordSignIn(int size, landlord* landlordArr) {//returns true if login suc
 		cout << "Incorrect password...try again." << endl;
 		return NOT_FOUND;
 	}
-	if (tempPass != landlordArr[index].password) {//password equal
+	if (tempPass != landlordArr[index]->password) {//password equal
 		cout << "Incorrect password...try again." << endl;
 		return NOT_FOUND;
 	}
@@ -364,7 +364,7 @@ bool isStringAllDig(string str) {//check id the string is all digits
 	return true;
 }
 //-------------find landlord by id
-int findLandlordById(int size,const landlord* const landlordArr, string id) {
+int findLandlordById(int size, const landlord* const landlordArr, string id) {
 	int i = 0;
 	for (; i < size; ++i) {
 		if (landlordArr[i].id == id)//if equal
@@ -373,7 +373,7 @@ int findLandlordById(int size,const landlord* const landlordArr, string id) {
 	return NOT_FOUND;
 }
 
-int travelerSignIn(int size, traveler* travelerArr){
+int travelerSignIn(int size, traveler** travelerArr) {
 	string tempName, tempPass;
 	cout << "***TRAVELER - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get name input
@@ -388,7 +388,7 @@ int travelerSignIn(int size, traveler* travelerArr){
 		return NOT_FOUND;
 	}
 	//find index for traveler in array by name- assuming no two identical names
-	int index = findTravelerByName(size, travelerArr, tempName);
+	int index = findTravelerByName(size, *travelerArr, tempName);
 	if (index == NOT_FOUND) {//traveler not found
 		cout << "No such user..." << endl;
 		return NOT_FOUND;
@@ -405,7 +405,7 @@ int travelerSignIn(int size, traveler* travelerArr){
 		cout << "Incorrect password...try again." << endl;
 		return NOT_FOUND;
 	}
-	if (tempPass != travelerArr[index].password) {//password equal
+	if (tempPass != travelerArr[index]->password) {//password equal
 		cout << "Incorrect password...try again." << endl;
 		return not NOT_FOUND;
 	}
@@ -413,7 +413,7 @@ int travelerSignIn(int size, traveler* travelerArr){
 }
 
 //-------------find traveler by full name
-int findTravelerByName(int size, const traveler* const travelerArr, string name)
+int findTravelerByName(int size, const traveler* travelerArr, string name)
 {
 	int i = 0;
 	for (; i < size; ++i) {
@@ -425,7 +425,7 @@ int findTravelerByName(int size, const traveler* const travelerArr, string name)
 
 //-------------sign up(after successful signup redirect to signin)-add new user to db
 void landlordSignUp(int size, landlord* landlordArr) {
-	
+
 	bool flag = true;
 	landlord tempL;
 	string buffer;
@@ -444,7 +444,7 @@ void landlordSignUp(int size, landlord* landlordArr) {
 		cout << "Incorrect length, try again." << endl;
 	} while (flag);
 	tempL.fullName = buffer;
-	
+
 	//get phone number
 	do {
 		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
@@ -518,11 +518,11 @@ void landlordSignUp(int size, landlord* landlordArr) {
 
 }//return value???
 
-bool isStringAllLetters(string str) {
-	for (int i = 0; i < str.length(); ++i) {
-		if (!isalpha(str[i]))//if false
+bool isStringAllLetters(string str)
+{
+	for (int i = 0; i < str.length(); ++i)
+		if (!isalpha(str[i]) && str[i] != ' ')
 			return false;
-	}
 	return true;
 }
 void travelerSignUp(traveler* travelerArr, int size)
@@ -578,7 +578,7 @@ void travelerSignUp(traveler* travelerArr, int size)
 	} while (flag);
 	tempT.password = buffer;
 }
-
+/*
 //-------------sort(display options in loop)
 //------sort by low lo high*************************************************************
 bool sortByLTH(ad* ad1, ad* ad2) {
@@ -598,7 +598,8 @@ bool sortByPopularity(ad* ad1, ad* ad2) {
 		return true;
 	return false;
 }
-// An optimized version of Bubble Sort************************************************** 
+// An optimized version of Bubble Sort**************************************************
+/*
 void bubbleSort(int size, ad** adArr, int mode = 0)
 {
 	int i, j;
@@ -627,12 +628,14 @@ void bubbleSort(int size, ad** adArr, int mode = 0)
 				}
 			}
 		}
-		// IF no two elements were swapped by inner loop, then break 
+		// IF no two elements were swapped by inner loop, then break
 		if (swapped == false)
 			break;
 	}
 }
+
 //------sort by dates***************************************************************
+
 ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr) {
 	//get date
 	date d = validDateInput();
@@ -701,7 +704,7 @@ ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr) {
 	}
 	return adArr;//double pointer array of ads
 }
-
+*/
 //-------------filter(display options in loop)
 ad** filterAds(int& newSize, ad** adArr, int size, landlord* arr) {//***********************
 	amenities filters = amenitiesCtor();//gets amenities from user
@@ -717,7 +720,7 @@ ad** filterAds(int& newSize, ad** adArr, int size, landlord* arr) {//***********
 			}
 		}
 		try {
-			adArr = new ad*[newSize];
+			adArr = new ad * [newSize];
 			if (!adArr)
 				throw("allocation failed in filter ads");
 		}
@@ -771,7 +774,7 @@ ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//****N
 		newSize += arr[i].adSize;
 	}
 	try {
-		adArr = new ad*[newSize];
+		adArr = new ad * [newSize];
 		if (!adArr)
 			throw("allocation failed in filter ads");
 	}
@@ -787,8 +790,8 @@ ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//****N
 	for (int i = 0; i < size; ++i) {
 		for (int j = 0; j < arr[i].adSize; ++j) {
 			//check if amenities equal
-			if ()
-				adArr[i] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
+			//if ()
+			adArr[i] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
 		}
 	}
 	return adArr;//double pointer array of ads
@@ -830,7 +833,7 @@ ad** searchAds(int& newSize, ad** adArr, int size, landlord* arr) {
 			}
 		}
 		try {
-			adArr = new ad*[newSize];
+			adArr = new ad * [newSize];
 			if (!adArr)
 				throw("allocation failed in filter ads");
 		}
@@ -889,7 +892,7 @@ bool iequals(const string& a, const string& b)//compare strings, insenstive to l
 	return true;
 }
 //-------------dates availability------------------------------------------------------ 
-bool isDateAvailable(date d, const date& adDate) 
+bool isDateAvailable(date d, const date& adDate)
 {//doesn't check validity of dates, needs to happen prior
 
 	//checkin= d.fromDate, checkout= d.toDate, beginning= adDate.fromDate, ending= adDate.toDate
@@ -901,7 +904,7 @@ bool isDateAvailable(date d, const date& adDate)
 		return false;
 	return true;
 }//checks if dated are overlapping, false if UNavailable
-
+/*
 bool legalInput(int day, int month, int year, int mode = 0) {//-------------------------------------------
 	time_t t = time(ZERO);
 	tm* now = localtime(&t);
@@ -1008,7 +1011,7 @@ date validDateInput() {//-------------------------------------------------------
 	} while (confirm);
 	return dt;
 }//returns date with valid input from user
-
+*/
 void printDate(const date& t) {//---------------------------------------------------
 	cout << "CHECK IN: ";
 	cout << t.fromDay << "/" << t.fromMonth << "/" << t.fromYear << endl;
@@ -1016,12 +1019,6 @@ void printDate(const date& t) {//-----------------------------------------------
 	cout << t.toDay << "/" << t.toMonth << "/" << t.toYear << endl;
 }
 
-//-------------occupy dates
-void occupyDates(date d, ad* a)
-{
-	ReallococcupyDatesArr(a);
-	a->occupied[a->dateSize - 1] = d;
-}
 
 void ReallococcupyDatesArr(ad* a)
 {
@@ -1031,20 +1028,29 @@ void ReallococcupyDatesArr(ad* a)
 	delete[] a->occupied;
 	a->occupied = temp;
 }
+
+//-------------occupy dates
+void occupyDates(date d, ad* a)
+{
+	ReallococcupyDatesArr(a);
+	a->occupied[a->dateSize - 1] = d;
+}
+
+
 //-------------confirm credit card info
 bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID)
 {
-    time_t t = time(0);
-    tm* now = localtime(&t);
-    
-    if(!isStringAllDig(cardNumber) || cardNumber.length() != 16) return false;//check card number
-    if(!isStringAllDig(expirationYear) || stoi(expirationYear) < (now->tm_year + 1900) || (stoi(expirationYear) + 1900) > 9999) return false;//check expiration year
-    if((stoi(expirationYear) == now->tm_year + 1900) && (!isStringAllDig(expirationMonth) || stoi(expirationMonth) < (now->tm_mon + 1) || stoi(expirationMonth) > 12)) return false;//check expiration month if expiration year is current year
-    if(!isStringAllDig(expirationMonth) || stoi(expirationMonth) < 0 || stoi(expirationMonth) > 12) return false;//check expiration month otherwise
-    if(!isStringAllDig(cvv) || cvv.length() != 3) return false;//check cvv
-    if(!isStringAllDig(ownerID) || ownerID.length() != 9) return false;//check ID
-    
-    return true;//if nothing wrong was found
+	time_t t = time(0);
+	tm* now = localtime(&t);
+
+	if (!isStringAllDig(cardNumber) || cardNumber.length() != 16) return false;//check card number
+	if (!isStringAllDig(expirationYear) || stoi(expirationYear) < (now->tm_year + 1900) || (stoi(expirationYear) + 1900) > 9999) return false;//check expiration year
+	if ((stoi(expirationYear) == now->tm_year + 1900) && (!isStringAllDig(expirationMonth) || stoi(expirationMonth) < (now->tm_mon + 1) || stoi(expirationMonth) > 12)) return false;//check expiration month if expiration year is current year
+	if (!isStringAllDig(expirationMonth) || stoi(expirationMonth) < 0 || stoi(expirationMonth) > 12) return false;//check expiration month otherwise
+	if (!isStringAllDig(cvv) || cvv.length() != 3) return false;//check cvv
+	if (!isStringAllDig(ownerID) || ownerID.length() != 9) return false;//check ID
+
+	return true;//if nothing wrong was found
 }
 
 //-------------print deal confirmation(to screen)
@@ -1057,7 +1063,7 @@ void orderConfirmation(landlord* l, date* d)
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
 	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear;
-	cout << "Total price: " << difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear)*l->properties->price <<"NIS" <<endl;
+	cout << "Total price: " << difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * l->properties->price << "NIS" << endl;
 	cout << "Landlord Details:" << endl;
 	cout << "NAME: " << l->fullName << endl;
 	cout << "PHONE NUMBER: " << l->phoneNumber << endl;
@@ -1087,6 +1093,7 @@ void printFaq()
 		<< "At the end of rent time a rating screen will be available in which you can rate your stay." << endl;
 }
 //-------------travelers homepage
+/*
 void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr) {//NOT FINISHED*******
 	int choice = 0;
 	int newSize = NOT_FOUND;
@@ -1170,7 +1177,7 @@ void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr) {//NOT F
 	} while (choice != 0);
 	cout << "THANK YOU! Logging out..." << endl;
 }
-
+*/
 //-------------landlord menu
 
 //-------------new ad
@@ -1396,8 +1403,7 @@ void rateProperty(ad* a)
 //-------------prints ad for traveler(to screen)
 int printAndChooseFromAdArr(int newSize, ad** adArr) {//*********************************************
 	//print for TRAVELER to choose from
-	int i = 0;
-	for (; i < newSize; ++i) {
+	for (int i = 0; i < newSize; ++i) {
 		cout << "NUMBER " << i + 1 << " :" << endl
 			<< "**==============================**" << endl;
 		cout << "Ad description: " << adArr[i]->description << endl;
@@ -1492,10 +1498,6 @@ int DaysCountFrom1900(int year, int month, int day)
 }
 //-------------total gainings for landlord
 //-------------calculate the profit from an ad.
-int AdProfit(int sum)
-{
-	
-}
 //-------------calculates landlords profit from all his ads.
 
 //-------------Landlords menu : sub fuction- realloc the the ads array and adds 1 more ad.
@@ -1639,24 +1641,25 @@ void swap(ad* ad1, ad* ad2)//***************************************************
 }
 
 
-void RealloctravelersArr(traveler* arr, int size)
+void RealloctravelersArr(traveler** arr, int& size)
 {
-	traveler* tmp = new traveler[size + 1];
-	for (int i = 0; i < size; i++) tmp[i] = arr[i];
 	size++;
+	traveler** tmp = new traveler * [size];
+	if (!tmp) cout << "Memory allocate fail!" << endl;
+	for (int i = 0; i < size - 1; i++) tmp[i] = arr[i];
 	delete[] arr;
 	arr = tmp;
 }
-void ReallocLandlordsArr(landlord* arr, int size)
+void ReallocLandlordsArr(landlord** arr, int size)
 {
-	landlord* tmp = new landlord[size + 1];
+	landlord** tmp = new landlord * [size + 1];
 	for (int i = 0; i < size; i++) tmp[i] = arr[i];
 	size++;
 	delete[] arr;
 	arr = tmp;
 }
 
-void Register(landlord* landlordsArr, int& landlordSize, traveler* travelersArr, int& travelersSize)
+void Register(landlord** landlordsArr, int& landlordSize, traveler** travelersArr, int& travelersSize)
 {
 	system("CLS");
 	int choise = 1;
@@ -1665,17 +1668,24 @@ void Register(landlord* landlordsArr, int& landlordSize, traveler* travelersArr,
 		cout << "Register:" << endl
 			<< "1)Landlord." << endl
 			<< "2)Traveler." << endl
-			<< "Please enter your choise: " << endl;
+			<< "3)Return to previous menu." << endl
+			<< "Please enter your choise: ";
 		cin >> choise;
 		switch (choise)
 		{
 		case 1:
-			//RegisterLandlord
+			RegisterLandlord(landlordsArr, landlordSize, travelersArr, travelersSize);
+			//update db
 			system("CLS");
 			break;
 		case 2:
-			//RegisterTraveler
+			RegisterTraveler(travelersArr, travelersSize);
+			//update db
+			//RealloctravelersArr(travelersArr, travelersSize);
+			//cout << trv->phoneNumber;
+			//travelersArr[travelersSize - 1] = NewTraveler();
 			system("CLS");
+			cout << "Traveler added successfuly!" << endl;
 			break;
 		case 3:
 			system("CLS");
@@ -1687,28 +1697,30 @@ void Register(landlord* landlordsArr, int& landlordSize, traveler* travelersArr,
 	}
 }
 
-void MainPage(landlord* landlordsArr, int& landlordSize, traveler* travelersArr, int& travelersSize)
+void MainPage(landlord** landlordsArr, int& landlordSize, traveler** travelersArr, int& travelersSize)
 {
-	system("CLS");
+	//system("CLS");
 	int landlord_index = NOT_FOUND;
-
+	int traveler_index = NOT_FOUND;
 	int choise = 0;
 	while (choise != 4)
 	{
-		cout << "main menu:"//need to be changed! add beutiful header.
+		cout << "main menu:" << endl//need to be changed! add beutiful header.
 			<< "1) Log in as traveler." << endl
 			<< "2) Log in as landlord." << endl
 			<< "3) Register." << endl
 			<< "4) Exit." << endl
-			<< "Please enter your choise:" << endl;
+			<< "Please enter your choise:";
 		cin >> choise;
 		switch (choise)
 		{
 		case 1:
-			//travelerSignIn
+			traveler_index = travelerSignIn(travelersSize, travelersArr);
+			cout << traveler_index;
 			break;
 		case 2:
-			landlord_index = landlordSignIn(landlordSize, landlordsArr);
+			landlord_index = landlordSignIn(landlordSize, landlordsArr);// -  change to duble pointer.
+			cout << landlord_index;
 			break;
 		case 3:
 			Register(landlordsArr, landlordSize, travelersArr, travelersSize);
@@ -1725,200 +1737,6 @@ void MainPage(landlord* landlordsArr, int& landlordSize, traveler* travelersArr,
 }
 
 
-string ValidLocation()
-{
-	//Location format <House no> / <appartment> <street> , <city>, <country> 
-	string location = "";
-	string tmp;
-	int num;
-	cout << "Please enter house number:";
-	cin >> num;
-	location += to_string(num) + " / ";
-	cout << "Please enter appartment number:";
-	cin >> num;
-	location += to_string(num) + " ";
-	cout << "Please enter street name: ";
-	cin.ignore();
-	getline(cin, tmp);
-	location += tmp + ", ";
-	cout << "Please enter city: ";
-	cin >> tmp;
-	location += tmp + ", ";
-	cout << "Please enter country: ";
-	cin >> tmp;
-	location += tmp + ".";
-	return location;
-}
-int ValidInput(int min, int max)
-{
-	//gets int as input from user: (min <= USER_INPUT <= max)
-	//if wrong gets another one and prints error message.
-	int num;
-	cin >> num;
-	while (num < min || num >max)
-	{
-		cout << "Wrong number!\n Must be: " << min << " <= YOUR_NUMBER <= " << max << ": " << endl;
-		cin >> num;
-	}
-	return num;
-}
-bool ValidInput(char truevaluechar)
-{//returns true for 'truevaluechar' else return false.
-	char tmp;
-	cin >> tmp;
-	if (tmp == truevaluechar) return true;
-	else return false;
-}
-amenities amenitiesCtor()
-{//User input for each amenity.
-	amenities obj;
-	cout << "enter 'y' for yes, other for no" << endl;
-	cout << AMENITIES_NAMES[0] << ": ";
-	obj.disabledAccess = ValidInput('y');
-	cout << AMENITIES_NAMES[1] << ": ";
-	obj.wifi = ValidInput('y');
-	cout << AMENITIES_NAMES[2] << ": ";
-	obj.kitchen = ValidInput('y');
-	cout << AMENITIES_NAMES[3] << ": ";
-	obj.tv = ValidInput('y');
-	cout << AMENITIES_NAMES[4] << ": ";
-	obj.balcony = ValidInput('y');
-	cout << AMENITIES_NAMES[5] << ": ";
-	obj.washingMachine = ValidInput('y');
-	cout << AMENITIES_NAMES[6] << ": ";
-	obj.airConditioning = ValidInput('y');
-	cout << AMENITIES_NAMES[7] << ": ";
-	obj.swimmingPool = ValidInput('y');
-	cout << AMENITIES_NAMES[8] << ": ";
-	obj.parkingLot = ValidInput('y');
-	return obj;
-}
-ad NewAd()
-{//User input for new ad.
-	ad newAd;
-	newAd.available = true;
-	cout << "New ad: " << endl;
-	cout << "Ad discription: ";
-	getline(cin, newAd.description);
-	cout << "Price: ";
-	newAd.price = ValidInput(ZERO, INT_MAX);
-	cout << "Discount(0 ~ 100): ";
-	newAd.discount = ValidInput(ZERO, 100);
-
-	newAd.location = ValidLocation();
-
-	cout << "Number of people(up to 30): ";
-	newAd.numOfPeople = ValidInput(1, 30);
-	cout << "Number of rooms(up to 15): ";
-	newAd.numOfRooms = ValidInput(1, 15);
-	cout << "Number of beds(up to 30): ";
-	newAd.numOfBeds = ValidInput(1, 30);
-	cout << "Atractions: ";
-	getchar();
-	getline(cin, newAd.attraction);
-	cout << "Select amenities: ";
-	newAd.ameNities = amenitiesCtor();
-	newAd.rating = 0;
-	return newAd;
-}
-void PrintAmenities(amenities obj)
-{
-	string str = "Amenities:";
-	if (obj.disabledAccess) str += AMENITIES_NAMES[0] + ", ";
-	if (obj.wifi) str += AMENITIES_NAMES[1] + ", ";
-	if (obj.kitchen) str += AMENITIES_NAMES[2] + ", ";
-	if (obj.tv) str += AMENITIES_NAMES[3] + ", ";
-	if (obj.balcony) str += AMENITIES_NAMES[4] + ", ";
-	if (obj.washingMachine) str += AMENITIES_NAMES[5] + ", ";
-	if (obj.airConditioning) str += AMENITIES_NAMES[6] + ", ";
-	if (obj.swimmingPool) str += AMENITIES_NAMES[7] + ", ";
-	if (obj.parkingLot) str += AMENITIES_NAMES[8] + ", ";
-	str[str.length() - 2] = '.';
-	cout << str << endl;
-}
-void PrintAd(ad obj)
-{
-	cout << ADSBREAK << endl;
-	cout << "Location: " << obj.location << endl;
-	cout << "Ad discription: " << obj.description << endl;
-	cout << "Price before discount: " << obj.price << endl;
-	cout << "Price after discount:  " << AdDiscountedPrice(obj) << endl;
-	cout << "Discount: " << obj.discount << "%" << endl;
-	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
-	cout << "Atractions: " << obj.attraction << endl;
-	PrintAmenities(obj.ameNities);
-}
-void EditAdMenu(ad* ad)
-{
-	int choose = 1;
-	while (choose)
-	{
-		system("CLS");
-		cout << "Edit ad menu.\nYour ad:" << endl;
-		PrintAd(*ad);
-		cout << ADSBREAK << endl;
-		cout << "What you want to edit?" << endl;
-		cout << "1)Change avilability (now: " << ad->available << ")." << endl
-			<< "2)Change Discription." << endl
-			<< "3)Change Price." << endl
-			<< "4)Change Discount." << endl
-			<< "5)Change num of people." << endl
-			<< "6)Change num of rooms." << endl
-			<< "7)Change num of beds." << endl
-			<< "8)Edit amenities." << endl
-			<< "9)Change attractions." << endl
-			<< "0)Back to previous menu." << endl
-			<< "Please enter your choise: ";
-		cin >> choose;
-		switch (choose)
-		{
-		case 1:
-			ad->available = !ad->available;
-			break;
-		case 2:
-			cout << "Enter new discription:";
-			cin.ignore();
-			getline(cin, ad->description);
-			break;
-		case 3:
-			cout << "Enter new price: ";
-			ad->price = ValidInput(ZERO, INT_MAX);
-			break;
-		case 4:
-			cout << "Enter new discount: ";
-			ad->discount = ValidInput(ZERO, 100);
-			break;
-		case 5:
-			cout << "People amount(up to 30): ";
-			ad->numOfPeople = ValidInput(1, 30);
-			break;
-		case 6:
-			cout << "Amount of rooms(up to 15): ";
-			ad->numOfRooms = ValidInput(1, 15);
-			break;
-		case 7:
-			cout << "Number of beds(up to 30): ";
-			ad->numOfBeds = ValidInput(1, 30);
-			break;
-		case 8:
-			cout << "Select amenities: ";
-			ad->ameNities = amenitiesCtor();
-			break;
-		case 9:
-			cout << "Enter new attractions:";
-			cin.ignore();
-			getline(cin, ad->attraction);
-			break;
-		case 0:
-			return;
-			break;
-		default:
-			cout << "You entered wrong choise!!\n Try again: ";
-			cin >> choose;
-			break;
-		}
-	}
-}
 void PrintLandlordsAds(landlord ll)
 {
 	if (!ll.adSize)
@@ -1932,29 +1750,77 @@ void PrintLandlordsAds(landlord ll)
 	}
 	cout << ADSBREAK << endl;
 }
-traveler NewTraveler()
+
+string NameInput()
 {
-	traveler trv;
-	cout << "Please enter Full name: ";
-	cin.ignore();
-	getline(cin, trv.fullName);
-	cout << "Please enter Phone number: ";
-	cin.ignore();
-	getline(cin, trv.phoneNumber);
-	cout << "Please enter Password: ";
-	cin.ignore();
-	getline(cin, trv.password);
+	bool flag;
+	string buffer;
+	do {
+		flag = false;
+		cout << "Name must be up to  " << MAX_NAME << " letters only." << endl;
+		cout << "Please enter your full name:";
+		cin.ignore();
+		getline(cin, buffer);
+		if (!(buffer.length() <= MAX_NAME && buffer.length() > 0)) flag = true;
+		if (!isStringAllLetters(buffer)) flag = true;
+		if (flag) cout << "Incorrect input, try again." << endl;
+	} while (flag);
+	return buffer;
+}
+string PhoneInput()
+{
+	bool flag;
+	string buffer;
+	do {
+		flag = false;
+		cout << "PhoneNumber must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
+		cout << "Please enter your phoneNumber:";
+		getline(cin, buffer);
+		if (buffer.length() != MAX_PHONE) flag = true;
+		if (!isStringAllDig(buffer)) flag = true;
+		if (flag) cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	return buffer;
+}
+string PasswordInput()
+{
+	bool flag;
+	string buffer;
+	do {
+		flag = false;
+		cout << "Password can be minimum: " << MIN_PASSWORD
+			<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
+			<< "Can contain any characters you wish except 'enter'." << endl;
+		cout << "Please enter your password:";
+		getline(cin, buffer);
+		//check length and input correctness
+		if (buffer.length() < MIN_PASSWORD || buffer.length() > MAX_PASSWORD) flag = true;
+		if (flag) cout << "Incorrect length, try again." << endl;
+	} while (flag);
+	return buffer;
+}
+traveler* NewTraveler()
+{
+	traveler* trv = new traveler;
+	trv->fullName = NameInput();
+	trv->phoneNumber = PhoneInput();
+	trv->password = PasswordInput();
+	cout << "NewTraveler: " << trv->fullName << endl;
+	cout << "NewTraveler: " << trv->phoneNumber << endl;
+	cout << "NewTraveler: " << trv->password << endl;
 	return trv;
 }
-void RegisterTraveler(traveler* travelersArr, int& travelersSize)
+void RegisterTraveler(traveler** travelersArr, int& size)
 {
-	traveler* tmp = new traveler[travelersSize + 1];
-	for (int i = 0; i < travelersSize; i++)
-		tmp[i] = travelersArr[i];
-	tmp[travelersSize] = NewTraveler();
-	delete[] travelersArr;
-	travelersSize++;
+	size++;
+	traveler** tmp = new traveler * [size];
+	if (!tmp) cout << "Memory allocate fail!" << endl;
+	for (int i = 0; i < size - 1; i++) tmp[i] = travelersArr[i];
 	travelersArr = tmp;
+	//cout << trv->phoneNumber;
+	travelersArr[size - 1] = NewTraveler();
+	//cout <<endl<<"dd: "<< trv->password;
+	cout << travelersArr[size - 1]->phoneNumber;
 }
 string ValidId()
 {
@@ -1991,23 +1857,28 @@ string ValidEmail()
 	}
 	return email;
 }
-void RegisterLandlord(landlord* landlordsArr, int& landlordSize, traveler* travelersArr, int& travelersSize)
+void RegisterLandlord(landlord** landlordsArr, int& landlordSize, traveler** travelersArr, int& travelersSize)
 {
 	RegisterTraveler(travelersArr, travelersSize);
-	landlord newLandlord;
-	newLandlord.fullName = travelersArr[travelersSize - 1].fullName;
-	newLandlord.phoneNumber = travelersArr[travelersSize - 1].phoneNumber;
-	newLandlord.password = travelersArr[travelersSize - 1].password;
-	newLandlord.id = ValidId();
-	newLandlord.email = ValidEmail();
-	newLandlord.sumOfDeals = 0;
-	newLandlord.adSize = 0;
-	landlord* tmp = new landlord[landlordSize + 1];
-	for (int i = 0; i < landlordSize; i++)
-		tmp[i] = landlordsArr[i];
-	tmp[landlordSize] = newLandlord;
-	landlordSize++;
-	delete[] landlordsArr;
-	landlordsArr = tmp;
-
+	landlord* newLandlord = new landlord;
+	newLandlord->fullName = travelersArr[travelersSize - 1]->fullName;
+	newLandlord->phoneNumber = travelersArr[travelersSize - 1]->phoneNumber;
+	newLandlord->password = travelersArr[travelersSize - 1]->password;
+	newLandlord->id = ValidId();
+	newLandlord->email = ValidEmail();
+	newLandlord->sumOfDeals = 0;
+	newLandlord->adSize = 0;
+	ReallocLandlordsArr(landlordsArr, landlordSize);
+	landlordsArr[landlordSize - 1] = newLandlord;
 }
+
+int main()
+{
+	landlord** landlord_arr = new landlord*[0];
+	int landlord_arr_size = 0;
+	traveler** travelers_arr = new traveler*[0];
+	int travelers_arr_size = 0;
+	MainPage(landlord_arr, landlord_arr_size, travelers_arr, travelers_arr_size);
+	return 0;
+}
+

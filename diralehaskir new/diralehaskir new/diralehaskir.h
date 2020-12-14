@@ -73,6 +73,7 @@ bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy);
 bool isDateAvailable(date d, const date& adDate);
 bool legalInput(int day, int month, int year, int mode = 0);
 date validDateInput();
+void deleteAdArr(ad** arr);
 void printDate(const date& t);
 string strToLower(string a);
 bool iequalsContain(const string& a, const string& b);
@@ -87,5 +88,21 @@ int printAndChooseFromAdArr(int newSize, ad** adArr);
 void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr);
 bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID);//confirm credit card details
 
+
+
+string ValidLocation();
+int ValidInput(int min, int max);
+bool ValidInput(char truevaluechar);
+amenities amenitiesCtor();
+ad NewAd();
+void PrintAmenities(amenities obj);
+void PrintAd(ad obj);
+void EditAdMenu(ad* ad);
+void PrintLandlordsAds(landlord ll);
+traveler* NewTraveler();
+void RegisterTraveler(traveler** travelersArr, int& travelersSize);
+string ValidId();
+string ValidEmail();
+void RegisterLandlord(landlord** landlordsArr, int& landlordSize, traveler** travelersArr, int& travelersSize);
 
 #endif // !DIRALEHASKIR_H
