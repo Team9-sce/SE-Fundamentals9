@@ -1912,3 +1912,292 @@ void MainPage(landlord* landlordsArr, int& landlordSize, traveler* travelersArr,
 
 	}
 }
+
+
+string ValidLocation()
+{
+	//Location format <House no> / <appartment> <street> , <city>, <country> 
+	string location = "";
+	string tmp;
+	int num;
+	cout << "Please enter house number:";
+	cin >> num;
+	location += to_string(num) + " / ";
+	cout << "Please enter appartment number:";
+	cin >> num;
+	location += to_string(num) + " ";
+	cout << "Please enter street name: ";
+	cin.ignore();
+	getline(cin, tmp);
+	location += tmp + ", ";
+	cout << "Please enter city: ";
+	cin >> tmp;
+	location += tmp + ", ";
+	cout << "Please enter country: ";
+	cin >> tmp;
+	location += tmp + ".";
+	return location;
+}
+int ValidInput(int min, int max)
+{
+	//gets int as input from user: (min <= USER_INPUT <= max)
+	//if wrong gets another one and prints error message.
+	int num;
+	cin >> num;
+	while (num < min || num >max)
+	{
+		cout << "Wrong number!\n Must be: " << min << " <= YOUR_NUMBER <= " << max << ": " << endl;
+		cin >> num;
+	}
+	return num;
+}
+bool ValidInput(char truevaluechar)
+{//returns true for 'truevaluechar' else return false.
+	char tmp;
+	cin >> tmp;
+	if (tmp == truevaluechar) return true;
+	else return false;
+}
+amenities amenitiesCtor()
+{//User input for each amenity.
+	amenities obj;
+	cout << "enter 'y' for yes, other for no" << endl;
+	cout << AMENITIES_NAMES[0] << ": ";
+	obj.disabledAccess = ValidInput('y');
+	cout << AMENITIES_NAMES[1] << ": ";
+	obj.wifi = ValidInput('y');
+	cout << AMENITIES_NAMES[2] << ": ";
+	obj.kitchen = ValidInput('y');
+	cout << AMENITIES_NAMES[3] << ": ";
+	obj.tv = ValidInput('y');
+	cout << AMENITIES_NAMES[4] << ": ";
+	obj.balcony = ValidInput('y');
+	cout << AMENITIES_NAMES[5] << ": ";
+	obj.washingMachine = ValidInput('y');
+	cout << AMENITIES_NAMES[6] << ": ";
+	obj.airConditioning = ValidInput('y');
+	cout << AMENITIES_NAMES[7] << ": ";
+	obj.swimmingPool = ValidInput('y');
+	cout << AMENITIES_NAMES[8] << ": ";
+	obj.parkingLot = ValidInput('y');
+	return obj;
+}
+ad NewAd()
+{//User input for new ad.
+	ad newAd;
+	newAd.available = true;
+	cout << "New ad: " << endl;
+	cout << "Ad discription: ";
+	getline(cin, newAd.description);
+	cout << "Price: ";
+	newAd.price = ValidInput(ZERO, INT_MAX);
+	cout << "Discount(0 ~ 100): ";
+	newAd.discount = ValidInput(ZERO, 100);
+
+	newAd.location = ValidLocation();
+
+	cout << "Number of people(up to 30): ";
+	newAd.numOfPeople = ValidInput(1, 30);
+	cout << "Number of rooms(up to 15): ";
+	newAd.numOfRooms = ValidInput(1, 15);
+	cout << "Number of beds(up to 30): ";
+	newAd.numOfBeds = ValidInput(1, 30);
+	cout << "Atractions: ";
+	getchar();
+	getline(cin, newAd.attraction);
+	cout << "Select amenities: ";
+	newAd.ameNities = amenitiesCtor();
+	newAd.rating = 0;
+	return newAd;
+}
+void PrintAmenities(amenities obj)
+{
+	string str = "Amenities:";
+	if (obj.disabledAccess) str += AMENITIES_NAMES[0] + ", ";
+	if (obj.wifi) str += AMENITIES_NAMES[1] + ", ";
+	if (obj.kitchen) str += AMENITIES_NAMES[2] + ", ";
+	if (obj.tv) str += AMENITIES_NAMES[3] + ", ";
+	if (obj.balcony) str += AMENITIES_NAMES[4] + ", ";
+	if (obj.washingMachine) str += AMENITIES_NAMES[5] + ", ";
+	if (obj.airConditioning) str += AMENITIES_NAMES[6] + ", ";
+	if (obj.swimmingPool) str += AMENITIES_NAMES[7] + ", ";
+	if (obj.parkingLot) str += AMENITIES_NAMES[8] + ", ";
+	str[str.length() - 2] = '.';
+	cout << str << endl;
+}
+void PrintAd(ad obj)
+{
+	cout << ADSBREAK << endl;
+	cout << "Location: " << obj.location << endl;
+	cout << "Ad discription: " << obj.description << endl;
+	cout << "Price before discount: " << obj.price << endl;
+	cout << "Price after discount:  " << AdDiscountedPrice(obj) << endl;
+	cout << "Discount: " << obj.discount << "%" << endl;
+	cout << "Number of people: " << obj.numOfPeople << "\trooms: " << obj.numOfRooms << "\tbeds: " << obj.numOfBeds << endl;
+	cout << "Atractions: " << obj.attraction << endl;
+	PrintAmenities(obj.ameNities);
+}
+void EditAdMenu(ad* ad)
+{
+	int choose = 1;
+	while (choose)
+	{
+		system("CLS");
+		cout << "Edit ad menu.\nYour ad:" << endl;
+		PrintAd(*ad);
+		cout << ADSBREAK << endl;
+		cout << "What you want to edit?" << endl;
+		cout << "1)Change avilability (now: " << ad->available << ")." << endl
+			<< "2)Change Discription." << endl
+			<< "3)Change Price." << endl
+			<< "4)Change Discount." << endl
+			<< "5)Change num of people." << endl
+			<< "6)Change num of rooms." << endl
+			<< "7)Change num of beds." << endl
+			<< "8)Edit amenities." << endl
+			<< "9)Change attractions." << endl
+			<< "0)Back to previous menu." << endl
+			<< "Please enter your choise: ";
+		cin >> choose;
+		switch (choose)
+		{
+		case 1:
+			ad->available = !ad->available;
+			break;
+		case 2:
+			cout << "Enter new discription:";
+			cin.ignore();
+			getline(cin, ad->description);
+			break;
+		case 3:
+			cout << "Enter new price: ";
+			ad->price = ValidInput(ZERO, INT_MAX);
+			break;
+		case 4:
+			cout << "Enter new discount: ";
+			ad->discount = ValidInput(ZERO, 100);
+			break;
+		case 5:
+			cout << "People amount(up to 30): ";
+			ad->numOfPeople = ValidInput(1, 30);
+			break;
+		case 6:
+			cout << "Amount of rooms(up to 15): ";
+			ad->numOfRooms = ValidInput(1, 15);
+			break;
+		case 7:
+			cout << "Number of beds(up to 30): ";
+			ad->numOfBeds = ValidInput(1, 30);
+			break;
+		case 8:
+			cout << "Select amenities: ";
+			ad->ameNities = amenitiesCtor();
+			break;
+		case 9:
+			cout << "Enter new attractions:";
+			cin.ignore();
+			getline(cin, ad->attraction);
+			break;
+		case 0:
+			return;
+			break;
+		default:
+			cout << "You entered wrong choise!!\n Try again: ";
+			cin >> choose;
+			break;
+		}
+	}
+}
+void PrintLandlordsAds(landlord ll)
+{
+	if (!ll.adSize)
+	{
+		cout << "No ads!" << endl;
+		return;
+	}
+	for (int i = 0; i = ll.adSize; i++)
+	{
+		PrintAd(ll.properties[i]);
+	}
+	cout << ADSBREAK << endl;
+}
+traveler NewTraveler()
+{
+	traveler trv;
+	cout << "Please enter Full name: ";
+	cin.ignore();
+	getline(cin, trv.fullName);
+	cout << "Please enter Phone number: ";
+	cin.ignore();
+	getline(cin, trv.phoneNumber);
+	cout << "Please enter Password: ";
+	cin.ignore();
+	getline(cin, trv.password);
+	return trv;
+}
+void RegisterTraveler(traveler* travelersArr, int& travelersSize)
+{
+	traveler* tmp = new traveler[travelersSize + 1];
+	for (int i = 0; i < travelersSize; i++)
+		tmp[i] = travelersArr[i];
+	tmp[travelersSize] = NewTraveler();
+	delete[] travelersArr;
+	travelersSize++;
+	travelersArr = tmp;
+}
+string ValidId()
+{
+	string id;
+	bool has_only_digits = false;
+	while (!has_only_digits)
+	{
+		cout << "Please enter id(9 digits): ";
+		cin >> id;
+		has_only_digits = true;
+		for (int i = 0; i < id.length(); i++)
+			if (!isdigit(id[i])) has_only_digits = false;
+		if (!has_only_digits) cout << "Wrong id! Please try again!" << endl;
+	}
+	return id;
+}
+string ValidEmail()
+{
+	/// gets a valid email form from user.
+	string email;
+	bool at = false, dot = false;
+	while (!at || !dot)
+	{
+		at = false;
+		dot = false;
+		cout << "Please enter email: ";
+		cin >> email;
+		for (int i = 0; i < email.length(); i++)
+		{
+			if (email[i] == '@') at = true;
+			if (at && email[i] == '.') dot = true;
+		}
+		if (!at || !dot) cout << "Wrong email! Please try again!" << endl;
+	}
+	return email;
+
+}
+void RegisterLandlord(landlord* landlordsArr, int& landlordSize, traveler* travelersArr, int& travelersSize)
+{
+	RegisterTraveler(travelersArr, travelersSize);
+	landlord newLandlord;
+	newLandlord.fullName = travelersArr[travelersSize - 1].fullName;
+	newLandlord.phoneNumber = travelersArr[travelersSize - 1].phoneNumber;
+	newLandlord.password = travelersArr[travelersSize - 1].password;
+	newLandlord.id = ValidId();
+	newLandlord.email = ValidEmail();
+	newLandlord.sumOfDeals = 0;
+	newLandlord.adSize = 0;
+	landlord* tmp = new landlord[landlordSize + 1];
+	for (int i = 0; i < landlordSize; i++)
+		tmp[i] = landlordsArr[i];
+	tmp[landlordSize] = newLandlord;
+	landlordSize++;
+	delete[] landlordsArr;
+	landlordsArr = tmp;
+
+}
