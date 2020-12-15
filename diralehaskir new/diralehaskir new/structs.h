@@ -6,7 +6,7 @@
 #include <string.h>
 using namespace std;
 
-typedef struct amenities{
+typedef struct amenities {
 	bool disabledAccess,
 		wifi,
 		kitchen,
@@ -18,7 +18,7 @@ typedef struct amenities{
 		parkingLot;
 }amenities;
 
-typedef struct date{
+typedef struct date {
 	//start rent:
 	int fromDay,
 		fromMonth,
@@ -42,14 +42,9 @@ typedef struct ad
 	amenities ameNities;
 	string attraction;
 	int rating = 5;
-	string email = NULL;//pointer to landlord's email.
 	int dateSize = 0;
-<<<<<<< Updated upstream
 	date* occupied = NULL; //contains occupied dates.
-	const string* email = NULL; //pointer to landlord's email.
-=======
-	date* occupied = NULL;//contains occupied dates.
->>>>>>> Stashed changes
+	string email; //pointer to landlord's email.
 }ad;
 
 typedef struct traveler {
@@ -59,7 +54,7 @@ typedef struct traveler {
 	date order = { 0,0,0,0,0,0 };
 }traveler;
 
-typedef struct landlord{
+typedef struct landlord {
 	string fullName;
 	string phoneNumber;
 	string password;
@@ -68,6 +63,7 @@ typedef struct landlord{
 	int sumOfDeals = 0;
 	int adSize = 0;
 	ad* properties = NULL;
+	traveler trav;
 }landlord;
 
 
