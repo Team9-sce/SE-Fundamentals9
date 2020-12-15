@@ -977,7 +977,7 @@ void travelerMenu(int trv_index)
 		}
 	}
 }
--------------rate property(on last rent day)
+//-------------rate property(on last rent day)
 
 //-------------calculate and update rates
 void rateProperty(ad* a, traveler trav)
