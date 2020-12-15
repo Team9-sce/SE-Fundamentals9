@@ -47,7 +47,7 @@ void Register();
 traveler NewTraveler();
 void RegisterTraveler();
 void RegisterLandlord();
-//Sing-in funcs:
+//Sign-in funcs:
 int landlordSignIn();
 int findLandlordById(string id);
 int travelerSignIn();
@@ -82,20 +82,18 @@ void RealocateAdsPointer(int landlord_index);
 void PrintLandlordsAds(landlord ll);
 void PrintAmenities(amenities obj);
 //delete allocated data:
-void deleteAllocatedData(int sizeL, landlord* landlordArr, int sizeT, traveler* travelerArr);
-void deleteAdArr();
+void deleteAllocatedData();
+void deleteAdArr(ad** arr);
 //--------------------------------------------------------------
 
-void printToFile(int landlordSize, landlord* landlordArr, int travelerSize, traveler* travelerArr);
-void printLandlordToFile(int size, landlord* landlordArr);
-void printAdsToFile(int size, ad* adsArr);
-void printTravelerToFile(int size, traveler* travelerArr);
-void readFromFile(landlord* landlordArr, traveler* travelerArr);
-void readLandlordFromFile(landlord* landlordArr);//read all landlord
-void readAdsFromFile(int size, ad* adsArr);	//read ads for landlord
-void readTravelerFromFile(traveler* travelerArr);
-int check_leap_year(int year);
-int no_of_days_in_month(int month, int year);
+void printToFile();
+void printLandlordToFile();
+void printAdsToFile();
+void printTravelerToFile();
+void readFromFile();
+void readLandlordFromFile();
+void readAdsFromFile();
+void readTravelerFromFile();
 int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2);
 bool compareAmenities(amenities& filters, amenities obj);//true if equal
 ad** filterAds(int size, landlord* arr);
