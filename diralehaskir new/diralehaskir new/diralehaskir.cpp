@@ -1784,6 +1784,8 @@ int main()
 	//read from file.
 	MainPage();
 	//push to file.
+	printToFile();
+	readFromFile();
 	return 0;
 }
 
