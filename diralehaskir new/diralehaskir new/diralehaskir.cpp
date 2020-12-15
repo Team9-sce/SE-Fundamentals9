@@ -1061,6 +1061,10 @@ int DaysCountFrom1900(int year, int month, int day)
 	}
 	return ans += day - 1;
 }
+int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2)
+{
+	return abs(DaysCountFrom1900(year1, month1, day1) - DaysCountFrom1900(year2, month2, day2));
+}
 //-------------total gainings for landlord
 //-------------calculate the profit from an ad.
 //-------------calculates landlords profit from all his ads.
@@ -1074,10 +1078,6 @@ int DaysCountFrom1900(int year, int month, int day)
 
 
 //difference_of_days
-int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2)
-{
-	return abs(DaysCountFrom1900(year1, month1, day1) - DaysCountFrom1900(year2, month2, day2));
-}
 bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy) {//--------------------------
 	//gets two dates checks if the 1st is bigger or equal
 	if (y == yy && m == mm && d == dd)
