@@ -939,7 +939,7 @@ void printFaq()
 
 //-------------travelers homepage
 void travelerMenu(int trv_index)
-{//NOT FINISHED*******
+{
 	bool support = false;//can't request support twice
 	int choice = 1;
 	int res = 0;
@@ -1264,6 +1264,7 @@ string strToLower(string a)
 		a[i] = tolower(a[i]);
 	return a;
 }
+
 bool iequalsContain(const string& a, const string& b)//*************************************
 {//compare strings, insenstive to lower/upper case
 
@@ -1281,6 +1282,7 @@ bool iequalsContain(const string& a, const string& b)//*************************
 			return false;
 	return true;
 }
+
 void swap(ad* ad1, ad* ad2)//***********************************************************
 {
 	//swap ads in adArr
@@ -1302,11 +1304,13 @@ void deleteAllocatedData()
 	travelers_arr = NULL;
 	travelers_arr_size = 0;
 }
+
 void deleteAdArr() {
 	delete[] ads_arr;
 	ads_arr = NULL;
 	ads_arr_size = 0;
 }
+
 //Register:
 void Register()
 {
@@ -1336,6 +1340,7 @@ void Register()
 	else if (choise == 3) return;
 	else cout << "Wrong choice!!" << endl;
 }
+
 traveler NewTraveler()
 {
 	traveler trv;
@@ -1347,6 +1352,7 @@ traveler NewTraveler()
 	//cout << "NewTraveler: " << trv.password << endl;;
 	return trv;
 }
+
 void RegisterTraveler()
 {
 	RealloctravelersArr();
@@ -1354,6 +1360,7 @@ void RegisterTraveler()
 	//cout <<endl<<"dd: "<< trv->password;
 	//cout << travelersArr[size - 1].phoneNumber;
 }
+
 void RegisterLandlord()
 {
 	RegisterTraveler();
@@ -1368,6 +1375,7 @@ void RegisterLandlord()
 	ReallocLandlordsArr();
 	landlord_arr[landlord_arr_size - 1] = newLandlord;
 }
+
 //Sign-in funcs:
 int landlordSignIn() {//returns true if login successful
 	string tempId, tempPass;
@@ -1405,6 +1413,7 @@ int landlordSignIn() {//returns true if login successful
 	}
 	return index;
 }
+
 int findLandlordById(string id) {
 	for (int i = 0; i < landlord_arr_size; ++i) {
 		if (landlord_arr[i].id == id)//if equal
@@ -1412,6 +1421,7 @@ int findLandlordById(string id) {
 	}
 	return NOT_FOUND;
 }
+
 int travelerSignIn() {
 	string tempName, tempPass;
 	cout << "***TRAVELER - LOG IN***" << endl << "Please enter details according to instructions" << endl;
@@ -1450,6 +1460,7 @@ int travelerSignIn() {
 	}
 	return index;
 }
+
 int findTravelerByName(string name)
 {
 	for (int i = 0; i < travelers_arr_size; ++i) {
@@ -1458,6 +1469,7 @@ int findTravelerByName(string name)
 	}
 	return NOT_FOUND;
 }
+
 //input validation:
 bool isStringAllDig(string str) {//check id the string is all digits
 	for (int i = 0; i < str.length(); ++i) {
@@ -1466,6 +1478,7 @@ bool isStringAllDig(string str) {//check id the string is all digits
 	}
 	return true;
 }
+
 bool isStringAllLetters(string str)
 {
 	for (int i = 0; i < str.length(); ++i)
@@ -1473,6 +1486,7 @@ bool isStringAllLetters(string str)
 			return false;
 	return true;
 }
+
 string ValidLocation()
 {
 	//Location format <city>, <street> st.
@@ -1495,6 +1509,7 @@ string ValidLocation()
 	else location += ".";
 	return location;
 }
+
 int ValidInput(int min, int max)
 {
 	//gets int as input from user: (min <= USER_INPUT <= max)
@@ -1508,6 +1523,7 @@ int ValidInput(int min, int max)
 	}
 	return num;
 }
+
 bool ValidInput(char truevaluechar)
 {//returns true for 'truevaluechar' else return false.
 	char tmp;
@@ -1515,6 +1531,7 @@ bool ValidInput(char truevaluechar)
 	if (tmp == truevaluechar) return true;
 	else return false;
 }
+
 bool ValidInput(int num, int min, int max)//--------------------------------------------
 {
 	//gets int as input from user: (min <= USER_INPUT <= max)
@@ -1524,6 +1541,7 @@ bool ValidInput(int num, int min, int max)//------------------------------------
 	}
 	return true;
 }
+
 string NameInput()
 {
 	bool flag;
@@ -1540,6 +1558,7 @@ string NameInput()
 	} while (flag);
 	return buffer;
 }
+
 string PhoneInput()
 {
 	bool flag;
@@ -1555,6 +1574,7 @@ string PhoneInput()
 	} while (flag);
 	return buffer;
 }
+
 string PasswordInput()
 {
 	bool flag;
@@ -1572,6 +1592,7 @@ string PasswordInput()
 	} while (flag);
 	return buffer;
 }
+
 string ValidId()
 {
 	string id;
@@ -1587,6 +1608,7 @@ string ValidId()
 	}
 	return id;
 }
+
 string ValidEmail()
 {
 	/// gets a valid email form from user.
@@ -1607,6 +1629,7 @@ string ValidEmail()
 	}
 	return email;
 }
+
 amenities amenitiesCtor()
 {//User input for each amenity.
 	amenities obj;
@@ -1674,6 +1697,7 @@ void MainPage()
 
 	}
 }
+
 void LandlordsLoginMenu(int ll_index, int trv_index)
 {
 	int choise = 1;
@@ -1703,6 +1727,7 @@ void LandlordsLoginMenu(int ll_index, int trv_index)
 
 	}
 }
+
 void LandlordsMenu(int index)
 {
 	int choise = 1;
@@ -1760,6 +1785,7 @@ void LandlordsMenu(int index)
 
 
 }
+
 void EditAdMenu(int ll_index, int ad_index)
 {
 	int choose = 1;
@@ -1831,6 +1857,7 @@ void EditAdMenu(int ll_index, int ad_index)
 		}
 	}
 }
+
 //Ads manipulations:
 void DeleteAd(int landlord_index, int ad_index)
 {
@@ -1848,8 +1875,9 @@ void DeleteAd(int landlord_index, int ad_index)
 		landlord_arr[landlord_index].properties = tmp;
 		landlord_arr[landlord_index].adSize--;
 	}
-
 }
+
+
 ad NewAd()
 {//User input for new ad.
 	ad newAd;
@@ -1877,6 +1905,7 @@ ad NewAd()
 	newAd.rating = 5;
 	return newAd;
 }
+
 //Realloc:
 void RealloctravelersArr()
 {
@@ -1887,6 +1916,7 @@ void RealloctravelersArr()
 	if (travelers_arr) delete[] travelers_arr;
 	travelers_arr = tmp;
 }
+
 void ReallocLandlordsArr()
 {
 	landlord_arr_size++;
@@ -1896,6 +1926,7 @@ void ReallocLandlordsArr()
 	if (landlord_arr) delete[] landlord_arr;
 	landlord_arr = tmp;
 }
+
 void RealocateAdsPointer(int landlord_index)
 {
 	//reallocates the pointer and changes the size:
@@ -1907,6 +1938,7 @@ void RealocateAdsPointer(int landlord_index)
 	if (landlord_arr[landlord_index].properties) delete[] landlord_arr[landlord_index].properties;
 	landlord_arr[landlord_index].properties = tmp;
 }
+
 //Output:
 void PrintLandlordsAds(landlord ll)
 {
@@ -1921,6 +1953,7 @@ void PrintLandlordsAds(landlord ll)
 	}
 	cout << ADSBREAK << endl;
 }
+
 void PrintAmenities(amenities obj)
 {
 	string str = "Amenities:";
@@ -1936,6 +1969,7 @@ void PrintAmenities(amenities obj)
 	str[str.length() - 2] = '.';
 	cout << str << endl;
 }
+
 void PrintAd(ad obj)
 {
 	cout << ADSBREAK << endl;
