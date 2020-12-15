@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "structs.h"
 #include "diralehaskir.h"
 using namespace std;
@@ -59,7 +59,7 @@ void printAdsToFile() {
 		throw;
 	}
 	//if opening file succeeded
-	outFile << numOfAds(landlord_arr_size, landlord_arr) << endl;//prints amount of all ads
+	outFile << numOfAds() << endl;//prints amount of all ads
 	int i = 0;
 	for (; i < landlord_arr_size; ++i) {
 		for (int j = 0; j < landlord_arr[i].adSize; ++j) {
@@ -99,10 +99,10 @@ void printAdsToFile() {
 	outFile.close();//close file
 }
 
-int numOfAds(int size, landlord* arr) {
+int numOfAds() {
 	int sum = 0;
-	for (int i = 0; i < size; ++i)
-		sum += arr[i].adSize;
+	for (int i = 0; i < landlord_arr_size; ++i)
+		sum += landlord_arr[i].adSize;
 	return sum;
 }
 
@@ -531,7 +531,7 @@ void filterAds() {//***********************
 			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
 				//check if amenities equal
 				if (compareAmenities(filters, landlord_arr[i].properties[j].ameNities))
-					ads_arr[i] = landlord_arr_size[i].properties[j];//add ad to adArr if filters are matching
+					ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
 			}
 		}
 	}
@@ -563,7 +563,7 @@ void filterAds() {//***********************
 void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//**********************
 	newSize = 0;
 	//runs over landlors arr returns all ads that has the requested filters
-	newSize = numOfAds(size, arr);
+	newSize = numOfAds();
 	try {
 		adArr = new ad * [newSize];
 		if (!adArr)
@@ -592,26 +592,26 @@ void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//*****
 	printAndChooseFromAdArr(newSize, adArr);//prints all ads
 }
 
-bool compareAmenities(amenities& filters, amenities obj)
+bool compareAmenities(amenities& filters, amenities obj)//����� �����
 {//true if has the filter amenities.
 	//need to repair
 	if (filters.airConditioning && !obj.airConditioning)
 		return false;
-	if (filters.balcony != obj.balcony)
+	if (filters.balcony && !obj.balcony)
 		return false;
-	if (filters.disabledAccess != obj.disabledAccess)
+	if (filters.disabledAccess && !obj.disabledAccess)
 		return false;
-	if (filters.kitchen != obj.kitchen)
+	if (filters.kitchen && !obj.kitchen)
 		return false;
-	if (filters.parkingLot != obj.parkingLot)
+	if (filters.parkingLot && !obj.parkingLot)
 		return false;
-	if (filters.swimmingPool != obj.swimmingPool)
+	if (filters.swimmingPool && !obj.swimmingPool)
 		return false;
-	if (filters.tv != obj.tv)
+	if (filters.tv && !obj.tv)
 		return false;
-	if (filters.washingMachine != obj.washingMachine)
+	if (filters.washingMachine && !obj.washingMachine)
 		return false;
-	if (filters.wifi != obj.wifi)
+	if (filters.wifi && !obj.wifi)
 		return false;
 	return true;
 }
@@ -977,7 +977,7 @@ void travelerMenu(int trv_index)
 		}
 	}
 }
-//-------------rate property(on last rent day)
+-------------rate property(on last rent day)
 
 //-------------calculate and update rates
 void rateProperty(ad* a, traveler trav)
