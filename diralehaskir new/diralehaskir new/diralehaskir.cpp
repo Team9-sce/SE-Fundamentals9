@@ -592,26 +592,26 @@ void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//*****
 	printAndChooseFromAdArr(newSize, adArr);//prints all ads
 }
 
-bool compareAmenities(amenities& filters, amenities obj)
+bool compareAmenities(amenities& filters, amenities obj)//משתמש ומערך
 {//true if has the filter amenities.
 	//need to repair
-	if (filters.airConditioning != obj.airConditioning)
+	if (filters.airConditioning && !obj.airConditioning)
 		return false;
-	if (filters.balcony != obj.balcony)
+	if (filters.balcony && !obj.balcony)
 		return false;
-	if (filters.disabledAccess != obj.disabledAccess)
+	if (filters.disabledAccess && !obj.disabledAccess)
 		return false;
-	if (filters.kitchen != obj.kitchen)
+	if (filters.kitchen && !obj.kitchen)
 		return false;
-	if (filters.parkingLot != obj.parkingLot)
+	if (filters.parkingLot && !obj.parkingLot)
 		return false;
-	if (filters.swimmingPool != obj.swimmingPool)
+	if (filters.swimmingPool && !obj.swimmingPool)
 		return false;
-	if (filters.tv != obj.tv)
+	if (filters.tv && !obj.tv)
 		return false;
-	if (filters.washingMachine != obj.washingMachine)
+	if (filters.washingMachine && !obj.washingMachine)
 		return false;
-	if (filters.wifi != obj.wifi)
+	if (filters.wifi && !obj.wifi)
 		return false;
 	return true;
 }
