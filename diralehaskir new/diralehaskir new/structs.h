@@ -63,7 +63,6 @@ typedef struct landlord {
 	int sumOfDeals = 0;
 	int adSize = 0;
 	ad* properties = NULL;
-	traveler trav;
 }landlord;
 
 

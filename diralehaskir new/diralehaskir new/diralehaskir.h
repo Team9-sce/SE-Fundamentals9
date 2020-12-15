@@ -84,6 +84,9 @@ void PrintAmenities(amenities obj);
 //delete allocated data:
 void deleteAllocatedData();
 void deleteAdArr(ad** arr);
+//extra
+bool isLeap(int Y);
+
 //--------------------------------------------------------------
 
 void printToFile();
@@ -100,12 +103,12 @@ void allocateAdArrays();
 
 int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2);
 bool compareAmenities(amenities& filters, amenities obj);//true if equal
-ad** filterAds(int size, landlord* arr);
+void filterAds();
 bool iequals(const string& a, const string& b);//compare strings, insenstive to lower/upper case
 bool ValidInput(int num, int min, int max);//check
 bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy);
 bool isDateAvailable(date d, const date& adDate);
-bool legalInput(int day, int month, int year, int mode = 0);//check
+bool legalInput(int day, int month, int year, int mode = 0);
 date validDateInput();
 void printDate(const date& t);
 string strToLower(string a);
@@ -114,11 +117,11 @@ void swap(ad* ad1, ad* ad2);
 bool sortByLTH(ad* ad1, ad* ad2);
 bool sortByHTL(ad* ad1, ad* ad2);
 bool sortByPopularity(ad* ad1, ad* ad2);
-void bubbleSort(int size, ad** adArr, int mode = 0);
+void bubbleSort(int mode = 0);
 ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr);
 ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr);
 int printAndChooseFromAdArr(int newSize, ad** adArr);
-void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr);
+void travelerMenu(int trv_index);
 bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID);//confirm credit card details
 
 

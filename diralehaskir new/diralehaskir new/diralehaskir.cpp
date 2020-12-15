@@ -376,13 +376,13 @@ void allocateAdArrays() {//allocates all landlords adArr and turns sizes to 0
 //-------------sort(display options in loop)
 //------sort by low lo high*************************************************************
 bool sortByLTH(ad* ad1, ad* ad2) {
-	if (ad1->price + ad1->discount > ad2->price + ad2->discount)
+	if (ad1->price - ad1->discount > ad2->price - ad2->discount)
 		return true;
 	return false;
 }
 //------sort by high to low*************************************************************
 bool sortByHTL(ad* ad1, ad* ad2) {
-	if (ad1->price + ad1->discount < ad2->price + ad2->discount)
+	if (ad1->price - ad1->discount < ad2->price - ad2->discount)
 		return true;
 	return false;
 }
@@ -394,30 +394,30 @@ bool sortByPopularity(ad* ad1, ad* ad2) {
 }
 // An optimized version of Bubble Sort**************************************************
 
-void bubbleSort(int size, ad** adArr, int mode = 0)
+void bubbleSort(int mode)
 {
 	int i, j;
 	bool swapped;
-	for (i = 0; i < size - 1; i++)
+	for (i = 0; i < ads_arr_size - 1; i++)
 	{
 		swapped = false;
-		for (j = 0; j < size - i - 1; j++)
+		for (j = 0; j < ads_arr_size - i - 1; j++)
 		{
 			if (mode == 0) {//popularity(default)
-				if (sortByPopularity(adArr[j], adArr[j + 1])) {
-					swap(adArr[j], adArr[j + 1]);
+				if (sortByPopularity(&ads_arr[j], &ads_arr[j + 1])) {
+					swap(ads_arr[j], ads_arr[j + 1]);
 					swapped = true;
 				}
 			}
 			else if (mode == 1) {//low to high
-				if (sortByLTH(adArr[j], adArr[j + 1])) {
-					swap(adArr[j], adArr[j + 1]);
+				if (sortByLTH(&ads_arr[j], &ads_arr[j + 1])) {
+					swap(ads_arr[j], ads_arr[j + 1]);
 					swapped = true;
 				}
 			}
 			else {//high to low
-				if (sortByHTL(adArr[j], adArr[j + 1])) {
-					swap(adArr[j], adArr[j + 1]);
+				if (sortByHTL(&ads_arr[j], &ads_arr[j + 1])) {
+					swap(ads_arr[j], ads_arr[j + 1]);
 					swapped = true;
 				}
 			}
@@ -701,7 +701,8 @@ bool isDateAvailable(date d, const date& adDate)
 		return false;
 	return true;
 }//checks if dated are overlapping, false if UNavailable
-bool legalInput(int day, int month, int year, int mode = 0) {//-------------------------------------------
+
+bool legalInput(int day, int month, int year, int mode) {//-------------------------------------------
 	time_t t = time(ZERO);
 	tm* now = localtime(&t);
 
@@ -930,7 +931,7 @@ void travelerMenu(int trv_index)
 			deleteAdArr(adArr);
 			adArr = NULL;
 			newSize = -1;
-			adArr = travelerExplore(newSize, adArr, landlord_arr_size, landlord_arr);
+			travelerExplore(newSize, adArr, landlord_arr_size, landlord_arr);
 			int res = printAndChooseFromAdArr(newSize, adArr);
 			// if (res != NOT_FOUND) //placeOrder()//then payment()//then orderConfirmation()
 			break;
@@ -1120,9 +1121,9 @@ bool iequalsContain(const string& a, const string& b)//*************************
 void swap(ad* ad1, ad* ad2)//***********************************************************
 {
 	//swap ads in adArr
-	ad* temp = ad1;
+	ad temp = *ad1;
 	ad1 = ad2;
-	ad2 = temp;
+	*ad2 = temp;
 }
 
 
