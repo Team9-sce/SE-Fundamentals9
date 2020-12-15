@@ -446,7 +446,7 @@ ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr) {
 			}
 		}
 		try {
-			adArr = new ad*[newSize];
+			adArr = new ad * [newSize];
 			if (!adArr)
 				throw("allocation failed in sort ads by date");
 		}
@@ -565,7 +565,7 @@ void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//*****
 	//runs over landlors arr returns all ads that has the requested filters
 	newSize = numOfAds(size, arr);
 	try {
-		adArr = new ad *[newSize];
+		adArr = new ad * [newSize];
 		if (!adArr)
 			throw("allocation failed in traveler explore");
 	}
@@ -585,7 +585,7 @@ void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//*****
 			adArr[i] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
 		}
 		for (int i, k = 0; i < size; ++i) {
-			for (int j = 0; j < arr[i].adSize&& k < newSize; ++j, ++k)
+			for (int j = 0; j < arr[i].adSize && k < newSize; ++j, ++k)
 				adArr[k] = &(arr[i].properties[j]);//add ad to adArr if filters are matching
 		}
 	}
@@ -595,7 +595,7 @@ void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//*****
 bool compareAmenities(amenities& filters, amenities obj)
 {//true if has the filter amenities.
 	//need to repair
-	if (filters.airConditioning != obj.airConditioning)
+	if (filters.airConditioning && !obj.airConditioning)
 		return false;
 	if (filters.balcony != obj.balcony)
 		return false;
@@ -854,7 +854,7 @@ void orderConfirmation(landlord* l, date* d)
 	//generate random order number
 	srand(time(NULL));
 	int num = rand() % 100 + 1234;     // num in the range 1234 to 1334
-	int total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear)*l->properties->price;
+	int total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * l->properties->price;
 	cout << "Your order is complete!" << endl;
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
@@ -892,15 +892,16 @@ void printFaq()
 		<< "At the end of rent time a rating screen will be available in which you can rate your stay." << endl;
 }
 //-------------travelers homepage
-void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr)
+void travelerMenu(int trv_index)
 {//NOT FINISHED*******
 //NOTE- please change to switch/case!
-	int choice = 0;
 	int newSize = NOT_FOUND;
 	ad** adArr = NULL;
 	bool support = false;//can't request support twice
 	bool order = false;//if has one order can't order anymore
-	do {
+	int choice = 1;
+	while (choice)
+	{
 		cout << "----WELCOME TRAVELER!----" << endl
 			<< "Find the best place for your next vacation!" << endl
 			<< "This is your basic menu-Please choose how you wish to proceed:" << endl
@@ -921,61 +922,60 @@ void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr)
 		cout << "When printed the ads will be numbered and you could choose one and place," << endl
 			<< "or you could return here and use different sorting options." << endl
 			<< "-------------------------------" << endl
-			<< "Please enter your choice:" << endl;
-
+			<< "Please enter your choice:";
 		cin >> choice;
-		if (choice == 1) {
+		switch (choice)
+		{
+		case 1:
 			deleteAdArr(adArr);
 			adArr = NULL;
 			newSize = -1;
-			adArr = travelerExplore(newSize, adArr, lSize, lArr);
+			adArr = travelerExplore(newSize, adArr, landlord_arr_size, landlord_arr);
 			int res = printAndChooseFromAdArr(newSize, adArr);
-			if (res != NOT_FOUND) {
-				//placeOrder()//then payment()//then orderConfirmation()
-			}
-		}
-		else if (choice == 2) {
-			if (!newSize) {// no ads qualified previous filters
+			// if (res != NOT_FOUND) //placeOrder()//then payment()//then orderConfirmation()
+			break;
+		case 2://sort by dates.
+			if (!newSize) // no ads qualified previous filters
 				cout << "No ads with the previous filters match your description." << endl
 					<< "Clear all filters and try again." << endl;
-			}
-			adArr = sortAdsByDate(newSize, adArr, lSize, lArr);
-		}
-		else if (choice == 3) {
-			if (!newSize) {// no ads qualified previous filters
+			else adArr = sortAdsByDate(newSize, adArr, landlord_arr_size, landlord_arr);
+			break;
+		case 3://sort by location.
+			if (!newSize) // no ads qualified previous filters
 				cout << "No ads with the previous filters match your description." << endl
 					<< "Clear all filters and try again." << endl;
-			}
-			adArr = searchAds(newSize, adArr, lSize, lArr);
-		}
-		else if (choice == 4) {
-
-		}
-		else if (choice == 5) {
-
-		}
-		else if (choice == 6) {
+			else adArr = searchAds(newSize, adArr, landlord_arr_size, landlord_arr);
+			break;
+		case 4://filter ads.
+			
+			break;
+		case 5://sort ads.
+			
+			break;
+		case 6://clear filters. 
 			adArr = NULL;
 			newSize = -1;
-		}
-		else if (choice == 7) {
+			break;
+		case 7:
 
-		}
-		else if (choice == 8) {
-			if (!support) {
+			break;
+		case 8://Support.
+			if (!support) 
+			{
 				printSupport();
 				support = true;
 			}
-			else cout << "You already sent a request..." << endl;
-		}
-		else if (choice == 9) {
+			else cout << "You can request support only once!" << endl;
+			break;
+		case 9://Rate.
 
+			break;
+		case 0://exit
+			system("CLS");
+			cout << "THANK YOU! Logging out..." << endl;
+			break;
 		}
-		else if (choice < 0 || choice > 9) {
-			cout << "Invalid input, try again." << endl;
-		}
-	} while (choice != 0);
-	cout << "THANK YOU! Logging out..." << endl;
+	}
 }
 //-------------rate property(on last rent day)
 
@@ -989,7 +989,7 @@ void rateProperty(ad* a, traveler trav)
 			<< "We appreciate your opinion, try again when the time is right." << endl;
 		return;
 	}
-		int temp;
+	int temp;
 	cout << "Welcome to the rating system!" << endl;
 	do
 	{
