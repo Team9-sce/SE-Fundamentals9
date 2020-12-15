@@ -1094,10 +1094,10 @@ bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy) {//-------------
 	}
 	return false;//first date is not bigger or equal
 }
-string strToLower(string a) {//*************************************************************
-	//converts entire string to lowerCase
+string strToLower(string a) 
+{	//converts entire string to lowerCase
 	for (int i = 0; i < a.length(); ++i)
-		a[1] = tolower(a[i]);
+		a[i] = tolower(a[i]);
 	return a;
 }
 bool iequalsContain(const string& a, const string& b)//*************************************
