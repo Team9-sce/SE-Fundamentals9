@@ -1781,12 +1781,10 @@ void PrintAd(ad obj)
 
 int main()
 {
-	//read from file.
+	readFromFile();//read from file.
+	FilesCheck();
 	MainPage();
-	//push to file.
-	printToFile();
-	readFromFile();
-	return 0;
+	printToFile();//push to file.
 }
 
 

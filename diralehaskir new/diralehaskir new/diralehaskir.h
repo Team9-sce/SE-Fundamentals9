@@ -123,6 +123,8 @@ ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr);
 int printAndChooseFromAdArr(int newSize, ad** adArr);
 void travelerMenu(int trv_index);
 bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID);//confirm credit card details
-
-
+//Check
+void PrintTraveler(traveler trv);
+void PrintLandlord(landlord ll);
+void FilesCheck();
 #endif // !DIRALEHASKIR_H
