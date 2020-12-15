@@ -27,13 +27,15 @@
 #define MAX_MONTH 12
 #define CURRENT_YEAR 2020
 #define MAX_YEAR 2030
+#define CREDIT_CARD 16
+#define CVV 3
 
 const string AMENITIES_NAMES[AMENITIES] = { "disabledAccess", "wifi", "kitchen", "tv", "balcony", "washingMachine", "airConditioning", "swimmingPool", "parkingLot" };
 
 
 using namespace std;
 //--------------------------------------------------------------
-//---------------------Checked and Work-------------------------
+//---------------------Checked and Works-------------------------
 //--------------------------------------------------------------
 //Fields:
 landlord* landlord_arr = NULL;
@@ -83,7 +85,7 @@ void PrintLandlordsAds(landlord ll);
 void PrintAmenities(amenities obj);
 //delete allocated data:
 void deleteAllocatedData();
-void deleteAdArr(ad** arr);
+void deleteAdArr();
 //extra
 bool isLeap(int Y);
 
@@ -117,12 +119,25 @@ void swap(ad* ad1, ad* ad2);
 bool sortByLTH(ad* ad1, ad* ad2);
 bool sortByHTL(ad* ad1, ad* ad2);
 bool sortByPopularity(ad* ad1, ad* ad2);
+void searchAds();
 void bubbleSort(int mode = 0);
-ad** sortAdsByDate(int& newSize, ad** adArr, int size, landlord* arr);
-ad** travelerExplore(int& newSize, ad** adArr, int size, landlord* arr);
-int printAndChooseFromAdArr(int newSize, ad** adArr);
+date sortAdsByDate();
+void travelerExplore();
+int printAndChooseFromAdArr();
 void travelerMenu(int trv_index);
-bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID);//confirm credit card details
+//bool creditCardValidation(const string cardNumber, const string expirationMonth, const string expirationYear, const string cvv, const string ownerID);//confirm credit card details
+void rateProperty(int trv_index);
+bool isDateInitialized(date& d);
+void occupyDates(date d, ad* a);
+void validCreditCard(landlord* l, date* d, int trv_index, ad* a);
+void ReallococcupyDatesArr(ad* a);
+bool isDateEqual(date& d, date& adDate);
+ad* findAdByOccupiedDates(date& d);
+void orderConfirmation(landlord* l, date* d, ad* a, int trv_index);
+void placeOrder(ad* a, date& d, int trv_index);
+void sortMenu();
+landlord* findLandlordByEmail(ad* a);
+
 //Check
 void PrintTraveler(traveler trv);
 void PrintLandlord(landlord ll);
