@@ -1780,8 +1780,9 @@ void PrintAd(ad obj)
 
 int main()
 {
-	//read from file
+	//read from file.
 	MainPage();
+	//push to file.
 	return 0;
 }
 
