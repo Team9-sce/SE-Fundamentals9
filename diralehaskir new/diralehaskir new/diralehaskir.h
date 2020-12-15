@@ -94,6 +94,10 @@ void readFromFile();
 void readLandlordFromFile();
 void readAdsFromFile();
 void readTravelerFromFile();
+int numOfAds();
+void splitAds();
+void allocateAdArrays();
+
 int difference_of_days(int day1, int month1, int year1, int day2, int month2, int year2);
 bool compareAmenities(amenities& filters, amenities obj);//true if equal
 ad** filterAds(int size, landlord* arr);

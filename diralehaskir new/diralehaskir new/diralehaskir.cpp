@@ -59,7 +59,7 @@ void printAdsToFile() {
 		throw;
 	}
 	//if opening file succeeded
-	outFile << numOfAds(landlord_arr_size, landlord_arr) << endl;//prints amount of all ads
+	outFile << numOfAds() << endl;//prints amount of all ads
 	int i = 0;
 	for (; i < landlord_arr_size; ++i) {
 		for (int j = 0; j < landlord_arr[i].adSize; ++j) {
@@ -99,10 +99,10 @@ void printAdsToFile() {
 	outFile.close();//close file
 }
 
-int numOfAds(int size, landlord* arr) {
+int numOfAds() {
 	int sum = 0;
-	for (int i = 0; i < size; ++i)
-		sum += arr[i].adSize;
+	for (int i = 0; i < landlord_arr_size; ++i)
+		sum += landlord_arr[i].adSize;
 	return sum;
 }
 
@@ -531,7 +531,7 @@ void filterAds() {//***********************
 			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
 				//check if amenities equal
 				if (compareAmenities(filters, landlord_arr[i].properties[j].ameNities))
-					ads_arr[i] = landlord_arr_size[i].properties[j];//add ad to adArr if filters are matching
+					ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
 			}
 		}
 	}
@@ -563,7 +563,7 @@ void filterAds() {//***********************
 void travelerExplore(int& newSize, ad** adArr, int size, landlord* arr) {//**********************
 	newSize = 0;
 	//runs over landlors arr returns all ads that has the requested filters
-	newSize = numOfAds(size, arr);
+	newSize = numOfAds();
 	try {
 		adArr = new ad *[newSize];
 		if (!adArr)
@@ -892,12 +892,11 @@ void printFaq()
 		<< "At the end of rent time a rating screen will be available in which you can rate your stay." << endl;
 }
 //-------------travelers homepage
+
 void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr)
 {//NOT FINISHED*******
 //NOTE- please change to switch/case!
 	int choice = 0;
-	int newSize = NOT_FOUND;
-	ad** adArr = NULL;
 	bool support = false;//can't request support twice
 	bool order = false;//if has one order can't order anymore
 	do {
@@ -977,7 +976,7 @@ void travelerMenu(int lSize, landlord* lArr, int tSize, traveler* tArr)
 	} while (choice != 0);
 	cout << "THANK YOU! Logging out..." << endl;
 }
-//-------------rate property(on last rent day)
+-------------rate property(on last rent day)
 
 //-------------calculate and update rates
 void rateProperty(ad* a, traveler trav)
