@@ -290,6 +290,7 @@ void readAdsFromFile() {//read ads for landlord
 		}
 	}
 	inFile.close();//close file
+	splitAds();
 }
 
 //-------------readTravelerFromFile
@@ -1987,7 +1988,14 @@ int main()
 {
 	readFromFile();//read from file.
 	FilesCheck();
-	MainPage();
+	try {
+		MainPage();
+	}
+	catch (...) {
+		cout << "exception caought in main" << endl;
+		printToFile();//push to file.
+
+	}
 	printToFile();//push to file.
 	deleteAllocatedData();
 	return 0;
