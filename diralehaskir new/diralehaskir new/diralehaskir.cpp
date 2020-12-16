@@ -503,11 +503,12 @@ date sortAdsByDate() {
 
 //-------------filter(display options in loop)
 void filterAds() {//***********************
-	amenities filters = amenitiesCtor();//gets amenities from user
+	amenities filters;
 	if (ads_arr_size == NOT_FOUND) {
 		ads_arr_size = 0;
 		//runs over landlors arr returns all ads that has the requested filters
-		cout << "please choose the filters you wish to apply" << endl;
+		cout << "please choose the filters you wish to apply:" << endl;
+		filters = amenitiesCtor();//gets amenities from user
 		for (int i = 0; i < landlord_arr_size; ++i) {
 			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
 				//check if amenities equal
@@ -582,9 +583,8 @@ void travelerExplore() {//**********************
 	//if allocation successfull
 	for (int i = 0; i < landlord_arr_size; ++i) {
 		for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-			//check if amenities equal
-			//if ()
-			ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
+			//add ad to adArr if filters are matching
+			ads_arr[i] = landlord_arr[i].properties[j];
 		}
 		int k = 0;
 		for (int i = 0; i < landlord_arr_size; ++i) {
@@ -811,7 +811,11 @@ date validDateInput() {//-------------------------------------------------------
 	return dt;
 }//returns date with valid input from user
 
-void printDate(const date& t) {//---------------------------------------------------
+void printDate(date& t) {//---------------------------------------------------
+	if (isDateInitialized(t)) {
+		cout << "No order yet!" << endl;
+		return;
+	}
 	cout << "CHECK IN: ";
 	cout << t.fromDay << "/" << t.fromMonth << "/" << t.fromYear << endl;
 	cout << "CHECK OUT: ";
@@ -838,12 +842,12 @@ void occupyDates(date d, ad* a)
 void validCreditCard(landlord* l, date* d, int trv_index, ad* a) {
 	bool flag;
 	string buffer;
-	cout << "---enter credit card details--- " << endl;
+	cout << endl << "---enter credit card details--- " << endl;
 	//credit card number
 	do {
 		flag = false;
 		cout << "Credit card number must be exactly  " << CREDIT_CARD << " digits, numbers only." << endl;
-		cout << "Please enter your credit card number:";
+		cout << "Please enter your credit card number: " << endl;
 		cin.ignore();
 		getline(cin, buffer);
 		if (!(buffer.length() == CREDIT_CARD)) flag = true;
@@ -863,15 +867,17 @@ void validCreditCard(landlord* l, date* d, int trv_index, ad* a) {
 		cout << endl << "Year (from " << CURRENT_YEAR << " to " << MAX_YEAR << "): ";
 		cin >> y;
 		//bigger or equal to today
-		if (!legalInput(d, m, y)) flag = true;
-		else cout << "invalid date, please try again." << endl;
+		if (!legalInput(d, m, y)) {
+			flag = true;
+			cout << "invalid date, please try again." << endl;
+		}
 	} while (flag);
 	
 	//cvv
 	do {
 		flag = false;
 		cout << "CVV must be exactly  " << CVV << " digits, numbers only." << endl;
-		cout << "Please enter your credit card's CVV:";
+		cout << "Please enter your credit card's CVV: " << endl;
 		cin.ignore();
 		getline(cin, buffer);
 		if (!(buffer.length() == CVV)) flag = true;
@@ -902,8 +908,10 @@ void orderConfirmation(landlord* l, date* d, ad* a, int trv_index)
 	//generate random order number
 	srand(time(NULL));
 	int num = rand() % 100 + 1234;     // num in the range 1234 to 1334
-	int total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * l->properties->price;
-	cout << "Your order is complete!" << endl;
+	int total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * (a->price - a->discount);
+	system("CLS");
+	cout << " ---ORDER CONFIRMATION---" << endl
+		<< "Your order is complete!" << endl;
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
 	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear;
@@ -911,6 +919,7 @@ void orderConfirmation(landlord* l, date* d, ad* a, int trv_index)
 	cout << "Landlord Details:" << endl;
 	cout << "NAME: " << l->fullName << endl;
 	cout << "PHONE NUMBER: " << l->phoneNumber << endl;
+	cout << ADSBREAK << endl;
 	occupyDates(*d, a);//occupy dates in ad
 	travelers_arr[trv_index].order = *d;//occupy dates in traveler order field
 	l->sumOfDeals += total;//update sum of deals
@@ -922,7 +931,8 @@ void printSupport()
 	//generate random case number
 	srand(time(NULL));
 	int num = rand() % 100 + 2567;     // num in the range 2567 to 2667
-	cout << "Your request has been sent!" << endl
+	cout << endl << "\t--- SUPPORT ---" << endl
+		<< "Your request has been sent!" << endl
 		<< "Case number :" << num << endl
 		<< "had been opened with your request for support" << endl;
 }
@@ -930,12 +940,13 @@ void printSupport()
 //-------------faq(print only)
 void printFaq()
 {
-	cout << "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
+	cout << endl << "\t--- FAQ ---" << endl
+		<< "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
 		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl << endl
 		<< "IS THE SITE SECURE ?" << endl
 		<< "Yes, the company uses a security company in order to secure all your personal information." << endl << endl
 		<< "HOW DO I RATE MY STAY ?" << endl
-		<< "At the end of rent time a rating screen will be available in which you can rate your stay." << endl;
+		<< "At the end of rent time a rating screen will be available in which you can rate your stay." << endl << ADSBREAK << endl;
 }
 
 //-------------travelers homepage
@@ -947,7 +958,7 @@ void travelerMenu(int trv_index)
 	date chosenDates = { 0,0,0,0,0,0 };
 	while (choice)
 	{
-		cout << "----WELCOME TRAVELER!----" << endl
+		cout << endl << "----WELCOME TRAVELER!----" << endl
 			<< "Find the best place for your next vacation!" << endl
 			<< "This is your basic menu-Please choose how you wish to proceed:" << endl
 			<< "-------------------------------" << endl
@@ -967,7 +978,7 @@ void travelerMenu(int trv_index)
 		cout << "When printed the ads will be numbered and you could choose one and place," << endl
 			<< "or you could return here and use different sorting options." << endl
 			<< "-------------------------------" << endl
-			<< "Please enter your choice:";
+			<< "Please enter your choice: " << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -1107,8 +1118,8 @@ void placeOrder(ad* a, date& d, int trv_index) {
 		cout << "unknown error! please try again." << endl;
 		return;
 	}
-	int total = difference_of_days(d.fromDay, d.fromMonth, d.fromYear, d.toDay, d.toMonth, d.toYear) * l->properties->price;
-	cout << "The total price is: " << total << endl
+	int total = difference_of_days(d.fromDay, d.fromMonth, d.fromYear, d.toDay, d.toMonth, d.toYear) * (a->price - a->discount);
+	cout << "The total price is: " << total << " NIS" << endl
 		<< "procceding to payment..." << endl;
 	validCreditCard(l, &d, trv_index, a);//gets credit card details
 }
@@ -1166,13 +1177,17 @@ void rateProperty(int trv_index)
 //-------------prints ad for traveler(to screen)
 int printAndChooseFromAdArr() {//*********************************************
 	//print for TRAVELER to choose from
+	if (!ads_arr_size) {
+		cout << "No ads matched your requirements..." << endl;
+		return NOT_FOUND;
+	}
 	for (int i = 0; i < ads_arr_size; ++i) {
-		cout << "\tAD NUMBER " << i + 1 << " :" << endl
+		cout << "  \tAD NUMBER " << i + 1 << " :" << endl
 			<< "**==============================**" << endl;
 		cout << "Ad description: " << ads_arr[i].description << endl;
 		cout << "Price before discount: " << ads_arr[i].price << endl;
 		cout << "Price after discount:  " << ads_arr[i].price - ads_arr[i].discount << endl;
-		cout << "Discount: " << "-" << ads_arr[i].discount << "NIS" << endl;
+		cout << "Discount: " << "-" << ads_arr[i].discount << " NIS" << endl;
 		cout << "Location: " << ads_arr[i].location << endl;
 		cout << "Number of People: " << ads_arr[i].numOfPeople << endl
 			<< "Number of Rooms: " << ads_arr[i].numOfRooms << endl
@@ -1517,6 +1532,7 @@ int ValidInput()
 	cin >> x;
 	return int(x) - 48;
 }
+
 int ValidInput(int min, int max)
 {
 	//gets int as input from user: (min <= USER_INPUT <= max)
@@ -1683,6 +1699,7 @@ void MainPage()
 		{
 		case 1:
 			traveler_index = travelerSignIn();
+			travelerMenu(traveler_index);
 			break;
 		case 2:
 			landlord_index = landlordSignIn();

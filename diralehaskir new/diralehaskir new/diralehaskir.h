@@ -113,7 +113,7 @@ bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy);
 bool isDateAvailable(date d, const date& adDate);
 bool legalInput(int day, int month, int year, int mode = 0);
 date validDateInput();
-void printDate(const date& t);
+void printDate(date& t);
 string strToLower(string a);
 bool iequalsContain(const string& a, const string& b);
 void swap(ad* ad1, ad* ad2);
