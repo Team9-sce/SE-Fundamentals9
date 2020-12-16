@@ -2053,8 +2053,8 @@ void PrintAd(ad obj)
 
 int main()
 {
-	readFromFile();//read from file.
 	try {
+		readFromFile();//read from file.
 		MainPage();
 	}
 	catch (...) {
