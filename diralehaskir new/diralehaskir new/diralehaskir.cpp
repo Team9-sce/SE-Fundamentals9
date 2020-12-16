@@ -1684,7 +1684,6 @@ void MainPage()
 		{
 		case 1:
 			traveler_index = travelerSignIn();
-			travelerMenu(traveler_index);
 			break;
 		case 2:
 			landlord_index = landlordSignIn();
