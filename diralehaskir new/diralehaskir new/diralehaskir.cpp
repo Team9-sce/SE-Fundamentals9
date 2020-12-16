@@ -354,7 +354,7 @@ void splitAds() {//assigns each landlord his ads
 			}
 		}
 	}
-	delete[] ads_arr;//delete ad arr after distributing all ads to their landlords
+	deleteAdArr();//delete ad arr after distributing all ads to their landlords
 	ads_arr_size = NOT_FOUND;
 }
 
@@ -587,7 +587,8 @@ void travelerExplore() {//**********************
 			//if ()
 			ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
 		}
-		for (int i, k = 0; i < landlord_arr_size; ++i) {
+		int k = 0;
+		for (int i = 0; i < landlord_arr_size; ++i) {
 			for (int j = 0; j < landlord_arr[i].adSize && k < ads_arr_size; ++j, ++k)
 				ads_arr[k] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
 		}
@@ -1992,7 +1993,7 @@ int main()
 		MainPage();
 	}
 	catch (...) {
-		cout << "exception caought in main" << endl;
+		cout << "exception in main" << endl;
 		printToFile();//push to file.
 
 	}
