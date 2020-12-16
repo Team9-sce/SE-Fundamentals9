@@ -908,14 +908,19 @@ void orderConfirmation(landlord* l, date* d, ad* a, int trv_index)
 	//generate random order number
 	srand(time(NULL));
 	int num = rand() % 100 + 1234;     // num in the range 1234 to 1334
-	int total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * (a->price - a->discount);
+	int total = 0;
+	if (!difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear))
+		total = 1 * (a->price - a->discount);
+	else 
+		total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * (a->price - a->discount);
+
 	system("CLS");
 	cout << " ---ORDER CONFIRMATION---" << endl
 		<< "Your order is complete!" << endl;
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
-	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear;
-	cout << "Total price: " << total << "NIS" << endl;
+	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear << endl;
+	cout << "Total price: " << total << " NIS" << endl;
 	cout << "Landlord Details:" << endl;
 	cout << "NAME: " << l->fullName << endl;
 	cout << "PHONE NUMBER: " << l->phoneNumber << endl;
@@ -1118,7 +1123,11 @@ void placeOrder(ad* a, date& d, int trv_index) {
 		cout << "unknown error! please try again." << endl;
 		return;
 	}
-	int total = difference_of_days(d.fromDay, d.fromMonth, d.fromYear, d.toDay, d.toMonth, d.toYear) * (a->price - a->discount);
+	int total = 0;
+	if (!difference_of_days(d.fromDay, d.fromMonth, d.fromYear, d.toDay, d.toMonth, d.toYear))
+		total = 1 * (a->price - a->discount);
+	else
+		total = difference_of_days(d.fromDay, d.fromMonth, d.fromYear, d.toDay, d.toMonth, d.toYear) * (a->price - a->discount);
 	cout << "The total price is: " << total << " NIS" << endl
 		<< "procceding to payment..." << endl;
 	validCreditCard(l, &d, trv_index, a);//gets credit card details
@@ -1537,7 +1546,9 @@ int ValidInput(int min, int max)
 {
 	//gets int as input from user: (min <= USER_INPUT <= max)
 	//if wrong gets another one and prints error message.
-	int num = ValidInput();
+	//int num = ValidInput();---------------makes problem with filling ad
+	int num;
+	cin >> num;
 	while (num < min || num >max)
 	{
 		cout << "Wrong number!\n Must be: " << min << " <= YOUR_NUMBER <= " << max << ": " << endl;
@@ -2005,57 +2016,53 @@ void PrintAd(ad obj)
 	PrintAmenities(obj.ameNities);
 }
 
+
+//void PrintTraveler(traveler trv)
+//{
+//	cout << ADSBREAK << endl;
+//	cout << "fullName: " << trv.fullName << "." << endl
+//		<< "phoneNumber: " << trv.phoneNumber << "." << endl
+//		<< "password: " << trv.password << "." << endl
+//		<< "order: ";
+//	printDate(trv.order);
+//	cout << ADSBREAK << endl;
+//}
+//void PrintLandlord(landlord ll)
+//{
+//	cout << ADSBREAK << endl;
+//	cout << "fullName: " << ll.fullName << "." << endl
+//		<< "phoneNumber: " << ll.phoneNumber << "." << endl
+//		<< "password: " << ll.password << "." << endl
+//		<< "id: " << ll.id << "." << endl
+//		<< "email: " << ll.email << "." << endl
+//		<< "sumOfDeals: " << ll.sumOfDeals << "." << endl
+//		<< "adSize: " << ll.adSize << "." << endl;
+//	for (int i = 0; i < ll.adSize; i++)
+//		PrintAd(ll.properties[i]);
+//	cout << ADSBREAK << endl;
+//}
+//void FilesCheck()
+//{
+//	cout << ADSBREAK << endl << "\tLandlords:" << endl << ADSBREAK << endl;
+//	for (int i = 0; i < landlord_arr_size; i++)
+//		PrintLandlord(landlord_arr[i]);
+//	cout << ADSBREAK << endl << "\tTravelers:" << endl << ADSBREAK << endl;
+//	for (int i = 0; i < travelers_arr_size; i++)
+//		PrintTraveler(travelers_arr[i]);
+//}
+
 int main()
 {
 	readFromFile();//read from file.
-	FilesCheck();
 	try {
 		MainPage();
 	}
 	catch (...) {
-		cout << "exception in main" << endl;
+		cout << "exception caught in main" << endl;
 		printToFile();//push to file.
-
 	}
 	printToFile();//push to file.
 	deleteAllocatedData();
 	return 0;
-}
-
-
-
-
-void PrintTraveler(traveler trv)
-{
-	cout << ADSBREAK << endl;
-	cout << "fullName: " << trv.fullName << "." << endl
-		<< "phoneNumber: " << trv.phoneNumber << "." << endl
-		<< "password: " << trv.password << "." << endl
-		<< "order: ";
-	printDate(trv.order);
-	cout << ADSBREAK << endl;
-}
-void PrintLandlord(landlord ll)
-{
-	cout << ADSBREAK << endl;
-	cout << "fullName: " << ll.fullName << "." << endl
-		<< "phoneNumber: " << ll.phoneNumber << "." << endl
-		<< "password: " << ll.password << "." << endl
-		<< "id: " << ll.id << "." << endl
-		<< "email: " << ll.email << "." << endl
-		<< "sumOfDeals: " << ll.sumOfDeals << "." << endl
-		<< "adSize: " << ll.adSize << "." << endl;
-	for (int i = 0; i < ll.adSize; i++)
-		PrintAd(ll.properties[i]);
-	cout << ADSBREAK << endl;
-}
-void FilesCheck()
-{
-	cout << ADSBREAK << endl << "\tLandlords:" << endl << ADSBREAK << endl;
-	for (int i = 0; i < landlord_arr_size; i++)
-		PrintLandlord(landlord_arr[i]);
-	cout << ADSBREAK << endl << "\tTravelers:" << endl << ADSBREAK << endl;
-	for (int i = 0; i < travelers_arr_size; i++)
-		PrintTraveler(travelers_arr[i]);
 }
 

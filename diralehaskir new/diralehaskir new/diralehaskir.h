@@ -140,7 +140,7 @@ void sortMenu();
 landlord* findLandlordByEmail(ad* a);
 
 //Check
-void PrintTraveler(traveler trv);
-void PrintLandlord(landlord ll);
-void FilesCheck();
+//void PrintTraveler(traveler trv);
+//void PrintLandlord(landlord ll);
+//void FilesCheck();
 #endif // !DIRALEHASKIR_H
