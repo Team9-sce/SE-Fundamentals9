@@ -1059,7 +1059,7 @@ void sortMenu() {
 			<< "2. sort ads by PRICE- low to high." << endl
 			<< "3. sort ads by PRICE- high to low." << endl
 			<< "4. sort ads by POPULARITY (defailt)." << endl
-			<< "5. Return to traveler menu." << endl
+			<< "5. Back." << endl
 			<< "Please enter your choice:";
 		cin >> choice;
 		switch (choice)
@@ -1303,6 +1303,7 @@ void deleteAllocatedData()
 	landlord_arr_size = 0;
 	travelers_arr = NULL;
 	travelers_arr_size = 0;
+	deleteAdArr();
 }
 
 void deleteAdArr() {
@@ -1320,7 +1321,7 @@ void Register()
 	cout << "***REGISTER - MENU***" << endl
 		<< "1) Landlord." << endl
 		<< "2) Traveler." << endl
-		<< "3) Return to previous menu." << endl
+		<< "3) Back." << endl
 		<< "Please enter your choice: ";
 	cin >> choise;
 	if (choise == 1)
@@ -1382,7 +1383,7 @@ int landlordSignIn() {//returns true if login successful
 	cout << "***LANDLORD - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get id input
 	cout << "ID must be exactly " << MAX_ID << " digits, numbers only." << endl;
-	cout << "Please enter your ID:" << endl;
+	cout << "Please enter your ID: " << endl;
 	cin >> tempId;
 	//check length and input correctness
 	if (tempId.length() != MAX_ID) {
@@ -1400,7 +1401,7 @@ int landlordSignIn() {//returns true if login successful
 	cout << "Password must be minimum: " << MIN_PASSWORD
 		<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
 		<< "Can contain any characters you wish except 'enter'." << endl;
-	cout << "Please enter your password:" << endl;
+	cout << "Please enter your password: " << endl;
 	cin >> tempPass;
 	//check length and input correctness
 	if (tempPass.length() > MAX_PASSWORD || tempPass.length() < MIN_PASSWORD) {
@@ -1427,7 +1428,7 @@ int travelerSignIn() {
 	cout << "***TRAVELER - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get name input
 	cout << "Name must be up to: " << MAX_NAME << " letters only." << endl;
-	cout << "Please enter your full name:" << endl;
+	cout << "Please enter your full name: " << endl;
 	//cin >> tempName;
 	cin.ignore();
 	getline(cin, tempName);
@@ -1447,7 +1448,7 @@ int travelerSignIn() {
 	cout << "Password must be minimum: " << MIN_PASSWORD
 		<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
 		<< "Can contain any characters you wish except 'enter'." << endl;
-	cout << "Please enter your password:" << endl;
+	cout << "Please enter your password: " << endl;
 	cin >> tempPass;
 	//check length and input correctness
 	if (tempPass.length() > MAX_PASSWORD || tempPass.length() < MIN_PASSWORD) {
@@ -1549,7 +1550,7 @@ string NameInput()
 	do {
 		flag = false;
 		cout << "Name must be up to  " << MAX_NAME << " letters only." << endl;
-		cout << "Please enter your full name:";
+		cout << "Please enter your full name: " << endl;
 		cin.ignore();
 		getline(cin, buffer);
 		if (!(buffer.length() <= MAX_NAME && buffer.length() > 0)) flag = true;
@@ -1566,7 +1567,7 @@ string PhoneInput()
 	do {
 		flag = false;
 		cout << "Phone number must be exactly " << MAX_PHONE << " digits, no spaces, numbers only." << endl;
-		cout << "Please enter your phone number:";
+		cout << "Please enter your phone number: " << endl;
 		getline(cin, buffer);
 		if (buffer.length() != MAX_PHONE) flag = true;
 		if (!isStringAllDig(buffer)) flag = true;
@@ -1584,7 +1585,7 @@ string PasswordInput()
 		cout << "Password can be minimum: " << MIN_PASSWORD
 			<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
 			<< "Can contain any characters you wish except 'enter'." << endl;
-		cout << "Please enter your password:";
+		cout << "Please enter your password: " << endl;
 		getline(cin, buffer);
 		//check length and input correctness
 		if (buffer.length() < MIN_PASSWORD || buffer.length() > MAX_PASSWORD) flag = true;
@@ -1671,7 +1672,7 @@ void MainPage()
 			<< "2) Log in as landlord." << endl
 			<< "3) Register." << endl
 			<< "4) Exit." << endl
-			<< "Please enter your choice:";
+			<< "Please enter your choice: ";
 		cin >> choise;
 		switch (choise)
 		{
@@ -1688,7 +1689,6 @@ void MainPage()
 			break;
 		case 4:
 			cout << "Good bye!";
-			deleteAllocatedData();
 			break;
 		default:
 			cout << "Wrong choice!!\nTry again: ";
@@ -1706,7 +1706,7 @@ void LandlordsLoginMenu(int ll_index, int trv_index)
 		cout << "Please select user type:" << endl
 			<< "1) Landlord." << endl
 			<< "2) Traveler." << endl
-			<< "3) Exit." << endl
+			<< "3) Back." << endl
 			<< "Please enter your choice:" << endl;
 		cin >> choise;
 		switch (choise)
@@ -1718,7 +1718,6 @@ void LandlordsLoginMenu(int ll_index, int trv_index)
 			travelerMenu(trv_index);
 			break;
 		case 3:
-			cout << "Good bye!";
 			break;
 		default:
 			cout << "Wrong choice!!\nTry again: ";
@@ -1749,7 +1748,7 @@ void LandlordsMenu(int index)
 			<< "1) Edit an ad." << endl
 			<< "2) Add new ad." << endl
 			<< "3) Delete an ad." << endl
-			<< "4) Exit." << endl
+			<< "4) Back." << endl
 			<< "enter your choice: ";
 		cin >> choise;
 		switch (choise)
@@ -1775,7 +1774,6 @@ void LandlordsMenu(int index)
 		case 4:
 			//exit
 			system("CLS");
-			cout << "Good bye!!" << endl;
 			break;
 		default:
 			cout << "Wrong choice!!\nTry again!\n ";
@@ -1792,7 +1790,7 @@ void EditAdMenu(int ll_index, int ad_index)
 	while (choose)
 	{
 		system("CLS");
-		cout << "EDIT AD MENU \nYour ad:" << endl;
+		cout << "---EDIT AD MENU--- \nYour ad:" << endl;
 		PrintAd(landlord_arr[ll_index].properties[ad_index]);
 		cout << ADSBREAK << endl;
 		cout << "What do you want to edit?" << endl;
@@ -1814,7 +1812,7 @@ void EditAdMenu(int ll_index, int ad_index)
 			landlord_arr[ll_index].properties[ad_index].available = !landlord_arr[ll_index].properties[ad_index].available;
 			break;
 		case 2:
-			cout << "Enter new description:";
+			cout << "Enter new description: ";
 			cin.ignore();
 			getline(cin, landlord_arr[ll_index].properties[ad_index].description);
 			break;
@@ -1882,7 +1880,7 @@ ad NewAd()
 {//User input for new ad.
 	ad newAd;
 	newAd.available = true;
-	cout << "New ad: " << endl;
+	cout << "---NEW AD--- " << endl;
 	cout << "Ad description: ";
 	cin.ignore();
 	getline(cin, newAd.description);
@@ -1930,7 +1928,7 @@ void ReallocLandlordsArr()
 void RealocateAdsPointer(int landlord_index)
 {
 	//reallocates the pointer and changes the size:
-	ad* tmp;
+	ad* tmp = NULL;
 	tmp = new ad[landlord_arr[landlord_index].adSize + 1];
 	for (int i = 0; i < landlord_arr[landlord_index].adSize; i++)
 		tmp[i] = landlord_arr[landlord_index].properties[i];
@@ -1977,7 +1975,7 @@ void PrintAd(ad obj)
 	cout << "Ad description: " << obj.description << endl;
 	cout << "Price before discount: " << obj.price << endl;
 	cout << "Price after discount:  " << obj.price - obj.discount << endl;
-	cout << "Discount: " << "-" << obj.discount << "NIS" << endl;
+	cout << "Discount: " << "-" << obj.discount << " NIS" << endl;
 	cout << "Number of people: " << obj.numOfPeople << endl;
 	cout << "Number of rooms: " << obj.numOfRooms << endl;
 	cout << "Number of beds: " << obj.numOfBeds << endl;
@@ -1991,6 +1989,8 @@ int main()
 	FilesCheck();
 	MainPage();
 	printToFile();//push to file.
+	deleteAllocatedData();
+	return 0;
 }
 
 
