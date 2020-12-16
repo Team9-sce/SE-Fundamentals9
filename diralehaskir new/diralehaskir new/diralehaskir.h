@@ -58,6 +58,7 @@ int findTravelerByName(string name);
 bool isStringAllDig(string str);
 bool isStringAllLetters(string str);
 string ValidLocation();
+int ValidInput();
 int ValidInput(int min, int max);
 bool ValidInput(char truevaluechar);
 bool ValidInput(int num, int min, int max);

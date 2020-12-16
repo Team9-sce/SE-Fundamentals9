@@ -1512,13 +1512,17 @@ string ValidLocation()
 	else location += ".";
 	return location;
 }
-
+int ValidInput()
+{
+	char x;
+	cin >> x;
+	return int(x) - 48;
+}
 int ValidInput(int min, int max)
 {
 	//gets int as input from user: (min <= USER_INPUT <= max)
 	//if wrong gets another one and prints error message.
-	int num;
-	cin >> num;
+	int num = ValidInput();
 	while (num < min || num >max)
 	{
 		cout << "Wrong number!\n Must be: " << min << " <= YOUR_NUMBER <= " << max << ": " << endl;
@@ -1808,7 +1812,7 @@ void EditAdMenu(int ll_index, int ad_index)
 			<< "9) Change attractions." << endl
 			<< "0) Back to previous menu." << endl
 			<< "Please enter your choice: ";
-		cin >> choose;
+		choose = ValidInput();
 		switch (choose)
 		{
 		case 1:
@@ -1853,7 +1857,7 @@ void EditAdMenu(int ll_index, int ad_index)
 			break;
 		default:
 			cout << "You entered a wrong choice!!\n Try again: ";
-			cin >> choose;
+			choose = ValidInput();
 			break;
 		}
 	}
