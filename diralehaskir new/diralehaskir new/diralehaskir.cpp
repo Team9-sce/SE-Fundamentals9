@@ -290,7 +290,6 @@ void readAdsFromFile() {//read ads for landlord
 		}
 	}
 	inFile.close();//close file
-	splitAds();
 }
 
 //-------------readTravelerFromFile
@@ -347,10 +346,11 @@ void splitAds() {//assigns each landlord his ads
 	int k = 0;
 	for (int i = 0; i < ads_arr_size; ++i) {
 		for (int j = 0; j < landlord_arr_size; ++j) {
-			k = landlord_arr[j].adSize;
-			if (ads_arr[i].email == landlord_arr[j].email) {
-				landlord_arr[j].properties[k] = ads_arr[i];
-				++k;
+			if (k < landlord_arr[j].adSize) {
+				if (ads_arr[i].email == landlord_arr[j].email) {
+					landlord_arr[j].properties[k] = ads_arr[i];
+					++k;
+				}
 			}
 		}
 	}
@@ -373,7 +373,6 @@ void allocateAdArrays() {//allocates all landlords adArr and turns sizes to 0
 			cout << "ERROR!" << endl;
 			throw;
 		}
-		landlord_arr[i].adSize = 0;
 	}
 }
 //-------------sort(display options in loop)
@@ -1934,7 +1933,7 @@ void ReallocLandlordsArr()
 void RealocateAdsPointer(int landlord_index)
 {
 	//reallocates the pointer and changes the size:
-	ad* tmp = NULL;
+	ad* tmp;
 	tmp = new ad[landlord_arr[landlord_index].adSize + 1];
 	for (int i = 0; i < landlord_arr[landlord_index].adSize; i++)
 		tmp[i] = landlord_arr[landlord_index].properties[i];
