@@ -31,6 +31,7 @@ typedef struct date {
 
 typedef struct ad
 {
+	int index = -1;
 	bool available;
 	string description;
 	int price;
@@ -41,7 +42,7 @@ typedef struct ad
 	int numOfBeds;
 	amenities ameNities;
 	string attraction;
-	int rating = 5;
+	float rating = 5;
 	int dateSize = 0;
 	date* occupied = NULL; //contains occupied dates.
 	string email; //pointer to landlord's email.
@@ -52,6 +53,9 @@ typedef struct traveler {
 	string phoneNumber;
 	string password;
 	date order = { 0,0,0,0,0,0 };
+	int index = -1;
+	string landlord_name;
+	bool rate = false;
 }traveler;
 
 typedef struct landlord {

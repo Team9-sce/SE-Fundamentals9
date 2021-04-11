@@ -44,6 +44,8 @@ traveler* travelers_arr = NULL;
 int travelers_arr_size = 0;
 ad* ads_arr = NULL;
 int ads_arr_size = 0;
+ad** ad2Arr = NULL;//ad array for filters and sorts
+int ad2size = 0;//ad array size
 //Register:
 void Register();
 traveler NewTraveler();
@@ -54,6 +56,7 @@ int landlordSignIn();
 int findLandlordById(string id);
 int travelerSignIn();
 int findTravelerByName(string name);
+landlord* findLandlordByName(string name);
 //input validation:
 bool isStringAllDig(string str);
 bool isStringAllLetters(string str);
@@ -86,7 +89,7 @@ void PrintLandlordsAds(landlord ll);
 void PrintAmenities(amenities obj);
 //delete allocated data:
 void deleteAllocatedData();
-void deleteAdArr();
+void deleteAd2Arr();
 //extra
 bool isLeap(int Y);
 
@@ -116,7 +119,7 @@ date validDateInput();
 void printDate(date& t);
 string strToLower(string a);
 bool iequalsContain(const string& a, const string& b);
-void swap(ad* ad1, ad* ad2);
+void swap(ad** ad1, ad** ad2);//----------------------------------
 bool sortByLTH(ad* ad1, ad* ad2);
 bool sortByHTL(ad* ad1, ad* ad2);
 bool sortByPopularity(ad* ad1, ad* ad2);
@@ -133,11 +136,13 @@ void occupyDates(date d, ad* a);
 void validCreditCard(landlord* l, date* d, int trv_index, ad* a);
 void ReallococcupyDatesArr(ad* a);
 bool isDateEqual(date& d, date& adDate);
+bool isDateSmallerE(int d, int m, int y, int dd, int mm, int yy);
 ad* findAdByOccupiedDates(date& d);
 void orderConfirmation(landlord* l, date* d, ad* a, int trv_index);
 void placeOrder(ad* a, date& d, int trv_index);
-void sortMenu();
+void sortMenu(date chosenDates, int trv_index);
 landlord* findLandlordByEmail(ad* a);
+ad* findAdFromLandlord(ad* a);
 
 //Check
 //void PrintTraveler(traveler trv);

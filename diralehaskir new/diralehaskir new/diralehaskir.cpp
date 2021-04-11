@@ -135,13 +135,17 @@ void printTravelerToFile() {
 			<< travelers_arr[i].order.fromYear << endl
 			<< travelers_arr[i].order.toDay << endl
 			<< travelers_arr[i].order.toMonth << endl
-			<< travelers_arr[i].order.toYear << endl;
+			<< travelers_arr[i].order.toYear << endl
+			<< travelers_arr[i].index << endl
+			<< travelers_arr[i].landlord_name << endl
+			<< travelers_arr[i].rate << endl;
 	}
 	outFile.close();//close file
 }
 
 //-------------read from file
 void readFromFile() {
+	deleteAllocatedData();//without deleting ad2Arr
 	//read all landlords
 	readLandlordFromFile();//read all landlords
 	//read all ads
@@ -237,8 +241,8 @@ void readAdsFromFile() {//read ads for landlord
 	}
 	//if succeeded
 
-	int i = 0;
-	for (; i < ads_arr_size; ++i) {
+	for (int i = 0; i < ads_arr_size; ++i) {
+		ads_arr[i].index = i;
 		inFile >> ads_arr[i].available;
 		inFile.ignore();
 		getline(inFile, ads_arr[i].description);
@@ -280,7 +284,7 @@ void readAdsFromFile() {//read ads for landlord
 			throw;
 		}
 		//read occupied dates
-		for (int j = 0; j < ads_arr[i].dateSize; ++i) {
+		for (int j = 0; j < ads_arr[i].dateSize; ++j) {
 			inFile >> ads_arr[i].occupied[j].fromDay;
 			inFile >> ads_arr[i].occupied[j].fromMonth;
 			inFile >> ads_arr[i].occupied[j].fromYear;
@@ -337,6 +341,10 @@ void readTravelerFromFile() {
 		inFile >> travelers_arr[i].order.toDay;
 		inFile >> travelers_arr[i].order.toMonth;
 		inFile >> travelers_arr[i].order.toYear;
+		inFile >> travelers_arr[i].index;
+		inFile.ignore();
+		getline(inFile, travelers_arr[i].landlord_name);
+		inFile >> travelers_arr[i].rate;
 	}
 	inFile.close();//close file
 }
@@ -344,18 +352,19 @@ void readTravelerFromFile() {
 void splitAds() {//assigns each landlord his ads
 	allocateAdArrays();//allocates all landlords adArr and turns sizes to 0
 	int k = 0;
-	for (int i = 0; i < ads_arr_size; ++i) {
-		for (int j = 0; j < landlord_arr_size; ++j) {
+	for (int j = 0; j < landlord_arr_size; ++j) {
+		k = 0;
+		for (int i = 0; i < ads_arr_size; ++i) {
 			if (k < landlord_arr[j].adSize) {
 				if (ads_arr[i].email == landlord_arr[j].email) {
 					landlord_arr[j].properties[k] = ads_arr[i];
 					++k;
 				}
 			}
+			else
+				break;	
 		}
 	}
-	deleteAdArr();//delete ad arr after distributing all ads to their landlords
-	ads_arr_size = NOT_FOUND;
 }
 
 void allocateAdArrays() {//allocates all landlords adArr and turns sizes to 0
@@ -400,26 +409,26 @@ void bubbleSort(int mode)
 {
 	int i, j;
 	bool swapped;
-	for (i = 0; i < ads_arr_size - 1; i++)
+	for (i = 0; i < ad2size - 1; i++)
 	{
 		swapped = false;
-		for (j = 0; j < ads_arr_size - i - 1; j++)
+		for (j = 0; j < ad2size - i - 1; j++)
 		{
 			if (mode == 0) {//popularity(default)
-				if (sortByPopularity(&ads_arr[j], &ads_arr[j + 1])) {
-					swap(ads_arr[j], ads_arr[j + 1]);
+				if (sortByPopularity(ad2Arr[j], ad2Arr[j + 1])) {
+					swap(ad2Arr[j], ad2Arr[j + 1]);
 					swapped = true;
 				}
 			}
 			else if (mode == 1) {//low to high
-				if (sortByLTH(&ads_arr[j], &ads_arr[j + 1])) {
-					swap(ads_arr[j], ads_arr[j + 1]);
+				if (sortByLTH(ad2Arr[j], ad2Arr[j + 1])) {
+					swap(ad2Arr[j], ad2Arr[j + 1]);
 					swapped = true;
 				}
 			}
 			else {//high to low
-				if (sortByHTL(&ads_arr[j], &ads_arr[j + 1])) {
-					swap(ads_arr[j], ads_arr[j + 1]);
+				if (sortByHTL(ad2Arr[j], ad2Arr[j + 1])) {
+					swap(ad2Arr[j], ad2Arr[j + 1]);
 					swapped = true;
 				}
 			}
@@ -435,43 +444,65 @@ void bubbleSort(int mode)
 date sortAdsByDate() {
 	//get date
 	date d = validDateInput();
-	if (ads_arr_size == NOT_FOUND) {
-		ads_arr_size = 0;
-		//runs over landlors arr returns all ads available at the requested dates
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-				for (int k = 0; k < landlord_arr[i].properties[j].dateSize; ++k) {
-					//check if dates in ad are available
-					if (isDateAvailable(d, landlord_arr[i].properties[j].occupied[k]))
-						++ads_arr_size;//counts how many ads qualify
-				}
-			}
-		}
-		try {
-			ads_arr = new ad[ads_arr_size];
-			if (!ads_arr)
-				throw("allocation failed in sort ads by date");
-		}
-		catch (const char* const x) {
-			cout << x << endl;
-			throw;
-		}
-		catch (...) {
-			cout << "ERROR!" << endl;
-			throw;
-		}
-		//if allocation successfull
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-				for (int k = 0; k < landlord_arr[i].properties[j].dateSize; ++k) {
-					//check if dates in ad are available
-					if (isDateAvailable(d, landlord_arr[i].properties[j].occupied[k]))
-						ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if dates available
-				}
-			}
-		}
-	}
-	else {
+	//if (ad2size == NOT_FOUND) {
+	//	ad2size = 0;
+	//	////runs over landlors arr returns all ads available at the requested dates
+	//	//for (int i = 0; i < landlord_arr_size; ++i) {
+	//	//	for (int j = 0; j < landlord_arr[i].adSize; ++j) {
+	//	//		for (int k = 0; k < landlord_arr[i].properties[j].dateSize; ++k) {
+	//	//			//check if dates in ad are available
+	//	//			if (isDateAvailable(d, landlord_arr[i].properties[j].occupied[k]))
+	//	//				++ads_arr_size;//counts how many ads qualify
+	//	//		}
+	//	//	}
+	//	//}
+	//	//try {
+	//	//	ads_arr = new ad[ads_arr_size];
+	//	//	if (!ads_arr)
+	//	//		throw("allocation failed in sort ads by date");
+	//	//}
+
+	//	//runs over original adArr and counts ads that qualify
+	//	for (int i = 0; i > ads_arr_size; ++i) {
+	//		for (int k = 0; k < ads_arr[i].dateSize; ++k) {
+	//			//check if dates in ad are available
+	//			if (isDateAvailable(d, ads_arr[i].occupied[k]))
+	//				++ad2size;//counts how many ads qualify
+	//		}
+	//	}
+	//	try {
+	//		ad2Arr = new ad*[ad2size];
+	//		if (!ad2Arr)
+	//			throw("allocation failed in filter ads");
+	//	}
+	//	catch (const char* const x) {
+	//		cout << x << endl;
+	//		throw;
+	//	}
+	//	catch (...) {
+	//		cout << "ERROR!" << endl;
+	//		throw;
+	//	}
+	//	//if allocation successfull
+	//	//for (int i = 0; i < landlord_arr_size; ++i) {
+	//	//	for (int j = 0; j < landlord_arr[i].adSize; ++j) {
+	//	//		for (int k = 0; k < landlord_arr[i].properties[j].dateSize; ++k) {
+	//	//			//check if dates in ad are available
+	//	//			if (isDateAvailable(d, landlord_arr[i].properties[j].occupied[k]))
+	//	//				ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if dates available
+	//	//		}
+	//	//	}
+	//	//}
+
+	//	for (int i = 0; i > ads_arr_size; ++i) {
+	//		for (int k = 0; k < ads_arr[i].dateSize; ++k) {
+	//			//check if dates in ad are available
+	//			if (isDateAvailable(d, ads_arr[i].occupied[k]))
+	//				ad2Arr[i] = &ads_arr[i];//add ad to adArr
+	//		}
+	//	}
+	//}
+	//else {
 		int tempSize = 0;
 		//run over existing adArr and return matching ads
 		//runs over adArr returns all ads available at the requested dates
@@ -482,95 +513,111 @@ date sortAdsByDate() {
 					++tempSize;//counts how many ads qualify
 			}
 		}
-		if (!tempSize) {//found qualified ads in adArr
+		if (tempSize) {//found qualified ads in adArr
 			int index = 0;
 			for (int i = 0; i < ads_arr_size; ++i) {
 				for (int j = 0; j < ads_arr[i].dateSize; ++j) {
 					//check if dates in ad are available
 					if (isDateAvailable(d, ads_arr[i].occupied[j])) {//if available
-						ads_arr[i] = ads_arr[index];//enter to index's location in adArr
+						ads_arr[index] = ads_arr[i];//enter to index's location in adArr
 						++index;//inc index after assignment
 					}
 				}
 			}
-			ads_arr_size = tempSize;
 		}
 		else cout << "No ads with the previous filters match your description." << endl
 			<< "Clear all filters and try again." << endl;
-	}
+		ads_arr_size = tempSize;
+	//}
 	return d;
 }
 
 //-------------filter(display options in loop)
 void filterAds() {//***********************
 	amenities filters;
-	if (ads_arr_size == NOT_FOUND) {
-		ads_arr_size = 0;
-		//runs over landlors arr returns all ads that has the requested filters
-		cout << "please choose the filters you wish to apply:" << endl;
-		filters = amenitiesCtor();//gets amenities from user
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-				//check if amenities equal
-				if (compareAmenities(filters, landlord_arr[i].properties[j].ameNities))
-					++ads_arr_size;//counts how many ads qualify
-			}
-		}
-		try {
-			ads_arr = new ad[ads_arr_size];
-			if (!ads_arr)
-				throw("allocation failed in filter ads");
-		}
-		catch (const char* const x) {
-			cout << x << endl;
-			throw;
-		}
-		catch (...) {
-			cout << "ERROR!" << endl;
-			throw;
-		}
-		//if allocation successfull
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-				//check if amenities equal
-				if (compareAmenities(filters, landlord_arr[i].properties[j].ameNities))
-					ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
-			}
-		}
-	}
-	else {
+	cout << "please choose the filters you wish to apply:" << endl;
+	filters = amenitiesCtor();//gets amenities from user
+
+	//if (ad2size == NOT_FOUND) {
+	//	ad2size = 0;
+	//	////runs over landlors arr returns all ads that has the requested filters
+	//	//cout << "please choose the filters you wish to apply:" << endl;
+	//	//filters = amenitiesCtor();//gets amenities from user
+	//	//for (int i = 0; i < landlord_arr_size; ++i) {
+	//	//	for (int j = 0; j < landlord_arr[i].adSize; ++j) {
+	//	//		//check if amenities equal
+	//	//		if (compareAmenities(filters, landlord_arr[i].properties[j].ameNities))
+	//	//			++ad2size;//counts how many ads qualify
+	//	//	}
+	//	//}
+	//	
+	//	//runs over original adArr and counts ads that qualify
+	//	for (int i = 0; i > ads_arr_size; ++i) {
+	//		//check if amenities qualify
+	//		if (compareAmenities(filters, ads_arr[i].ameNities))
+	//			++ad2size;//counts how many ads qualify
+	//	}
+	//	try {
+	//		ad2Arr = new ad*[ad2size];
+	//		if (!ad2Arr)
+	//			throw("allocation failed in filter ads");
+	//	}
+	//	catch (const char* const x) {
+	//		cout << x << endl;
+	//		throw;
+	//	}
+	//	catch (...) {
+	//		cout << "ERROR!" << endl;
+	//		throw;
+	//	}
+	//	//if allocation successfull collect all qualified ads
+	//	for (int i = 0; i > ads_arr_size; ++i) {
+	//		//check if amenities qualify
+	//		if (compareAmenities(filters, ads_arr[i].ameNities))
+	//			ad2Arr[i] = &ads_arr[i];//add ad to adArr if filters are matching
+	//	}
+	//	
+	//	//for (int i = 0; i < landlord_arr_size; ++i) {
+	//	//	for (int j = 0; j < landlord_arr[i].adsize; ++j) {
+	//	//		//check if amenities equal
+	//	//		if (compareamenities(filters, landlord_arr[i].properties[j].amenities))
+	//	//			ads_arr[i] = landlord_arr[i].properties[j];//add ad to adarr if filters are matching
+	//	//	}
+	//	//}
+	//}
+	//else {
 		int tempSize = 0;
 		//run over existing adArr and return matching ads
 		//runs over adArr returns all ads with matches
-		for (int i = 0; i < ads_arr_size; ++i) {
+		for (int i = 0; i < ad2size; ++i) {
 			//check if amenities qualify
-			if (compareAmenities(filters, ads_arr[i].ameNities))
+			if (compareAmenities(filters, ad2Arr[i]->ameNities))
 				++tempSize;//counts how many ads qualify
 		}
-		if (!tempSize) {//found qualified ads in adArr
+		if (tempSize) {//found qualified ads in adArr
 			int index = 0;
-			for (int i = 0; i < ads_arr_size; ++i) {
+			for (int i = 0; i < ad2size; ++i) {
 				//check if amenities qualify
-				if (compareAmenities(filters, ads_arr[i].ameNities)) {//if available
-					ads_arr[i] = ads_arr[index];//enter to index's location in adArr
+				if (compareAmenities(filters, ad2Arr[i]->ameNities)) {//if available
+					ad2Arr[index] = ad2Arr[i];//enter to index's location in adArr
 					++index;//inc index after assignment
 				}
 			}
-			ads_arr_size = tempSize;
 		}
 		else cout << "No ads with the previous filters match your description." << endl
 			<< "Clear all filters and try again." << endl;
-	}
+		ad2size = tempSize;
+	//}
 }
 
 void travelerExplore() {//**********************
-	ads_arr_size = 0;
-	//runs over landlors arr returns all ads that has the requested filters
-	ads_arr_size = numOfAds();
+	deleteAd2Arr();
+	ad2size = ads_arr_size;
+	//allocate
 	try {
-		ads_arr = new ad[ads_arr_size];
-		if (!ads_arr)
-			throw("allocation failed in traveler explore");
+		ad2Arr = new ad*[ad2size];
+		if (!ad2Arr)
+			throw "exception thrown in traveler explore";
 	}
 	catch (const char* const x) {
 		cout << x << endl;
@@ -580,18 +627,11 @@ void travelerExplore() {//**********************
 		cout << "ERROR!" << endl;
 		throw;
 	}
-	//if allocation successfull
-	for (int i = 0; i < landlord_arr_size; ++i) {
-		for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-			//add ad to adArr if filters are matching
-			ads_arr[i] = landlord_arr[i].properties[j];
-		}
-		int k = 0;
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize && k < ads_arr_size; ++j, ++k)
-				ads_arr[k] = landlord_arr[i].properties[j];//add ad to adArr if filters are matching
-		}
+	//copies all ads from original ad array
+	for (int i = 0; i < ads_arr_size; ++i) {
+		ad2Arr[i] = &ads_arr[i];
 	}
+	bubbleSort();
 }
 
 bool compareAmenities(amenities& filters, amenities obj)
@@ -621,61 +661,89 @@ bool compareAmenities(amenities& filters, amenities obj)
 void searchAds() {
 	cout << "please enter the required location:" << endl;
 	string location = ValidLocation();//gets location from user
-	if (ads_arr_size == NOT_FOUND) {
-		ads_arr_size = 0;
-		//runs over landlors arr returns all ads that has the requested filters
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-				//check if amenities equal
-				if (iequalsContain(landlord_arr[i].properties[j].location, location))//if equal/contains
-					++ads_arr_size;//counts how many ads qualify
-			}
-		}
-		try {
-			ads_arr = new ad[ads_arr_size];
-			if (!ads_arr)
-				throw("allocation failed in search ads");
-		}
-		catch (const char* const x) {
-			cout << x << endl;
-			throw;
-		}
-		catch (...) {
-			cout << "ERROR!" << endl;
-			throw;
-		}
-		//if allocation successfull
-		for (int i = 0; i < landlord_arr_size; ++i) {
-			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
-				//check if amenities equal
-				if (iequalsContain(landlord_arr[i].properties[j].location, location))
-					ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if locations are matching
-			}
-		}
-	}
-	else {
+	//if (ad2size == NOT_FOUND) {
+	//	ad2size = 0;
+	//	//runs over landlors arr returns all ads that has the requested filters
+	//	//for (int i = 0; i < landlord_arr_size; ++i) {
+	//	//	for (int j = 0; j < landlord_arr[i].adSize; ++j) {
+	//	//		//check if amenities equal
+	//	//		if (iequalsContain(landlord_arr[i].properties[j].location, location))//if equal/contains
+	//	//			++ads_arr_size;//counts how many ads qualify
+	//	//	}
+	//	//}
+	//	
+	//	//run over original ads array and count how many qualify
+	//			//runs over original adArr and counts ads that qualify
+	//	for (int i = 0; i > ads_arr_size; ++i) {
+	//		//check if locations equal
+	//		if (iequalsContain(ads_arr[i].location, location))
+	//			++ad2size;//counts how many ads qualify
+	//	}
+	//	try {
+	//		ad2Arr = new ad*[ad2size];
+	//		if (!ad2Arr)
+	//			throw("allocation failed in search ads");
+	//	}
+	//	catch (const char* const x) {
+	//		cout << x << endl;
+	//		throw;
+	//	}
+	//	catch (...) {
+	//		cout << "ERROR!" << endl;
+	//		throw;
+	//	}
+	//	//if allocation successfull collect all qualified ads
+	//	for (int i = 0; i > ads_arr_size; ++i) {
+	//		//check if locations equal
+	//		if (iequalsContain(ads_arr[i].location, location))
+	//			ad2Arr[i] = &ads_arr[i];//add ad to adArr if locations are matching
+	//	}
+	//	//try {
+	//	//	ads_arr = new ad[ads_arr_size];
+	//	//	if (!ads_arr)
+	//	//		throw("allocation failed in search ads");
+	//	//}
+	//	//catch (const char* const x) {
+	//	//	cout << x << endl;
+	//	//	throw;
+	//	//}
+	//	//catch (...) {
+	//	//	cout << "ERROR!" << endl;
+	//	//	throw;
+	//	//}
+	//	//if allocation successfull
+	//	//for (int i = 0; i < landlord_arr_size; ++i) {
+	//	//	for (int j = 0; j < landlord_arr[i].adSize; ++j) {
+	//	//		//check if amenities equal
+	//	//		if (iequalsContain(landlord_arr[i].properties[j].location, location))
+	//	//			ads_arr[i] = landlord_arr[i].properties[j];//add ad to adArr if locations are matching
+	//	//	}
+	//	//}
+	//}
+	//else {
 		int tempSize = 0;
 		//run over existing adArr and return matching ads
 		//runs over adArr returns all ads with sub string location
-		for (int i = 0; i < ads_arr_size; ++i) {
+		for (int i = 0; i < ad2size; ++i) {
 			//check if ads qualify
-			if (iequalsContain(ads_arr[i].location, location))
+			if (iequalsContain(location, ad2Arr[i]->location)) {
 				++tempSize;//counts how many ads qualify
+			}
 		}
-		if (!tempSize) {//found qualified ads in adArr
+		if (tempSize) {//found qualified ads in adArr
 			int index = 0;
-			for (int i = 0; i < ads_arr_size; ++i) {
+			for (int i = 0; i < ad2size; ++i) {
 				//check if ads qualify
-				if (iequalsContain(ads_arr[i].location, location)) {//if location is equal/contained
-					ads_arr[i] = ads_arr[index];//enter to index's location in adArr
+				if (iequalsContain(location, ad2Arr[i]->location)) {//if location is equal/contained
+					ad2Arr[index] = ad2Arr[i];//enter to index's location in adArr
 					++index;//inc index after assignment
 				}
 			}
-			ads_arr_size = tempSize;
 		}
 		else cout << "No ads with the previous filters match your description." << endl
 			<< "Clear all filters and try again." << endl;
-	}
+		ad2size = tempSize;
+	//}
 
 }
 
@@ -836,6 +904,7 @@ void occupyDates(date d, ad* a)
 {
 	ReallococcupyDatesArr(a);
 	a->occupied[a->dateSize - 1] = d;
+	for (int i = 0; i < a->dateSize; ++i) printDate(a->occupied[i]);//---------------------
 }
 
 //-------------confirm credit card info
@@ -909,17 +978,18 @@ void orderConfirmation(landlord* l, date* d, ad* a, int trv_index)
 	srand(time(NULL));
 	int num = rand() % 100 + 1234;     // num in the range 1234 to 1334
 	int total = 0;
+	a = findAdFromLandlord(a);
 	if (!difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear))
 		total = 1 * (a->price - a->discount);
 	else 
 		total = difference_of_days(d->fromDay, d->fromMonth, d->fromYear, d->toDay, d->toMonth, d->toYear) * (a->price - a->discount);
 
 	system("CLS");
-	cout << " ---ORDER CONFIRMATION---" << endl
+	cout << endl << " ---ORDER CONFIRMATION---" << endl
 		<< "Your order is complete!" << endl;
 	cout << "Payment proccess has been successful" << endl;
 	cout << "Order Number: " << num << endl;
-	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To:" << d->toDay << "/" << d->toMonth << "/" << d->toYear << endl;
+	cout << "Dates From: " << d->fromDay << "/" << d->fromMonth << "/" << d->fromYear << " To: " << d->toDay << "/" << d->toMonth << "/" << d->toYear << endl;
 	cout << "Total price: " << total << " NIS" << endl;
 	cout << "Landlord Details:" << endl;
 	cout << "NAME: " << l->fullName << endl;
@@ -927,27 +997,48 @@ void orderConfirmation(landlord* l, date* d, ad* a, int trv_index)
 	cout << ADSBREAK << endl;
 	occupyDates(*d, a);//occupy dates in ad
 	travelers_arr[trv_index].order = *d;//occupy dates in traveler order field
+	travelers_arr[trv_index].index = a->index;
+	travelers_arr[trv_index].landlord_name = l->fullName;
 	l->sumOfDeals += total;//update sum of deals
+	printToFile();
+	readFromFile();
 }
 
+ad* findAdFromLandlord(ad* a) {
+	for (int i = 0; i < landlord_arr_size; ++i) {
+		if (landlord_arr[i].email == a->email) {
+			for (int j = 0; j < landlord_arr[i].adSize; ++j) {
+				if (landlord_arr[i].properties[j].description == a->description)
+					if (compareAmenities(landlord_arr[i].properties[j].ameNities, a->ameNities))
+						if (landlord_arr[i].properties[j].price == a->price)
+							if (landlord_arr[i].properties[j].discount == a->discount)
+								if (landlord_arr[i].properties[j].rating == a->rating)
+									return &landlord_arr[i].properties[j];
+			}
+		}
+	}
+	return a;
+}
 //-------------support(print only)
 void printSupport()
 {
 	//generate random case number
 	srand(time(NULL));
 	int num = rand() % 100 + 2567;     // num in the range 2567 to 2667
-	cout << endl << "\t--- SUPPORT ---" << endl
+	system("CLS");
+	cout << endl << "--- SUPPORT ---" << endl
 		<< "Your request has been sent!" << endl
 		<< "Case number :" << num << endl
-		<< "had been opened with your request for support" << endl;
+		<< "had been opened with your request for support" << endl << ADSBREAK << endl;
 }
 
 //-------------faq(print only)
 void printFaq()
 {
-	cout << endl << "\t--- FAQ ---" << endl
+	system("CLS");
+	cout << endl << "--- FAQ ---" << endl
 		<< "THE SOFTWARE IS NOT WORKING PROPERLY, HOW DO I FIX IT?" << endl
-		<< "Please try using a different deviceand if there is no improvement try to reset your router." << endl << endl
+		<< "Please try using a different device and if there is no improvement try to reset your router." << endl << endl
 		<< "IS THE SITE SECURE ?" << endl
 		<< "Yes, the company uses a security company in order to secure all your personal information." << endl << endl
 		<< "HOW DO I RATE MY STAY ?" << endl
@@ -961,13 +1052,14 @@ void travelerMenu(int trv_index)
 	int choice = 1;
 	int res = 0;
 	date chosenDates = { 0,0,0,0,0,0 };
+	travelerExplore();
 	while (choice)
 	{
-		cout << endl << "----WELCOME TRAVELER!----" << endl
+		cout << endl << "****WELCOME TRAVELER!****" << endl
 			<< "Find the best place for your next vacation!" << endl
 			<< "This is your basic menu-Please choose how you wish to proceed:" << endl
 			<< "-------------------------------" << endl
-			<< "1. Explore- displays all ads in default order(cancels previous filters)." << endl
+			<< "1. Explore- displays all ads in default order." << endl
 			<< "2. Enter specific dates to sort by." << endl
 			<< "3. Search by location." << endl
 			<< "4. Filter ads." << endl
@@ -978,71 +1070,67 @@ void travelerMenu(int trv_index)
 			<< "9. Rate." << endl
 			<< "0. LOG OUT." << endl
 			<< "-------------------------------" << endl;
-		cout << "-> We recommend you first enter location and/or "
-			<< "choose dates in order to maximize the filtering and sorting options." << endl;
-		cout << "When printed the ads will be numbered and you could choose one and place," << endl
-			<< "or you could return here and use different sorting options." << endl
-			<< "-------------------------------" << endl
+		cout << "-> We recommend you first enter location and/or dates." << endl
+			<< "-> At any stage you can return here and use different sorting/filtering options." << endl
+			<< "===============================" << endl
 			<< "Please enter your choice: " << endl;
 		cin >> choice;
 		switch (choice)
 		{
 		case 1:
-			deleteAdArr();
-			ads_arr_size = NOT_FOUND;
 			travelerExplore();
 			res = printAndChooseFromAdArr();//prints all ads
 			if (res != NOT_FOUND)
-				placeOrder(&ads_arr[res], chosenDates, trv_index);
+				placeOrder(ad2Arr[res], chosenDates, trv_index);
 			break;
 		case 2://sort by dates.
-			if (!ads_arr_size) // no ads qualified previous filters
+			if (!ad2size) // no ads qualified previous filters
 				cout << "No ads with the previous filters match your description." << endl
 					<< "Clear all filters and try again." << endl;
 			else {
 				chosenDates = sortAdsByDate();
-				res = printAndChooseFromAdArr();
 				res = printAndChooseFromAdArr();//prints all ads
 				if (res != NOT_FOUND)
-					placeOrder(&ads_arr[res], chosenDates, trv_index);
+					placeOrder(ad2Arr[res], chosenDates, trv_index);
 			}
 			break;
 		case 3://sort by location.
-			if (!ads_arr_size) // no ads qualified previous filters
+			if (!ad2size) // no ads qualified previous filters
 				cout << "No ads with the previous filters match your description." << endl
 					<< "Clear all filters and try again." << endl;
 			else {
 				searchAds();
 				res = printAndChooseFromAdArr();//prints all ads
 				if (res != NOT_FOUND)
-					placeOrder(&ads_arr[res], chosenDates, trv_index);
+					placeOrder(ad2Arr[res], chosenDates, trv_index);
 			}
 			break;
 		case 4://filter ads.
-			if (!ads_arr_size) // no ads qualified previous filters
+			if (!ad2size) // no ads qualified previous filters
 				cout << "No ads with the previous filters match your description." << endl
 				<< "Clear all filters and try again." << endl;
 			else{
 				filterAds();
 				res = printAndChooseFromAdArr();//prints all ads
 				if (res != NOT_FOUND)
-					placeOrder(&ads_arr[res], chosenDates, trv_index);
+					placeOrder(ad2Arr[res], chosenDates, trv_index);
 			}
 			break;
 		case 5://sort ads.
-			if (!ads_arr_size) // no ads qualified previous filters
+			if (!ad2size) // no ads qualified previous filters
 				cout << "No ads with the previous filters match your description." << endl
 				<< "Clear all filters and try again." << endl;
 			else {
-				sortMenu();
-				res = printAndChooseFromAdArr();//prints all ads
-				if (res != NOT_FOUND)
-					placeOrder(&ads_arr[res], chosenDates, trv_index);
+				sortMenu(chosenDates, trv_index);
 			}
 			break;
 		case 6://clear filters. 
-			deleteAdArr();
-			ads_arr_size = -1;
+			deleteAd2Arr();
+			ad2size = NOT_FOUND;
+			chosenDates = { 0,0,0,0,0,0 };
+			system("CLS");
+			cout << "\nAll clear!" << endl;
+			travelerExplore();
 			break;
 		case 7://faq.
 			printFaq();
@@ -1056,47 +1144,68 @@ void travelerMenu(int trv_index)
 			else cout << "You can request support only once!" << endl;
 			break;
 		case 9://Rate.
-			rateProperty(trv_index);
+			if (isDateInitialized(travelers_arr[trv_index].order)) {
+				cout << "No order yet..." << endl;
 				break;
+			}
+			else if (!travelers_arr[trv_index].rate) {
+				rateProperty(trv_index);
+			}
+			else
+				cout << "You can rate only ONCE." << endl;
+			break;
 		case 0://exit
 			system("CLS");
-			cout << "THANK YOU! Logging out..." << endl;
+			cout << "\nTHANK YOU! Logging out...\n" << endl;
 			break;
 		}
 	}
 }
-
 //-------------sort menu
-void sortMenu() {
-	int choice = 0;
-	while (choice != 5)
+void sortMenu(date chosenDates, int trv_index) {
+	int choice = 1;
+	int res = NOT_FOUND;
+	while (choice != 0)
 	{
-		cout << "***SORT ADS - MENU***:" << endl//need to be changed! add beutiful header.
+		cout << "\n***SORT ADS - MENU***:" << endl//need to be changed! add beutiful header.
 			<< "1. Sort ads by DATE." << endl
 			<< "2. sort ads by PRICE- low to high." << endl
 			<< "3. sort ads by PRICE- high to low." << endl
-			<< "4. sort ads by POPULARITY (defailt)." << endl
-			<< "5. Back." << endl
-			<< "Please enter your choice:";
+			<< "4. sort ads by POPULARITY (default)." << endl
+			<< "0. Back." << endl
+			<< "Please enter your choice: ";
 		cin >> choice;
 		switch (choice)
 		{
 		case 1:
 			sortAdsByDate();
+			res = printAndChooseFromAdArr();//prints all ads
+			if (res != NOT_FOUND)
+				placeOrder(ad2Arr[res], chosenDates, trv_index);
+
 			break;
 		case 2:
 			bubbleSort(1);
+			res = printAndChooseFromAdArr();//prints all ads
+			if (res != NOT_FOUND)
+				placeOrder(ad2Arr[res], chosenDates, trv_index);
 			break;
 		case 3:
 			bubbleSort(2);
+			res = printAndChooseFromAdArr();//prints all ads
+			if (res != NOT_FOUND)
+				placeOrder(ad2Arr[res], chosenDates, trv_index);
 			break;
 		case 4:
+			res = printAndChooseFromAdArr();//prints all ads
+			if (res != NOT_FOUND)
+				placeOrder(ad2Arr[res], chosenDates, trv_index);
 			bubbleSort();
 			break;
-		case 5:
+		case 0:
 			break;
 		default:
-			cout << "Wrong choice!!\nTry again: ";
+			cout << "Wrong choice!! Try again: ";
 			break;
 		}
 	}
@@ -1162,56 +1271,77 @@ ad* findAdByOccupiedDates(date& d) {
 //-------------calculate and update rates
 void rateProperty(int trv_index)
 {
-	ad* a = findAdByOccupiedDates(travelers_arr[trv_index].order);
+	system("CLS");
+	//ad* a = findAdByOccupiedDates(travelers_arr[trv_index].order);
+	landlord* l = findLandlordByName(travelers_arr[trv_index].landlord_name);
+	if (!landlord_arr) {
+		cout << "sorry! we couldn't find your order..." << endl;
+		return;
+	}
+	if(l->adSize < travelers_arr[trv_index].index){///
+		cout << "sorry! we couldn't find your order..." << endl;
+		return;
+	}
+	ad* a = &(l->properties[travelers_arr[trv_index].index]);
+	//a = findAdFromLandlord(a);
 	time_t t = time(ZERO);
 	tm* now = localtime(&t);//checks if date is right
 	traveler* trv = &travelers_arr[trv_index];
-	if (!isDateBiggerE(trv->order.toDay, trv->order.toMonth, trv->order.toYear, now->tm_mday, now->tm_mon + 1, now->tm_year + 1900)) {
-		cout << "Rating is available only from the last day of your stay..." << endl
+	if (!isDateSmallerE(trv->order.toDay, trv->order.toMonth, trv->order.toYear, now->tm_mday, now->tm_mon + 1, now->tm_year + 1900)) {
+		cout << "\nRating is available only from the last day of your stay..." << endl
 			<< "We appreciate your opinion, try again when the time is right." << endl;
 		return;
 	}
 	int temp;
-	cout << "Welcome to the rating system!" << endl;
+	cout << "--- RATE ---" << endl;
 	do
 	{
 		cout << "Please rate the experience on a property by entering 1-5 " << endl
-			<< "1 being the lowest and 5 the highest" << endl;
+			<< "1 being the lowest and 5 the highest, 0 to go back" << endl;
 		cin >> temp;
-	} while (temp < 1 || temp > 5);//updates ad rating
+	} while ((temp < 1 || temp > 5) && temp);//updates ad rating
+	if (!temp)
+		return;
 	a->rating = (a->rating + temp) / 2;
+	cout << "New ad rating: " << a->rating << endl;
 	cout << "Thank you!" << endl;
+	trv->rate = true;
 }
 
 //-------------prints ad for traveler(to screen)
 int printAndChooseFromAdArr() {//*********************************************
 	//print for TRAVELER to choose from
-	if (!ads_arr_size) {
-		cout << "No ads matched your requirements..." << endl;
+	if (!ad2size) {
+		cout << "\nNo ads matched your requirements..." << endl;
 		return NOT_FOUND;
 	}
-	for (int i = 0; i < ads_arr_size; ++i) {
+	cout << endl;
+	for (int i = 0; i < ad2size; ++i) {
 		cout << "  \tAD NUMBER " << i + 1 << " :" << endl
 			<< "**==============================**" << endl;
-		cout << "Ad description: " << ads_arr[i].description << endl;
-		cout << "Price before discount: " << ads_arr[i].price << endl;
-		cout << "Price after discount:  " << ads_arr[i].price - ads_arr[i].discount << endl;
-		cout << "Discount: " << "-" << ads_arr[i].discount << " NIS" << endl;
-		cout << "Location: " << ads_arr[i].location << endl;
-		cout << "Number of People: " << ads_arr[i].numOfPeople << endl
-			<< "Number of Rooms: " << ads_arr[i].numOfRooms << endl
-			<< "Number of Beds: " << ads_arr[i].numOfBeds << endl;
-		PrintAmenities(ads_arr[i].ameNities);
-		cout << "Atractions: " << ads_arr[i].attraction << endl;
-		cout << "Landlord Email: " << ads_arr[i].email << endl;
-		cout << "Rating: " << ads_arr[i].rating << endl;
+		cout << "Ad description: " << ad2Arr[i]->description << endl;
+		cout << "Price before discount: " << ad2Arr[i]->price << endl;
+		cout << "Price after discount:  " << ad2Arr[i]->price - ad2Arr[i]->discount << endl;
+		cout << "Discount: " << "-" << ad2Arr[i]->discount << " NIS" << endl;
+		cout << "Location: " << ad2Arr[i]->location << endl;
+		cout << "Number of People: " << ad2Arr[i]->numOfPeople << endl
+			<< "Number of Rooms: " << ad2Arr[i]->numOfRooms << endl
+			<< "Number of Beds: " << ad2Arr[i]->numOfBeds << endl;
+		PrintAmenities(ad2Arr[i]->ameNities);
+		cout << "Atractions: " << ad2Arr[i]->attraction << endl;
+		cout << "Landlord Email: " << ad2Arr[i]->email << endl;
+		cout << "Rating: " << ad2Arr[i]->rating << endl;
 		cout << "**==============================**" << endl;
 	}
-	cout << "If you want to choose an ad and procced to order-" << endl
-		<< "Please enter the number of the ad, if you wish to go back to menu press 0" << endl;
-	cout << "enter your choice: ";
+	cout << "To choose an ad press the ad number" << endl
+		<< "To Exit press 0" << endl;
+	cout << "enter your choice: " << endl;
 	int choice = 0;
 	cin >> choice;
+	if (choice < 0 || choice > ad2size) {
+		choice = 0;
+		cout << "\n No such ad..." << endl;
+	}
 	if (!choice)
 		return NOT_FOUND;//doesn't want to order yet
 	return choice - 1;
@@ -1257,6 +1387,15 @@ int difference_of_days(int day1, int month1, int year1, int day2, int month2, in
 //-------------landlord homescreen
 //-------------Landlords menu : prints list of ads for landlord(to screen)
 
+landlord* findLandlordByName(string name) {
+	if (!isStringAllLetters(name))
+		return NULL;
+	for (int i = 0; i < landlord_arr_size; ++i) {
+		if (landlord_arr[i].fullName == name)
+			return &landlord_arr[i];
+	}
+	return NULL;
+}
 
 bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy) {//--------------------------
 	//gets two dates checks if the 1st is bigger or equal
@@ -1273,6 +1412,23 @@ bool isDateBiggerE(int d, int m, int y, int dd, int mm, int yy) {//-------------
 		}
 	}
 	return false;//first date is not bigger or equal
+}
+
+bool isDateSmallerE(int d, int m, int y, int dd, int mm, int yy) {//--------------------------
+	//gets two dates checks if the 1st is equal
+	if (y == yy && m == mm && d == dd)
+		return true;
+	if (y < yy)
+		return true;
+	else if (y == yy) {
+		if (m < mm)
+			return true;
+		else if (m == mm) {
+			if (d < dd)
+				return true;
+		}
+	}
+	return false;//first date is not equal
 }
 
 bool isDateEqual(date& d, date& adDate) {//--------------------------
@@ -1308,12 +1464,12 @@ bool iequalsContain(const string& a, const string& b)//*************************
 	return true;
 }
 
-void swap(ad* ad1, ad* ad2)//***********************************************************
+void swap(ad** ad1, ad** ad2)//***********************************************************
 {
-	//swap ads in adArr
-	ad temp = *ad1;
+	//swap ads in ad2Arr
+	ad** temp = ad1;
 	ad1 = ad2;
-	*ad2 = temp;
+	ad2 = temp;
 }
 
 
@@ -1321,21 +1477,53 @@ void swap(ad* ad1, ad* ad2)//***************************************************
 void deleteAllocatedData()
 {
 	for (int i = 0; i < landlord_arr_size; i++)
-		delete[] landlord_arr[i].properties;//free each landlord's ad array
+	delete[] landlord_arr[i].properties;//free each landlord's ad array
 	delete[] landlord_arr;//free landlord array
 	delete[] travelers_arr;//free traveler array
+	delete[] ads_arr;
 	landlord_arr = NULL;
 	landlord_arr_size = 0;
 	travelers_arr = NULL;
 	travelers_arr_size = 0;
-	deleteAdArr();
-}
-
-void deleteAdArr() {
-	delete[] ads_arr;
 	ads_arr = NULL;
 	ads_arr_size = 0;
 }
+
+void deleteAd2Arr() {
+	delete[] ad2Arr;
+	ad2Arr = NULL;
+	ad2size = NOT_FOUND;
+}
+
+//Register:
+//void Register()
+//{
+//	system("CLS");
+//	int choise = 1;
+//	bool flag = true;
+//	cout << "***REGISTER - MENU***" << endl
+//		<< "1) Landlord." << endl
+//		<< "2) Traveler." << endl
+//		<< "3) Back." << endl
+//		<< "Please enter your choice: ";
+//	cin >> choise;
+//	if (choise == 1)
+//	{
+//		RegisterLandlord();
+//		//update db
+//		system("CLS");
+//		cout << "Landlord successfuly added!" << endl;
+//	}
+//	else if (choise == 2)
+//	{
+//		RegisterTraveler();
+//		//update db
+//		system("CLS");
+//		cout << "Traveler added successfuly!" << endl;
+//	}
+//	else if (choise == 3) return;
+//	else cout << "Wrong choice!!" << endl;
+//}
 
 //Register:
 void Register()
@@ -1343,7 +1531,7 @@ void Register()
 	system("CLS");
 	int choise = 1;
 	bool flag = true;
-	cout << "***REGISTER - MENU***" << endl
+	cout << "\n***REGISTER - MENU***" << endl
 		<< "1) Landlord." << endl
 		<< "2) Traveler." << endl
 		<< "3) Back." << endl
@@ -1354,7 +1542,9 @@ void Register()
 		RegisterLandlord();
 		//update db
 		system("CLS");
-		cout << "Landlord successfuly added!" << endl;
+		cout << "Landlord added successfuly !" << endl;
+		printToFile();
+		readFromFile();
 	}
 	else if (choise == 2)
 	{
@@ -1362,6 +1552,8 @@ void Register()
 		//update db
 		system("CLS");
 		cout << "Traveler added successfuly!" << endl;
+		printToFile();
+		readFromFile();
 	}
 	else if (choise == 3) return;
 	else cout << "Wrong choice!!" << endl;
@@ -1405,7 +1597,7 @@ void RegisterLandlord()
 //Sign-in funcs:
 int landlordSignIn() {//returns true if login successful
 	string tempId, tempPass;
-	cout << "***LANDLORD - LOG IN***" << endl << "Please enter details according to instructions" << endl;
+	cout << "\n***LANDLORD - LOG IN***" << endl << "Please enter details according to instructions" << endl;
 	//get id input
 	cout << "ID must be exactly " << MAX_ID << " digits, numbers only." << endl;
 	cout << "Please enter your ID: " << endl;
@@ -1423,10 +1615,8 @@ int landlordSignIn() {//returns true if login successful
 	}
 
 	//get password
-	cout << "Password must be minimum: " << MIN_PASSWORD
-		<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
-		<< "Can contain any characters you wish except 'enter'." << endl;
-	cout << "Please enter your password: " << endl;
+	cout << "\nPlease enter your password- " << MIN_PASSWORD << " to " << MAX_PASSWORD << " characters." << endl;
+	cout << "PASSWORD: ";
 	cin >> tempPass;
 	//check length and input correctness
 	if (tempPass.length() > MAX_PASSWORD || tempPass.length() < MIN_PASSWORD) {
@@ -1450,39 +1640,39 @@ int findLandlordById(string id) {
 
 int travelerSignIn() {
 	string tempName, tempPass;
-	cout << "***TRAVELER - LOG IN***" << endl << "Please enter details according to instructions" << endl;
+	cout << endl << "\n***TRAVELER - LOG IN***" << endl
+		<< "-------------------------" << endl;
 	//get name input
-	cout << "Name must be up to: " << MAX_NAME << " letters only." << endl;
-	cout << "Please enter your full name: " << endl;
+	cout << "Please enter your full name- " << MAX_NAME << " letters MAX." << endl;
+	cout << "FULL NAME: ";
+
 	//cin >> tempName;
 	cin.ignore();
 	getline(cin, tempName);
 	//check length and input correctness
 	if (tempName.length() > MAX_NAME) {
-		cout << "No such user..." << endl;
+		cout << "\nNo such user..." << endl;
 		return NOT_FOUND;
 	}
 	//find index for traveler in array by name- assuming no two identical names
 	int index = findTravelerByName(tempName);
 	if (index == NOT_FOUND) {//traveler not found
-		cout << "No such user..." << endl;
+		cout << "\nNo such user..." << endl;
 		return NOT_FOUND;
 	}
 
 	//get password
-	cout << "Password must be minimum: " << MIN_PASSWORD
-		<< " characters and maximum: " << MAX_PASSWORD << " characters," << endl
-		<< "Can contain any characters you wish except 'enter'." << endl;
-	cout << "Please enter your password: " << endl;
+	cout << "\nPlease enter your password- " << MIN_PASSWORD << " to " << MAX_PASSWORD << " characters." << endl;
+	cout << "PASSWORD: ";
 	cin >> tempPass;
 	//check length and input correctness
 	if (tempPass.length() > MAX_PASSWORD || tempPass.length() < MIN_PASSWORD) {
-		cout << "Incorrect password...try again." << endl;
+		cout << "\nIncorrect password...try again." << endl;
 		return NOT_FOUND;
 	}
 	if (tempPass != travelers_arr[index].password) {//password equal
-		cout << "Incorrect password...try again." << endl;
-		return not NOT_FOUND;
+		cout << "\nIncorrect password...try again." << endl;
+		return NOT_FOUND;
 	}
 	return index;
 }
@@ -1626,6 +1816,22 @@ string PasswordInput()
 	return buffer;
 }
 
+//string ValidId()
+//{
+//	string id;
+//	bool has_only_digits = false;
+//	while (!has_only_digits)
+//	{
+//		cout << "Please enter id(9 digits): ";
+//		cin >> id;
+//		has_only_digits = true;
+//		for (int i = 0; i < id.length(); i++)
+//			if (!isdigit(id[i])) has_only_digits = false;
+//		if (!has_only_digits) cout << "Wrong id! Please try again!" << endl;
+//	}
+//	return id;
+//}
+
 string ValidId()
 {
 	string id;
@@ -1634,10 +1840,14 @@ string ValidId()
 	{
 		cout << "Please enter id(9 digits): ";
 		cin >> id;
-		has_only_digits = true;
-		for (int i = 0; i < id.length(); i++)
-			if (!isdigit(id[i])) has_only_digits = false;
-		if (!has_only_digits) cout << "Wrong id! Please try again!" << endl;
+		if (id.length() != MAX_ID) cout << "Wrong id! Please try again!" << endl;
+		else
+		{
+			has_only_digits = true;
+			for (int i = 0; i < id.length(); i++)
+				if (!isdigit(id[i])) has_only_digits = false;
+			if (!has_only_digits) cout << "Wrong id! Please try again!" << endl;
+		}
 	}
 	return id;
 }
@@ -1696,32 +1906,39 @@ void MainPage()
 	//system("CLS");
 	int landlord_index = NOT_FOUND;
 	int traveler_index = NOT_FOUND;
-	int choise = 0;
-	while (choise != 4)
+	int choise = 1;
+	while (choise != 0)
 	{
-		cout << "***MAIN - MENU***:" << endl//need to be changed! add beutiful header.
+		cout << "\n***MAIN - MENU***:" << endl//need to be changed! add beutiful header.
 			<< "1) Log in as traveler." << endl
 			<< "2) Log in as landlord." << endl
 			<< "3) Register." << endl
-			<< "4) Exit." << endl
+			<< "0) Exit." << endl
 			<< "Please enter your choice: ";
 		cin >> choise;
 		switch (choise)
 		{
 		case 1:
 			traveler_index = travelerSignIn();
-			travelerMenu(traveler_index);
+			if(traveler_index!=NOT_FOUND)
+				travelerMenu(traveler_index);
 			break;
 		case 2:
 			landlord_index = landlordSignIn();
-			traveler_index = findTravelerByName(travelers_arr[landlord_index].fullName);
+			if (landlord_index == NOT_FOUND)
+				break;
+			
+			traveler_index = findTravelerByName(travelers_arr[landlord_index].fullName);/////
+			if (traveler_index == NOT_FOUND)	
+				break;
 			LandlordsLoginMenu(landlord_index, traveler_index);
 			break;
 		case 3:
 			Register();
 			break;
-		case 4:
-			cout << "Good bye!";
+		case 0:
+			system("CLS");
+			cout << "\nGood bye!\n";
 			break;
 		default:
 			cout << "Wrong choice!!\nTry again: ";
@@ -1734,12 +1951,12 @@ void MainPage()
 void LandlordsLoginMenu(int ll_index, int trv_index)
 {
 	int choise = 1;
-	while (choise != 3)
+	while (choise != 0)
 	{
 		cout << "Please select user type:" << endl
 			<< "1) Landlord." << endl
 			<< "2) Traveler." << endl
-			<< "3) Back." << endl
+			<< "0) LOG OUT." << endl
 			<< "Please enter your choice:" << endl;
 		cin >> choise;
 		switch (choise)
@@ -1750,7 +1967,9 @@ void LandlordsLoginMenu(int ll_index, int trv_index)
 		case 2:
 			travelerMenu(trv_index);
 			break;
-		case 3:
+		case 0:
+			system("CLS");
+			cout << "\nTHANK YOU! Logging out...\n" << endl;
 			break;
 		default:
 			cout << "Wrong choice!!\nTry again: ";
@@ -1760,14 +1979,71 @@ void LandlordsLoginMenu(int ll_index, int trv_index)
 	}
 }
 
+//void LandlordsMenu(int index)
+//{
+//	int choise = 1;
+//	int input;
+//	while (choise != 4)
+//	{
+//		system("CLS");
+//		cout << "****LANDLORD - MENU****" << endl;
+//		cout << "Total profit: " << landlord_arr[index].sumOfDeals << endl;
+//		if (landlord_arr[index].adSize)
+//			for (int i = 0; i < landlord_arr[index].adSize; i++)
+//			{
+//				cout << ADSBREAK << endl << "\tAd no: " << i + 1 << endl;
+//				PrintAd(landlord_arr[index].properties[i]);
+//			}
+//		cout << ADSBREAK << endl;
+//
+//		cout << "Please select an option:" << endl
+//			<< "1) Edit an ad." << endl
+//			<< "2) Add new ad." << endl
+//			<< "3) Delete an ad." << endl
+//			<< "4) Back." << endl
+//			<< "enter your choice: ";
+//		cin >> choise;
+//		switch (choise)
+//		{
+//		case 1:
+//			cout << "Please enter ad number: ";
+//			input = ValidInput(1, landlord_arr[index].adSize) - 1;
+//			EditAdMenu(index, input);
+//			//update db
+//			break;
+//		case 2:
+//			RealocateAdsPointer(index);
+//			landlord_arr[index].properties[landlord_arr[index].adSize - 1] = NewAd();
+//			landlord_arr[index].properties[landlord_arr[index].adSize - 1].email = landlord_arr[index].email;
+//			//update db
+//			break;
+//		case 3:
+//			cout << "Please enter ad number: ";
+//			input = ValidInput(1, landlord_arr[index].adSize) - 1;
+//			DeleteAd(index, input);
+//			//update db
+//			break;
+//		case 4:
+//			//exit
+//			system("CLS");
+//			break;
+//		default:
+//			cout << "Wrong choice!!\nTry again!\n ";
+//			break;
+//		}
+//	}
+//
+//
+//}
+
 void LandlordsMenu(int index)
 {
 	int choise = 1;
 	int input;
-	while (choise != 4)
+	while (choise != 0)
 	{
-		system("CLS");
-		cout << "***LANDLORD - MENU***" << endl;
+		readFromFile();
+		cout << "\n***LANDLORD - MENU***" << endl;
 		cout << "Total profit: " << landlord_arr[index].sumOfDeals << endl;
 		if (landlord_arr[index].adSize)
 			for (int i = 0; i < landlord_arr[index].adSize; i++)
@@ -1776,45 +2052,56 @@ void LandlordsMenu(int index)
 				PrintAd(landlord_arr[index].properties[i]);
 			}
 		cout << ADSBREAK << endl;
-
 		cout << "Please select an option:" << endl
 			<< "1) Edit an ad." << endl
 			<< "2) Add new ad." << endl
 			<< "3) Delete an ad." << endl
-			<< "4) Back." << endl
+			<< "0) Back." << endl
 			<< "enter your choice: ";
 		cin >> choise;
 		switch (choise)
 		{
 		case 1:
+			if (!landlord_arr[index].adSize) {
+				cout << "No ads yet..." << endl;
+				break;
+			}
 			cout << "Please enter ad number: ";
 			input = ValidInput(1, landlord_arr[index].adSize) - 1;
 			EditAdMenu(index, input);
 			//update db
+			printToFile();
+			readFromFile();
 			break;
 		case 2:
 			RealocateAdsPointer(index);
 			landlord_arr[index].properties[landlord_arr[index].adSize - 1] = NewAd();
 			landlord_arr[index].properties[landlord_arr[index].adSize - 1].email = landlord_arr[index].email;
 			//update db
+			printToFile();
+			readFromFile();
 			break;
 		case 3:
+			if (!landlord_arr[index].adSize) {
+				cout << "No ads yet..." << endl;
+				break;
+			}
 			cout << "Please enter ad number: ";
 			input = ValidInput(1, landlord_arr[index].adSize) - 1;
 			DeleteAd(index, input);
 			//update db
+			printToFile();
+			readFromFile();
 			break;
-		case 4:
+		case 0:
 			//exit
 			system("CLS");
 			break;
 		default:
-			cout << "Wrong choice!!\nTry again!\n ";
+			cout << "Wrong choice!! Try again!\n ";
 			break;
 		}
 	}
-
-
 }
 
 void EditAdMenu(int ll_index, int ad_index)
@@ -1836,7 +2123,7 @@ void EditAdMenu(int ll_index, int ad_index)
 			<< "7) Change num of beds." << endl
 			<< "8) Edit amenities." << endl
 			<< "9) Change attractions." << endl
-			<< "0) Back to previous menu." << endl
+			<< "0) Back." << endl
 			<< "Please enter your choice: ";
 		choose = ValidInput();
 		switch (choose)
@@ -1913,7 +2200,7 @@ ad NewAd()
 {//User input for new ad.
 	ad newAd;
 	newAd.available = true;
-	cout << "---NEW AD--- " << endl;
+	cout << "\n---NEW AD--- " << endl;
 	cout << "Ad description: ";
 	cin.ignore();
 	getline(cin, newAd.description);
@@ -1997,7 +2284,6 @@ void PrintAmenities(amenities obj)
 	if (obj.airConditioning) str += AMENITIES_NAMES[6] + ", ";
 	if (obj.swimmingPool) str += AMENITIES_NAMES[7] + ", ";
 	if (obj.parkingLot) str += AMENITIES_NAMES[8] + ", ";
-	str[str.length() - 2] = '.';
 	cout << str << endl;
 }
 
@@ -2063,6 +2349,7 @@ int main()
 	}
 	printToFile();//push to file.
 	deleteAllocatedData();
+	deleteAd2Arr();
 	return 0;
 }
 
